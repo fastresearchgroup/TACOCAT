@@ -5,11 +5,21 @@
 # Note: 
 	#Temperature is in Kelvin
 
+# some_file.py
+#import os
+import sys
+#path = os.getcwd()
+#print(path)
+# insert at 1, 0 is the script path (or '' in REPL)
+sys.path.insert(0,'..')
+
 import numpy as np 
 import matplotlib.pyplot as plt  
 import FLiBe_Prop
 import Flibe_Cp_Verification_Data
 import pandas as pd
+
+
 
 steps = 700
 
@@ -37,6 +47,7 @@ for i in range(0,steps):
 
 for i in range(0,steps):
 	K[i] = FLiBe_Prop.k(T2[i])
+
 
 data1 = pd.read_csv(r'C:\Users\Sierra\PycharmProjects\Giraffe\TACOCAT\Verification\Flibe\Density\Romatoski_Flibe_Density_Blanke_1956.csv')
 df1 = pd.DataFrame(data1, columns=['Temp','Density'])
