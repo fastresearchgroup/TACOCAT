@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 import FLiBe_Prop
 import Flibe_Cp_Verification_Data
 import pandas as pd
+from pathlib import Path
 
 steps = 700
 
@@ -32,21 +33,21 @@ for i in range(0,steps):
 	K[i] = FLiBe_Prop.k(T2[i])
 
 path = os.getcwd()
-data1 = pd.read_csv(path + '\Flibe\Density\Romatoski_Flibe_Density_Blanke_1956.csv')
+data1 = pd.read_csv(Path(path + '\Flibe\Density\Romatoski_Flibe_Density_Blanke_1956.csv'))
 df1 = pd.DataFrame(data1, columns=['Temp','Density'])
-data2 = pd.read_csv(path + '\Flibe\Density\Romatoski_Flibe_Density_Cantor_1968.csv')
+data2 = pd.read_csv(Path(path + '\Flibe\Density\Romatoski_Flibe_Density_Cantor_1968.csv'))
 df2 = pd.DataFrame(data2, columns=['Temp','Density'])
-data3 = pd.read_csv(path + '\Flibe\Density\Romatoski_Flibe_Density_Cantor_1973.csv')
+data3 = pd.read_csv(Path(path + '\Flibe\Density\Romatoski_Flibe_Density_Cantor_1973.csv'))
 df3 = pd.DataFrame(data3, columns=['Temp','Density'])
-data4 = pd.read_csv(path + '\Flibe\Density\Romatoski_Flibe_Density_Gierszewski_1980.csv')
+data4 = pd.read_csv(Path(path + '\Flibe\Density\Romatoski_Flibe_Density_Gierszewski_1980.csv'))
 df4 = pd.DataFrame(data4, columns=['Temp','Density'])
-data5 = pd.read_csv(path + '\Flibe\Density\Romatoski_Flibe_Density_Janz_1974.csv')
+data5 = pd.read_csv(Path(path + '\Flibe\Density\Romatoski_Flibe_Density_Janz_1974.csv'))
 df5 = pd.DataFrame(data5, columns=['Temp','Density'])
-data6 = pd.read_csv(path + '\Flibe\Density\Romatoski_Flibe_Density_Janz_1974_1988.csv')
+data6 = pd.read_csv(Path(path + '\Flibe\Density\Romatoski_Flibe_Density_Janz_1974_1988.csv'))
 df6 = pd.DataFrame(data6, columns=['Temp','Density'])
-data7 = pd.read_csv(path + '\Flibe\Density\Romatoski_Flibe_Density_Recommended.csv')
+data7 = pd.read_csv(Path(path + '\Flibe\Density\Romatoski_Flibe_Density_Recommended.csv'))
 df7 = pd.DataFrame(data7, columns=['Temp','Density'])
-data8 = pd.read_csv(path + '\Flibe\Density\Romatoski_Flibe_Density_Zaghoul_2003.csv')
+data8 = pd.read_csv(Path(path + '\Flibe\Density\Romatoski_Flibe_Density_Zaghoul_2003.csv'))
 df8 = pd.DataFrame(data8, columns=['Temp','Density'])
 
 fig1 = plt.figure(1, figsize=(10,8))
@@ -67,21 +68,21 @@ plt.grid()
 plt.title('Flibe Density')
 plt.show()
 
-data9 = pd.read_csv(path + '\Flibe\Viscosity\Romatoski_Flibe_Viscosity_Abe_1981_67.csv')
+data9 = pd.read_csv(Path(path + '\Flibe\Viscosity\Romatoski_Flibe_Viscosity_Abe_1981_67.csv'))
 df9 = pd.DataFrame(data9, columns=['Temp','Vis'])
-data10 = pd.read_csv(path + '\Flibe\Viscosity\Romatoski_Flibe_Viscosity_Blanke_1956_62.csv')
+data10 = pd.read_csv(Path(path + '\Flibe\Viscosity\Romatoski_Flibe_Viscosity_Blanke_1956_62.csv'))
 df10 = pd.DataFrame(data10, columns=['Temp','Vis'])
-data11 = pd.read_csv(path + '\Flibe\Viscosity\Romatoski_Flibe_Viscosity_Blanke_1956_69-31.csv')
+data11 = pd.read_csv(Path(path + '\Flibe\Viscosity\Romatoski_Flibe_Viscosity_Blanke_1956_69-31.csv'))
 df11 = pd.DataFrame(data11, columns=['Temp','Vis'])
-data12 = pd.read_csv(path + '\Flibe\Viscosity\Romatoski_Flibe_Viscosity_Cantor_1969_64-36.csv')
+data12 = pd.read_csv(Path(path + '\Flibe\Viscosity\Romatoski_Flibe_Viscosity_Cantor_1969_64-36.csv'))
 df12 = pd.DataFrame(data12, columns=['Temp','Vis'])
-data13 = pd.read_csv(path + '\Flibe\Viscosity\Romatoski_Flibe_Viscosity_Cohen_1956_69-31.csv')
+data13 = pd.read_csv(Path(path + '\Flibe\Viscosity\Romatoski_Flibe_Viscosity_Cohen_1956_69-31.csv'))
 df13 = pd.DataFrame(data13, columns=['Temp','Vis'])
-data14 = pd.read_csv(path + '\Flibe\Viscosity\Romatoski_Flibe_Viscosity_Gierszewski_1980_66-34.csv')
+data14 = pd.read_csv(Path(path + '\Flibe\Viscosity\Romatoski_Flibe_Viscosity_Gierszewski_1980_66-34.csv'))
 df14 = pd.DataFrame(data14, columns=['Temp','Vis'])
-data15 = pd.read_csv(path + '\Flibe\Viscosity\Romatoski_Flibe_Viscosity_Janz_1974_64-36.csv')
+data15 = pd.read_csv(Path(path + '\Flibe\Viscosity\Romatoski_Flibe_Viscosity_Janz_1974_64-36.csv'))
 df15 = pd.DataFrame(data15, columns=['Temp','Vis'])
-data16 = pd.read_csv(path + '\Flibe\Viscosity\Romatoski_Flibe_Viscosity_Cantor_1968_66-34.csv')
+data16 = pd.read_csv(Path(path + '\Flibe\Viscosity\Romatoski_Flibe_Viscosity_Cantor_1968_66-34.csv'))
 df16 = pd.DataFrame(data16, columns=['Temp','Vis'])
 
 
@@ -104,31 +105,20 @@ plt.grid()
 plt.show()
 
 Cp1 = np.zeros(steps)
+Cp2 = np.zeros(steps)
+Cp3 = np.zeros(steps)
+Cp4 = np.zeros(steps)
+Cp5 = np.zeros(steps)
+Cp6 = np.zeros(steps)
+Cp7 = np.zeros(steps)
+
 for i in range(0,steps):
 	Cp1[i] = Flibe_Cp_Verification_Data.Cp1(T2[i])
-
-Cp2 = np.zeros(steps)
-for i in range(0,steps):
 	Cp2[i] = Flibe_Cp_Verification_Data.Cp2(T2[i])
-
-Cp3 = np.zeros(steps)
-for i in range(0,steps):
 	Cp3[i] = Flibe_Cp_Verification_Data.Cp3(T2[i])
-
-Cp4 = np.zeros(steps)
-for i in range(0,steps):
 	Cp4[i] = Flibe_Cp_Verification_Data.Cp4(T2[i])
-
-Cp5 = np.zeros(steps)
-for i in range(0,steps):
 	Cp5[i] = Flibe_Cp_Verification_Data.Cp5(T2[i])
-
-Cp6 = np.zeros(steps)
-for i in range(0,steps):
 	Cp6[i] = Flibe_Cp_Verification_Data.Cp6(T2[i])
-
-Cp7 = np.zeros(steps)
-for i in range(0,steps):
 	Cp7[i] = Flibe_Cp_Verification_Data.Cp7(T2[i])
 
 fig3 = plt.figure(1, figsize=(10,8))
@@ -149,13 +139,13 @@ plt.grid()
 plt.show()
 
 
-data17 = pd.read_csv(path + '\Flibe\ThermalConductivity\Romatoski_Flibe_Thermal_Conductivity_Empirical.csv')
+data17 = pd.read_csv(Path(path + '\Flibe\ThermalConductivity\Romatoski_Flibe_Thermal_Conductivity_Empirical.csv'))
 df17 = pd.DataFrame(data17, columns=['Temp','K']) 
-data18 = pd.read_csv(path + '\Flibe\ThermalConductivity\Romatoski_Flibe_Thermal_Conductivity_ORNL-4344.csv')
+data18 = pd.read_csv(Path(path + '\Flibe\ThermalConductivity\Romatoski_Flibe_Thermal_Conductivity_ORNL-4344.csv'))
 df18 = pd.DataFrame(data18, columns=['Temp','K']) 
-data19 = pd.read_csv(path + '\Flibe\ThermalConductivity\Romatoski_Flibe_Thermal_Conductivity_ORNL-4396.csv')
+data19 = pd.read_csv(Path(path + '\Flibe\ThermalConductivity\Romatoski_Flibe_Thermal_Conductivity_ORNL-4396.csv'))
 df19 = pd.DataFrame(data19, columns=['Temp','K']) 
-data20 = pd.read_csv(path + '\Flibe\ThermalConductivity\Recommended.csv')
+data20 = pd.read_csv(Path(path + '\Flibe\ThermalConductivity\Recommended.csv'))
 df20 = pd.DataFrame(data20, columns=['Temp','K']) 
 
 
