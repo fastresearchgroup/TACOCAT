@@ -16,6 +16,8 @@ import FLiBe_Prop
 import Flibe_Cp_Verification_Data
 import pandas as pd
 
+path = os.getcwd()
+
 steps = 700
 
 T = np.linspace(550,1250,steps)
@@ -32,44 +34,25 @@ for i in range(0,steps):
 	Cp[i] = FLiBe_Prop.Cp(T2[i])
 	K[i] = FLiBe_Prop.k(T2[i])
 
-path = os.getcwd()
-#data1 = pd.read_csv(path + '/Flibe/Density/Romatoski_Flibe_Density_Blanke_1956.csv')
-#df1 = pd.DataFrame(data1, columns=['Temp','Density'])
-#data2 = pd.read_csv(path + '/Flibe/Density/Romatoski_Flibe_Density_Cantor_1968.csv')
-#df2 = pd.DataFrame(data2, columns=['Temp','Density'])
-#data3 = pd.read_csv(path + '/Flibe/Density/Romatoski_Flibe_Density_Cantor_1973.csv')
-#df3 = pd.DataFrame(data3, columns=['Temp','Density'])
-#data4 = pd.read_csv(path + '/Flibe/Density/Romatoski_Flibe_Density_Gierszewski_1980.csv')
-#df4 = pd.DataFrame(data4, columns=['Temp','Density'])
-#data5 = pd.read_csv(path + '/Flibe/Density/Romatoski_Flibe_Density_Janz_1974.csv')
-#df5 = pd.DataFrame(data5, columns=['Temp','Density'])
-#data6 = pd.read_csv(path + '/Flibe/Density/Romatoski_Flibe_Density_Janz_1974_1988.csv')
-#df6 = pd.DataFrame(data6, columns=['Temp','Density'])
-#data7 = pd.read_csv(path + '/Flibe/Density/Romatoski_Flibe_Density_Recommended.csv')
-#df7 = pd.DataFrame(data7, columns=['Temp','Density'])
-#data8 = pd.read_csv(path + '/Flibe/Density/Romatoski_Flibe_Density_Zaghoul_2003.csv')
-#df8 = pd.DataFrame(data8, columns=['Temp','Density'])
+linestyles = ['--',':','--','-.','--']
+colors = ['blue','purple','darkgreen','fuchsia','firebrick','darkorange','cornflowerblue','lime']
 
-
-
-filelist = [Path(path + '/Flibe/Density/Romatoski_Flibe_Density_Blanke_1956.csv'), Path(path + '/Flibe/Density/Romatoski_Flibe_Density_Cantor_1968.csv'), Path(path + '/Flibe/Density/Romatoski_Flibe_Density_Cantor_1973.csv', path + '/Flibe/Density/Romatoski_Flibe_Density_Gierszewski_1980.csv')]
-densitydataframes = []
-fig1 = plt.figure(1, figsize=(10,8))
-#ax1 = fig1.add_subplot()
+filelist = ['Blanke_1956','Cantor_1968','Cantor_1973','Gierszewski_1980','Janz_1974','Janz_1974_1988','Zaghoul_2003','Recommended']
+k = 1
+L = 0
+fig1 = plt.figure(k, figsize=(10,8))
 for f in filelist:
-	densitydata = pd.read_csv(f)
-	df = pd.DataFrame(densitydata)
-	df.plot(x='Temp', y='Density')
-
-plt.plot(T,Rho,'r--', label='Density Used', linewidth=3, dashes=(10,20))	
+	densitydataframes = pd.read_csv(Path(path + '/Flibe/Density/Romatoski_Flibe_Density_' + f + '.csv'))
+	df = pd.DataFrame(densitydataframes)
+	plt.plot(df['Temp'], df['Density'], label=f, marker='D', color=colors[L])
+	L = L + 1
+plt.plot(T,Rho,'r--', label='Density Used', linewidth=3, dashes=(10,20))
+plt.title('Flibe Density')
 plt.xlabel('Temperature - K')
 plt.ylabel('Density - kg/m^3')
 plt.legend(loc='upper right')
 plt.grid()
-plt.title('Flibe Density')
-
-
-
+k = k + 1
 
 #df1.plot(x='Temp', y='Density', label='Blanke 1956', ax=ax, kind='scatter', marker='D', color='blue', figsize=(10,8))
 #df2.plot(x='Temp', y='Density', label='Cantor 1968', ax=ax, linestyle='--', color='purple')
@@ -79,7 +62,6 @@ plt.title('Flibe Density')
 #df6.plot(x='Temp', y='Density', label='Janz 1974/1988', ax=ax, linestyle='--', color='darkorange')
 #df7.plot(x='Temp', y='Density', label='Recommended', ax=ax, linestyle='-.', color='cornflowerblue')
 #df8.plot(x='Temp', y='Density', label='Zaghoul 2003', ax=ax, linestyle='--', color='lime')
-
 
 data9 = pd.read_csv(Path(path + '/Flibe/Viscosity/Romatoski_Flibe_Viscosity_Abe_1981_67.csv'))
 df9 = pd.DataFrame(data9, columns=['Temp','Vis'])
@@ -99,7 +81,7 @@ data16 = pd.read_csv(Path(path + '/Flibe/Viscosity/Romatoski_Flibe_Viscosity_Can
 df16 = pd.DataFrame(data16, columns=['Temp','Vis'])
 
 
-fig2 = plt.figure(1, figsize=(10,8))
+fig2 = plt.figure(k, figsize=(10,8))
 ax2 = fig2.add_subplot()
 df9.plot(x='Temp', y='Vis', label='Abe 198 (67.2-32.8)', ax=ax2, marker='^', linestyle='--', color='purple')
 df10.plot(x='Temp', y='Vis', label='Blanke 1956 (62.67-37.33)', ax=ax2, marker='s', kind='scatter', color='dodgerblue')
@@ -115,7 +97,7 @@ plt.ylabel('Viscosity - N/m^2/s')
 plt.title('Flibe Viscosity')
 plt.legend(loc='upper right')
 plt.grid()
-plt.show()
+k = k + 1
 
 Cp1 = np.zeros(steps)
 Cp2 = np.zeros(steps)
@@ -134,7 +116,7 @@ for i in range(0,steps):
 	Cp6[i] = Flibe_Cp_Verification_Data.Cp6(T2[i])
 	Cp7[i] = Flibe_Cp_Verification_Data.Cp7(T2[i])
 
-fig3 = plt.figure(1, figsize=(10,8))
+fig3 = plt.figure(k, figsize=(10,8))
 plt.plot(T2,Cp,'r--', label='Specific Heat Capacity Used', linewidth=3, dashes=(10,20))
 plt.plot(T2,Cp1,'k--', label='2343')
 plt.plot(T2,Cp2,'c--', label='2347')
@@ -149,8 +131,7 @@ plt.ylim(2300, 2450)
 plt.title('Flibe Specific Heat Capacity')
 plt.legend(loc='upper right')
 plt.grid()
-plt.show()
-
+k = k + 1
 
 data17 = pd.read_csv(Path(path + '/Flibe/ThermalConductivity/Romatoski_Flibe_Thermal_Conductivity_Empirical.csv'))
 df17 = pd.DataFrame(data17, columns=['Temp','K']) 
@@ -161,8 +142,7 @@ df19 = pd.DataFrame(data19, columns=['Temp','K'])
 data20 = pd.read_csv(Path(path + '/Flibe/ThermalConductivity/Recommended.csv'))
 df20 = pd.DataFrame(data20, columns=['Temp','K']) 
 
-
-fig4 = plt.figure(1, figsize=(10,8))
+fig4 = plt.figure(k, figsize=(10,8))
 ax = fig4.add_subplot()
 df17.plot(x='Temp', y='K', label='Empirical', ax=ax, linestyle='-', color='green')
 df18.plot(x='Temp', y='K', label='ORNL-4344', ax=ax, kind='scatter', marker='s', color='darkgoldenrod', s=30)
@@ -174,4 +154,6 @@ plt.ylabel('Thermal Conductivity - W/m-K')
 plt.title('Thermal Conductivity')
 plt.legend(loc='upper right')
 plt.grid()
+k = k + 1
+
 plt.show()
