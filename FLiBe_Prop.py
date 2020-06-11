@@ -27,5 +27,3 @@ def k(T):
 def nu(T):
 	nu =(0.116*np.exp(3755/T))*0.001; #N/m^2/s, error +- 20%
 	return nu 
-
-
