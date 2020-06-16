@@ -44,15 +44,43 @@ Tbulk = np.zeros(steps) #Initialize Bulk Temperature of Coolant - C
 ##Material Properties
 
 #Thermal Fluid Properties of NaK
-rhoNa = NaK_Prop.rhoNa(Tbulkin + 273.15)
-rhoK = NaK_Prop.rhoK(Tbulkin + 273.15)
-CpNa = NaK_Prop.CpNa(Tbulkin + 273.15)
-CpK = NaK_Prop.CpK(Tbulkin + 273.15)
-Cp = (10**3)*(0.22*CpNa + 0.78*CpK) #J/kg-K
-k = NaK_Prop.k(Tbulkin + 273.15)
-nu = NaK_Prop.nu(Tbulkin + 273.15)
-invrhoNaK = 0.22/rhoNa + 0.78/rhoK
-rho = 1/invrhoNaK #kg/m^3
+CoolantUsed = int(input('Enter the number for the coolant you would like to use: 1. NaK 2. FLiBe 3. FLiNak 4. NaF-ZrF4:  '))
+#Coolants = {'1' : 'NaK_Prop','2' : 'FLiBe_Prop'}
+
+if CoolantUsed == 1:
+	import NaK_Prop
+	rhoNa = NaK_Prop.rhoNa(Tbulkin + 273.15)
+	rhoK = NaK_Prop.rhoK(Tbulkin + 273.15)
+	invrhoNaK = 0.22/rhoNa + 0.78/rhoK
+	rho = 1/invrhoNaK #kg/m^3
+	CpNa = NaK_Prop.CpNa(Tbulkin + 273.15)
+	CpK = NaK_Prop.CpK(Tbulkin + 273.15)
+	Cp = (10**3)*(0.22*CpNa + 0.78*CpK) #J/kg-K
+	k = NaK_Prop.k(Tbulkin + 273.15)
+	nu = NaK_Prop.nu(Tbulkin + 273.15)
+	Tboil = 784.00 #Boiling Temperature of NaK - C
+elif CoolantUsed == 2:
+	import FLiBe_Prop
+	rho = FLiBe_Prop.rho(Tbulkin + 273.15)
+	Cp = FLiBe_Prop.Cp(Tbulkin + 273.15)
+	k = FLiBe_Prop.k(Tbulkin + 273.15)
+	nu = FLiBe_Prop.nu(Tbulkin + 273.15)
+	Tboil = 1430 #Boiling Temperature of FLiBe - C
+elif CoolantUsed == 3:
+	import FLiNaK_Prop
+	rho = FLiNaK_Prop.rho(Tbulkin + 273.15)
+	Cp = FLiNaK_Prop.Cp(Tbulkin + 273.15)
+	k = FLiNaK_Prop.k(Tbulkin + 273.15)
+	nu = FLiNaK_Prop.nu(Tbulkin + 273.15)
+	Tboil = 1570 #Boiling Temperature of FLiBe - C
+elif CoolantUsed == 4:
+	import NaF_ZrF4_Prop
+	rho = NaF_ZrF4_Prop.rho(Tbulkin + 273.15)
+	Cp = NaF_ZrF4_Prop.Cp(Tbulkin + 273.15)
+	k = NaF_ZrF4_Prop.k(Tbulkin + 273.15)
+	nu = NaF_ZrF4_Prop.nu(Tbulkin + 273.15)
+	Tboil = 1350 #Boiling Temperature of FLiBe - C
+
 Pr = Cp*nu*rho/k #Prandtl Number Calculation
 
 #Thermal Conductivity of Cladding - W/m-K @ 300 C
@@ -125,15 +153,31 @@ plt.show()
 
 Tavg = (Tbulk[0] + Tbulk[steps-1])/2
 THotFavg = (TbulkHotF[0] + TbulkHotF[steps-1])/2
-rhoNamax = NaK_Prop.rhoNa(Tbulk[steps-1] + 273.15)
-rhoKmax = NaK_Prop.rhoK(Tbulk[steps-1] + 273.15)
-CpNamax = NaK_Prop.CpNa(Tbulk[steps-1] + 273.15)
-CpKmax = NaK_Prop.CpK(Tbulk[steps-1] + 273.15)
-Cpmax = (10**3)*(0.22*CpNamax + 0.78*CpKmax) #J/kg-K
-kmax = NaK_Prop.k(Tbulk[steps-1] + 273.15)
-numax = NaK_Prop.nu(Tbulk[steps-1] + 273.15)
-invrhoNaKmax = 0.22/rhoNamax + 0.78/rhoKmax
-rhomax = 1/invrhoNaKmax #kg/m^3
+if CoolantUsed == 1:
+	rhoNamax = NaK_Prop.rhoNa(Tbulk[steps-1] + 273.15)
+	rhoKmax = NaK_Prop.rhoK(Tbulk[steps-1] + 273.15)
+	CpNamax = NaK_Prop.CpNa(Tbulk[steps-1] + 273.15)
+	CpKmax = NaK_Prop.CpK(Tbulk[steps-1] + 273.15)
+	Cpmax = (10**3)*(0.22*CpNamax + 0.78*CpKmax) #J/kg-K
+	kmax = NaK_Prop.k(Tbulk[steps-1] + 273.15)
+	numax = NaK_Prop.nu(Tbulk[steps-1] + 273.15)
+	invrhoNaKmax = 0.22/rhoNamax + 0.78/rhoKmax
+	rhomax = 1/invrhoNaKmax #kg/m^3
+elif CoolantUsed == 2:
+	rhomax = FLiBe_Prop.rho(Tbulk[steps-1] + 273.15)
+	Cpmax = FLiBe_Prop.Cp(Tbulk[steps-1] + 273.15)
+	kmax = FLiBe_Prop.k(Tbulk[steps-1] + 273.15)
+	numax = FLiBe_Prop.nu(Tbulk[steps-1] + 273.15)
+elif CoolantUsed == 3:
+	rhomax = FLiNaK_Prop.rho(Tbulk[steps-1] + 273.15)
+	Cpmax = FLiNaK_Prop.Cp(Tbulk[steps-1] + 273.15)
+	kmax = FLiNaK_Prop.k(Tbulk[steps-1] + 273.15)
+	numax = FLiNaK_Prop.nu(Tbulk[steps-1] + 273.15)
+elif CoolantUsed == 4:
+	rhomax = NaF_ZrF4_Prop.rho(Tbulk[steps-1] + 273.15)
+	Cpmax = NaF_ZrF4_Prop.Cp(Tbulk[steps-1] + 273.15)
+	kmax = NaF_ZrF4_Prop.k(Tbulk[steps-1] + 273.15)
+	numax = NaF_ZrF4_Prop.nu(Tbulk[steps-1] + 273.15)
 Prmax = Cpmax*numax*rhomax/kmax #Prandtl Number Calculation
 
 #Max and Averaged quantities with calculated outlet temperature
