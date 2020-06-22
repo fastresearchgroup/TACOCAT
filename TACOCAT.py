@@ -1,9 +1,6 @@
-
-
 import numpy as np
 import matplotlib.pyplot as plt 
 import pandas as pd
-import NaK_Prop
 import HT9Props
 import HexDhCal
 import HegNu
@@ -91,8 +88,6 @@ kfuel = 22 #Thermal Conductivity of Fuel - W/m-K @ 1000 C
 #Geometric Calculations
 CVol = HexDhCal.Ha(Ac)*Hc #Volume of the core - m^3
 Uinlet = 0.0375
-
-#HexDhCal is copied above, error when ran as module
 
 ##Core Parameter Calculations 
 
