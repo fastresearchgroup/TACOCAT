@@ -1,5 +1,3 @@
-
-
 import numpy as np
 import matplotlib.pyplot as plt 
 import pandas as pd
@@ -18,6 +16,12 @@ from scipy.integrate import quad
 #User Input to define function (replacing Read in the core...)
 #FluxPro = input('Define a function') #Flux Profile
 
+#----------------------------------------------------------------------------------#
+## Print Logical for saving plots or not (0 - save plots, 1 or higher - do not save plots)
+
+print_logic = 1
+
+#----------------------------------------------------------------------------------#
 ##General Core Information
 
 #Geometry - Core
@@ -152,27 +156,45 @@ dP = M*fsm*(Hc/HexDhCal.Dh1(HexDhCal.A1(PtoD,FoCD,WoD),HexDhCal.P1(FoCD,WoD)))*0
 #Heat Load Calculation
 QPri = Uavg*rhoavg*HexDhCal.HaF(HexDhCal.Ha(Ac),NFuel,FoCD,WoD)*((Cp + Cpmax)/2)*(Tbulk[steps-1]-Tbulk[0])
 
-##Report out - Core Parameters
-fig1 = plt.figure(1, figsize=(7.5,5.5))
-plt.plot(z,Tbulk,'r--', label='Tbulk')
-plt.plot(z,TbulkHotF,'k--', label='TbulkHotF')
-plt.plot(z,Tcl, 'g-', label='Tcl')
-plt.plot(z,TclHotF, 'c-', label='TclHotF')
-plt.legend(loc='upper left')
-plt.suptitle('Axial Core Temperature Distributions')
-plt.xlabel('Height - m')
-plt.ylabel('Temperature - C')
-plt.grid()
-plt.show()
+#----------------------------------------------------------------------------------#
+## Report out - Core Parameters
+## Plots
 
-fig2 = plt.figure(2, figsize=(7.5,5.5))
+h = 6.5
+w = 4.5
+lw = 2.5
+fs = 12
+
+k = 1
+plt.figure(k, figsize=(h,w))
+plt.plot(z,Tbulk,'r--',linewidth = lw,label=r'$T_{bulk}$')
+plt.plot(z,TbulkHotF,'k--',linewidth = lw, label=r'$T_{bulk-HF}$')
+plt.plot(z,Tcl, 'g-',linewidth = lw, label=r'$T_{cl}$')
+plt.plot(z,TclHotF, 'c-',linewidth = lw, label=r'$T_{cl-HF}$')
+plt.axhline(y=785.0,xmin = 0, xmax = 1, color = 'r',linewidth = lw, label='NaK Boiling Temp')
+plt.legend(loc='center left')
+plt.xlabel('Axial Height - m',fontsize = fs)
+plt.ylabel('Temperature - C',fontsize = fs)
+plt.grid()
+fig = 'TACOCAT_Axial_Temperatures'
+if print_logic == 0:
+    plt.savefig(fig + '.png', dpi = 300, format = "png",bbox_inches="tight")
+    plt.savefig(fig + '.eps', dpi = 300, format = "eps",bbox_inches="tight")
+    plt.savefig(fig + '.svg', dpi = 300, format = "svg",bbox_inches="tight")
+k = k + 1
+
+plt.figure(k, figsize=(7.5,5.5))
 plt.plot(z,FluxPro, 'k-')
 plt.suptitle('Axial Core Flux Profile')
 plt.ylabel('Normalized Height')
 plt.xlabel('Normalized Flux')
 plt.grid()
+k = k + 1
+
 plt.show()
 
+#----------------------------------------------------------------------------------#
+## Report out - Core Parameters
 ## Print out
 print('--------------------------------------------------------')
 print('Heat Load:',QPri/10**6,'MW')
@@ -192,7 +214,9 @@ print('Highest Centerline Temperature - Hottest Channel:',TclHotF[steps-1],'C')
 print('Pressure Drop - Bundle:',dP,'Pa')
 print('--------------------------------------------------------')
 
-
+#----------------------------------------------------------------------------------#
+## Report out - Core Parameters
+## Create data files for run
 
 df1 = pd.DataFrame([[Tbulk[0]], [Tbulk[steps-1]], [Tavg], [TbulkHotF[steps-1]], [THotFavg], [Tcl[steps-1]], [TclHotF[steps-1]]], index=['Inlet Bulk Temperature', 'Outlet Bulk Temperature', 'Average Bulk Temperature', 'Outlet Bulk Temperature - Hot Channel', 'Average Coolant Temperature - Hot Channel', 'Highest Fuel Centerline Temperature', 'Highest Fuel Centerline Temperature - Hottest Channel'], columns=['Temperature - C'])
 df1.to_excel("TACOCAT_table.xlsx")
