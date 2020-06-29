@@ -47,7 +47,6 @@ Tbulk = np.zeros(steps) #Initialize Bulk Temperature of Coolant - C
 
 #Thermal Fluid Properties of NaK
 CoolantUsed = int(input('Enter the number for the coolant you would like to use: 1. NaK 2. FLiBe 3. FLiNak 4. NaF-ZrF4:  '))
-#Coolants = {'1' : 'NaK_Prop','2' : 'FLiBe_Prop'}
 
 if CoolantUsed == 1:
 	import NaK_Prop
