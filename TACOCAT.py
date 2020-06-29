@@ -40,10 +40,18 @@ NFuel = 1951 #Number of Fuel Rods
 
 #Core Parameter - Inputs
 Qth = 3*10**6 #Core Thermal Production - W
-Tmelt = 1160.00 #Melting temperature of UPu-Zr10 - C
 Tboil = 784.00 #Boiling Temperature of NaK - C
 Tbulkin = 550.00 #Bulk Temperature of NaK at the Inlet - C
 Tbulk = np.zeros(steps) #Initialize Bulk Temperature of Coolant - C
+FuelUsed = int(input('Enter the number for the fuel you would like to use: 1. UPu-Zr10 2. UC:  '))
+if FuelUsed == 1:
+	import UPu_Zr10_Prop
+	kfuel = UPu_Zr10_Prop.kfuel(Tbulkin + 273.15)
+	Tmelt = UPu_Zr10_Prop.Tmelt
+elif FuelUsed == 2:
+	import UC_Prop
+	kfuel = UC_Prop.kfuel(Tbulkin + 273.15)
+	Tmelt = UC_Prop.Tmelt
 
 ##Material Properties
 
@@ -61,7 +69,6 @@ Pr = Cp*nu*rho/k #Prandtl Number Calculation
 
 #Thermal Conductivity of Cladding - W/m-K @ 300 C
 kclad = HT9Props.k(Tbulkin + 273.15)
-kfuel = 22 #Thermal Conductivity of Fuel - W/m-K @ 1000 C
 
 ##Core Geometry Calculations
 #Geometric Calculations
