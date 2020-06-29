@@ -13,32 +13,30 @@ from scipy.integrate import quad
 #1. The core thermal production is assumed to set after heat deposition
 #(i.e. gamma isn't relevant)
 
-#User Input to define function (replacing Read in the core...)
-#FluxPro = input('Define a function') #Flux Profile
-
 #----------------------------------------------------------------------------------#
-## Print Logical for saving plots or not (0 - save plots, 1 or higher - do not save plots)
+## Print Logicals for saving plots and data files (0 - save, 1 or higher - do not save)
 
 print_logic = 1
+data_logic = 1
 
 #----------------------------------------------------------------------------------#
-##General Core Information
+## General Core Information
 
-#Geometry - Core
+# Geometry - Core
 Hc = 0.35 #Active Height of Core is 2m
 steps = 36 #Needs to be changed, filler for z
 z = np.linspace(-Hc/2,Hc/2,steps) #this needs to be a numpy array of position along the core in - m
 Ar = 33.8/100 #Active Radius of the core - m
 Ac = (2*(Ar**2)*np.pi/(3*3**0.5))**0.5 #Length of Hexagonal Size - m
 
-#Geometry - Fuel
+# Geometry - Fuel
 FoD = 0.58/100 #Fuel Outer Diameter - m
 FoCD = 0.64/100 #Cladding Outer Diameter - m
 WoD = 0.1/100 #Wire Wrap Diamerer - m
 PtoD = 1.18 #Pitch to Diameter Ratio
 NFuel = 1951 #Number of Fuel Rods
 
-#Core Parameter - Inputs
+# Core Parameter - Inputs
 Qth = 3*10**6 #Core Thermal Production - W
 Tboil = 784.00 #Boiling Temperature of NaK - C
 Tbulkin = 550.00 #Bulk Temperature of NaK at the Inlet - C
@@ -53,7 +51,8 @@ elif FuelUsed == 2:
 	kfuel = UC_Prop.kfuel(Tbulkin + 273.15)
 	Tmelt = UC_Prop.Tmelt
 
-##Material Properties
+#----------------------------------------------------------------------------------#
+## Material Properties
 
 #Thermal Fluid Properties of NaK
 rhoNa = NaK_Prop.rhoNa(Tbulkin + 273.15)
@@ -70,19 +69,19 @@ Pr = Cp*nu*rho/k #Prandtl Number Calculation
 #Thermal Conductivity of Cladding - W/m-K @ 300 C
 kclad = HT9Props.k(Tbulkin + 273.15)
 
-##Core Geometry Calculations
-#Geometric Calculations
+#----------------------------------------------------------------------------------#
+## Core Geometry Calculations
+# Geometric Calculations
 CVol = HexDhCal.Ha(Ac)*Hc #Volume of the core - m^3
 Uinlet = 0.0375
 
-#HexDhCal is copied above, error when ran as module
+#----------------------------------------------------------------------------------#
+## Core Parameter Calculations 
 
-##Core Parameter Calculations 
-
-#Hottest Channel Factor Calculation
+# Hottest Channel Factor Calculation
 HotF = 1.5
 
-#Power Density and Linear Generation Calculations
+# Power Density and Linear Generation Calculations
 Qavgp = Qth/CVol #Average Power Density Calculation - W/m^3
 qlin = Qth/(NFuel*Hc) # Average Rod Linear Energy Generation Rate - W/m
 qlinHotF = qlin*HotF # Hottest Channel Linear Energy Generation Rate - W/m
@@ -100,9 +99,6 @@ h = Nu*k/HexDhCal.Dh1(HexDhCal.A1(PtoD,FoCD,WoD),HexDhCal.P1(FoCD,WoD)) #Heat Tr
 Tbulk[0] = Tbulkin
 FluxPro = np.zeros(steps)
 FluxPro[:] = np.cos((np.pi/Hc)*z[:])
-#plt.plot(z,FluxPro, 'c')
-#plt.grid()
-#plt.show()
 
 for i in range(1,steps):
 	Tbulk[i] = Tbulkin + (np.trapz(FluxPro[0:i+1],z[0:i+1])*NFuel*qlin)/(Cp*Uinlet*rho*HexDhCal.HaF(HexDhCal.Ha(Ac),NFuel,FoCD,WoD)) #Bulk Temperature of Coolant - C
@@ -114,7 +110,6 @@ TbulkHotF[0] = Tbulkin
 for i in range(1,steps):
 	TbulkHotF[i] = Tbulkin + (np.trapz(FluxPro[0:i+1],z[0:i+1])*NFuel*qlinHotF)/(Cp*Uinlet*rho*HexDhCal.HaF(HexDhCal.Ha(Ac),NFuel,FoCD,WoD)) #Bulk Temperature of Coolant - C
 
-
 # Bulk Temperature of Coolant in Hottest Channel - C
 Tcl = np.zeros(steps)
 for i in range(0,steps):
@@ -123,16 +118,6 @@ for i in range(0,steps):
 TclHotF = np.zeros(steps)
 for i in range(0,steps):
 	TclHotF[i] = TbulkHotF[i] + ((FluxPro[i]*qlinHotF)/(2*np.pi))*((1/(h*(FoCD/2))) + (1/(2*kfuel)) + (1/kclad)*np.log(FoCD/FoD))
-
-
-'''
-plt.figure(2)
-plt.plot(z,Tcl, 'r')
-plt.grid()
-
-plt.show()
-'''
-
 
 Tavg = (Tbulk[0] + Tbulk[steps-1])/2
 THotFavg = (TbulkHotF[0] + TbulkHotF[steps-1])/2
@@ -203,6 +188,7 @@ plt.show()
 #----------------------------------------------------------------------------------#
 ## Report out - Core Parameters
 ## Print out
+
 print('--------------------------------------------------------')
 print('Heat Load:',QPri/10**6,'MW')
 print('Average Power Density:',Qavgp/10**6,'MW/m^3')
@@ -223,14 +209,12 @@ print('--------------------------------------------------------')
 
 #----------------------------------------------------------------------------------#
 ## Report out - Core Parameters
-## Create data files for run
+## Create data files for each run and print out the data
 
 df1 = pd.DataFrame([[Tbulk[0]], [Tbulk[steps-1]], [Tavg], [TbulkHotF[steps-1]], [THotFavg], [Tcl[steps-1]], [TclHotF[steps-1]]], index=['Inlet Bulk Temperature', 'Outlet Bulk Temperature', 'Average Bulk Temperature', 'Outlet Bulk Temperature - Hot Channel', 'Average Coolant Temperature - Hot Channel', 'Highest Fuel Centerline Temperature', 'Highest Fuel Centerline Temperature - Hottest Channel'], columns=['Temperature - C'])
-df1.to_excel("TACOCAT_table.xlsx")
 df2 = pd.DataFrame({'z': z, 'Tbulk': Tbulk, 'TbulkHotF': TbulkHotF, 'Tcl': Tcl, 'TclHotF': TclHotF, 'Flux Profile': FluxPro, 'Fuel Melting Temperature': Tmelt, 'Coolant Boiling Temperature': Tboil})
-df2.to_csv('TACOCATData.csv') 
-print(df2)
+if data_logic == 0:
+	df1.to_excel("TACOCAT_table.xlsx")
+	df2.to_csv('TACOCATData.csv') 
 
-#data = {'Data' : ['Inlet Bulk Temperature', 'Outlet Bulk Temperature', 'Average Bulk Temperature', 'Average Bulk Temperature', 'Outlet Bulk Temperature - Hot Channel', 'Average Coolant Temperature - Hot Channel', 'Highest Fuel Centerline Temperature', 'Highest Fuel Centerline Temperature - Hottest Channel'], 'Temperature - C': [Tbulk[0], Tbulk[steps-1], Tavg, TbulkHotF[steps-1], THotFavg, Tcl[steps-1], TclHotF[steps-1]]}
-#df2 = pd.DataFrame()
-#df2.to_csv('TACOCAT.csv')
+print(df2)
