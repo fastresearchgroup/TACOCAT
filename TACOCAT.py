@@ -59,6 +59,7 @@ if CoolantUsed == 1:
 	Cp = (10**3)*(0.22*CpNa + 0.78*CpK) #J/kg-K
 	k = NaK_Prop.k(Tbulkin + 273.15)
 	nu = NaK_Prop.nu(Tbulkin + 273.15)
+	TmeltCoolant = -12.6 #Melting Temperature of NaK - C
 	Tboil = 784.00 #Boiling Temperature of NaK - C
 elif CoolantUsed == 2:
 	import FLiBe_Prop
@@ -66,6 +67,7 @@ elif CoolantUsed == 2:
 	Cp = FLiBe_Prop.Cp(Tbulkin + 273.15)
 	k = FLiBe_Prop.k(Tbulkin + 273.15)
 	nu = FLiBe_Prop.nu(Tbulkin + 273.15)
+	TmeltCoolant = 459 #Melting Temperature of FLiBe - C
 	Tboil = 1430 #Boiling Temperature of FLiBe - C
 elif CoolantUsed == 3:
 	import FLiNaK_Prop
@@ -73,14 +75,16 @@ elif CoolantUsed == 3:
 	Cp = FLiNaK_Prop.Cp(Tbulkin + 273.15)
 	k = FLiNaK_Prop.k(Tbulkin + 273.15)
 	nu = FLiNaK_Prop.nu(Tbulkin + 273.15)
-	Tboil = 1570 #Boiling Temperature of FLiBe - C
+	TmeltCoolant = 454 #Melting Temperature of FLiNaK - C
+	Tboil = 1570 #Boiling Temperature of FLiNaK - C
 elif CoolantUsed == 4:
 	import NaF_ZrF4_Prop
 	rho = NaF_ZrF4_Prop.rho(Tbulkin + 273.15)
 	Cp = NaF_ZrF4_Prop.Cp(Tbulkin + 273.15)
 	k = NaF_ZrF4_Prop.k(Tbulkin + 273.15)
 	nu = NaF_ZrF4_Prop.nu(Tbulkin + 273.15)
-	Tboil = 1350 #Boiling Temperature of FLiBe - C
+	TmeltCoolant = 500 #Melting Temperature of NaF-ZrF4 - C
+	Tboil = 1350 #Boiling Temperature of NaF-ZrF4 - C
 
 Pr = Cp*nu*rho/k #Prandtl Number Calculation
 
@@ -186,8 +190,8 @@ QPri = Uavg*rhoavg*HexDhCal.HaF(HexDhCal.Ha(Ac),NFuel,FoCD,WoD)*((Cp + Cpmax)/2)
 ## Report out - Core Parameters
 ## Plots
 
-h = 6.5
-w = 4.5
+h = 10
+w = 8
 lw = 2.5
 fs = 12
 
@@ -197,7 +201,8 @@ plt.plot(z,Tbulk,'r--',linewidth = lw,label=r'$T_{bulk}$')
 plt.plot(z,TbulkHotF,'k--',linewidth = lw, label=r'$T_{bulk-HF}$')
 plt.plot(z,Tcl, 'g-',linewidth = lw, label=r'$T_{cl}$')
 plt.plot(z,TclHotF, 'c-',linewidth = lw, label=r'$T_{cl-HF}$')
-plt.axhline(y=785.0,xmin = 0, xmax = 1, color = 'r',linewidth = lw, label='NaK Boiling Temp')
+plt.axhline(y=Tboil, xmin = 0, xmax = 1, color = 'r',linewidth = lw, label='Coolant Boiling Temp')
+plt.axhline(y=TmeltCoolant, xmin = 0, xmax = 1, color = 'r',linewidth = lw, label='Coolant Melting Temp')
 plt.legend(loc='center left')
 plt.xlabel('Axial Height - m',fontsize = fs)
 plt.ylabel('Temperature - C',fontsize = fs)
@@ -209,7 +214,7 @@ if print_logic == 0:
     plt.savefig(fig + '.svg', dpi = 300, format = "svg",bbox_inches="tight")
 k = k + 1
 
-plt.figure(k, figsize=(7.5,5.5))
+plt.figure(k, figsize=(h,w))
 plt.plot(z,FluxPro, 'k-')
 plt.suptitle('Axial Core Flux Profile')
 plt.ylabel('Normalized Height')
