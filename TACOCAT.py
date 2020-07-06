@@ -40,16 +40,63 @@ NFuel = 1951 #Number of Fuel Rods
 Qth = 3*10**6 #Core Thermal Production - W
 Tboil = 784.00 #Boiling Temperature of NaK - C
 Tbulkin = 550.00 #Bulk Temperature of NaK at the Inlet - C
-Tbulk = np.zeros(steps) #Initialize Bulk Temperature of Coolant - C
-FuelUsed = int(input('Enter the number for the fuel you would like to use: 1. UPu-Zr10 2. UC:  '))
-if FuelUsed == 1:
-	import UPu_Zr10_Prop
-	kfuel = UPu_Zr10_Prop.kfuel(Tbulkin + 273.15)
-	Tmelt = UPu_Zr10_Prop.Tmelt
-elif FuelUsed == 2:
-	import UC_Prop
-	kfuel = UC_Prop.kfuel(Tbulkin + 273.15)
-	Tmelt = UC_Prop.Tmelt
+U_Zr10 = {
+	"kfuel": 22, #Thermal Conductivity of Fuel - W/m-C @ 1000 C
+	"Tmelt": 1160.00 #Melting temperature - C
+}
+
+UC = {
+	"kfuel": 23, #Thermal Conductivity of Fuel - W/m-C
+	"Tmelt": 2506.85 #Melting temperature - C (2780 K)
+}
+
+UO2 = {
+	"kfuel": 3.6, #Thermal Conductivity of fuel averaged between 200 C and 1000 C - W/m-C
+	"Tmelt": 2800 #Melting Temperature - C
+}
+
+PuO2 = {
+	"kfuel": 4.3, #Thermal Conductivity of fuel averaged between 200 C and 1000 C - W/m-C
+	"Tmelt": 2374 #Melting Temperature - C
+}
+
+ThO2 = {
+	"kfuel": 5.76, #Thermal Conductivity of fuel averaged between 200 C and 1000 C - W/m-C
+	"Tmelt": 3378 #Melting Temperature - C
+}
+
+UN = {
+	"kfuel": 21, #Thermal Conductivity of fuel averaged between 200 C and 1000 C - W/m-C
+	"Tmelt": 2800 #Melting Temperature - C
+}
+
+U3Si2 = {
+	"kfuel": 15, #Thermal Conductivity of fuel averaged between 200 C and 1000 C - W/m-C
+	"Tmelt": 1665 #Melting Temperature - C
+}
+
+MOX = {
+	"kfuel": 3.7, #Thermal Conductivity of fuel averaged between 200 C and 1000 C - W/m-C
+	"Tmelt": 2774 #Melting Temperature - C
+	#MOX values are for 94% UO2 and 6% PuO2
+}
+
+U = {
+	"kfuel": 32, #Thermal Conductivity of fuel averaged between 200 C and 1000 C - W/m-C
+	"Tmelt": 1133 #Melting Temperature - C
+}
+
+Fuel_props = {
+	"U_Zr10": U_Zr10,
+	"UC": UC,
+	"UO2": UO2,
+	"PuO2": PuO2,
+	"ThO2": ThO2,
+	"UN": UN,
+	"U3Si2": U3Si2,
+	"MOX": MOX,
+	"U": U
+}
 
 #----------------------------------------------------------------------------------#
 ## Material Properties
@@ -96,28 +143,23 @@ h = Nu*k/HexDhCal.Dh1(HexDhCal.A1(PtoD,FoCD,WoD),HexDhCal.P1(FoCD,WoD)) #Heat Tr
 #Core Temperature Calculations
 #Call axial bulk temperature distribution calculation
 
-Tbulk[0] = Tbulkin
 FluxPro = np.zeros(steps)
 FluxPro[:] = np.cos((np.pi/Hc)*z[:])
 
-for i in range(1,steps):
-	Tbulk[i] = Tbulkin + (np.trapz(FluxPro[0:i+1],z[0:i+1])*NFuel*qlin)/(Cp*Uinlet*rho*HexDhCal.HaF(HexDhCal.Ha(Ac),NFuel,FoCD,WoD)) #Bulk Temperature of Coolant - C
-
+Tbulk = np.zeros(steps) #Initialize Bulk Temperature of Coolant - C
+Tbulk[0] = Tbulkin
 TbulkHotF = np.zeros(steps)
 TbulkHotF[0] = Tbulkin
-
-#Bulk Temperature of Coolant - C
 for i in range(1,steps):
+	Tbulk[i] = Tbulkin + (np.trapz(FluxPro[0:i+1],z[0:i+1])*NFuel*qlin)/(Cp*Uinlet*rho*HexDhCal.HaF(HexDhCal.Ha(Ac),NFuel,FoCD,WoD)) #Bulk Temperature of Coolant - C
 	TbulkHotF[i] = Tbulkin + (np.trapz(FluxPro[0:i+1],z[0:i+1])*NFuel*qlinHotF)/(Cp*Uinlet*rho*HexDhCal.HaF(HexDhCal.Ha(Ac),NFuel,FoCD,WoD)) #Bulk Temperature of Coolant - C
 
 # Bulk Temperature of Coolant in Hottest Channel - C
 Tcl = np.zeros(steps)
-for i in range(0,steps):
-	Tcl[i] = Tbulk[i] + ((FluxPro[i]*qlin)/(2*np.pi))*((1/(h*(FoCD/2))) + (1/(2*kfuel)) + (1/kclad)*np.log(FoCD/FoD)) #+ (qlin/(mdot*Cp))*quad(FluxPro, 1, 8)
-
 TclHotF = np.zeros(steps)
 for i in range(0,steps):
-	TclHotF[i] = TbulkHotF[i] + ((FluxPro[i]*qlinHotF)/(2*np.pi))*((1/(h*(FoCD/2))) + (1/(2*kfuel)) + (1/kclad)*np.log(FoCD/FoD))
+	Tcl[i] = Tbulk[i] + ((FluxPro[i]*qlin)/(2*np.pi))*((1/(h*(FoCD/2))) + (1/(2*Fuel_props["UC"]["kfuel"])) + (1/kclad)*np.log(FoCD/FoD))
+	TclHotF[i] = TbulkHotF[i] + ((FluxPro[i]*qlinHotF)/(2*np.pi))*((1/(h*(FoCD/2))) + (1/(2*Fuel_props["UC"]["kfuel"])) + (1/kclad)*np.log(FoCD/FoD))
 
 Tavg = (Tbulk[0] + Tbulk[steps-1])/2
 THotFavg = (TbulkHotF[0] + TbulkHotF[steps-1])/2
@@ -152,10 +194,10 @@ QPri = Uavg*rhoavg*HexDhCal.HaF(HexDhCal.Ha(Ac),NFuel,FoCD,WoD)*((Cp + Cpmax)/2)
 ## Report out - Core Parameters
 ## Plots
 
-h = 6.5
-w = 4.5
+h = 7.5
+w = 5.5
 lw = 2.5
-fs = 12
+fs = 14
 
 k = 1
 plt.figure(k, figsize=(h,w))
@@ -175,7 +217,7 @@ if print_logic == 0:
     plt.savefig(fig + '.svg', dpi = 300, format = "svg",bbox_inches="tight")
 k = k + 1
 
-plt.figure(k, figsize=(7.5,5.5))
+plt.figure(k, figsize=(h,w))
 plt.plot(z,FluxPro, 'k-')
 plt.suptitle('Axial Core Flux Profile')
 plt.ylabel('Normalized Height')
@@ -212,7 +254,7 @@ print('--------------------------------------------------------')
 ## Create data files for each run and print out the data
 
 df1 = pd.DataFrame([[Tbulk[0]], [Tbulk[steps-1]], [Tavg], [TbulkHotF[steps-1]], [THotFavg], [Tcl[steps-1]], [TclHotF[steps-1]]], index=['Inlet Bulk Temperature', 'Outlet Bulk Temperature', 'Average Bulk Temperature', 'Outlet Bulk Temperature - Hot Channel', 'Average Coolant Temperature - Hot Channel', 'Highest Fuel Centerline Temperature', 'Highest Fuel Centerline Temperature - Hottest Channel'], columns=['Temperature - C'])
-df2 = pd.DataFrame({'z': z, 'Tbulk': Tbulk, 'TbulkHotF': TbulkHotF, 'Tcl': Tcl, 'TclHotF': TclHotF, 'Flux Profile': FluxPro, 'Fuel Melting Temperature': Tmelt, 'Coolant Boiling Temperature': Tboil})
+df2 = pd.DataFrame({'z': z, 'Tbulk': Tbulk, 'TbulkHotF': TbulkHotF, 'Tcl': Tcl, 'TclHotF': TclHotF, 'Flux Profile': FluxPro, 'Fuel Melting Temperature': Fuel_props["UC"]["Tmelt"], 'Coolant Boiling Temperature': Tboil})
 if data_logic == 0:
 	df1.to_excel("TACOCAT_table.xlsx")
 	df2.to_csv('TACOCATData.csv') 
