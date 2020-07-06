@@ -34,6 +34,7 @@ FoCD = 0.64/100 #Cladding Outer Diameter - m
 WoD = 0.1/100 #Wire Wrap Diamerer - m
 PtoD = 1.18 #Pitch to Diameter Ratio
 NFuel = 1951 #Number of Fuel Rods
+Fuel_Type = "UC" #Fuel type used
 
 # Core Parameter - Inputs
 Qth = 3*10**6 #Core Thermal Production - W
@@ -187,8 +188,8 @@ for i in range(1,steps):
 Tcl = np.zeros(steps)
 TclHotF = np.zeros(steps)
 for i in range(0,steps):
-	Tcl[i] = Tbulk[i] + ((FluxPro[i]*qlin)/(2*np.pi))*((1/(h*(FoCD/2))) + (1/(2*Fuel_props["UC"]["kfuel"])) + (1/kclad)*np.log(FoCD/FoD))
-	TclHotF[i] = TbulkHotF[i] + ((FluxPro[i]*qlinHotF)/(2*np.pi))*((1/(h*(FoCD/2))) + (1/(2*Fuel_props["UC"]["kfuel"])) + (1/kclad)*np.log(FoCD/FoD))
+	Tcl[i] = Tbulk[i] + ((FluxPro[i]*qlin)/(2*np.pi))*((1/(h*(FoCD/2))) + (1/(2*Fuel_props[Fuel_Type]["kfuel"])) + (1/kclad)*np.log(FoCD/FoD))
+	TclHotF[i] = TbulkHotF[i] + ((FluxPro[i]*qlinHotF)/(2*np.pi))*((1/(h*(FoCD/2))) + (1/(2*Fuel_props[Fuel_Type]["kfuel"])) + (1/kclad)*np.log(FoCD/FoD))
 
 Tavg = (Tbulk[0] + Tbulk[steps-1])/2
 THotFavg = (TbulkHotF[0] + TbulkHotF[steps-1])/2
@@ -301,7 +302,7 @@ print('--------------------------------------------------------')
 ## Create data files for each run and print out the data
 
 df1 = pd.DataFrame([[Tbulk[0]], [Tbulk[steps-1]], [Tavg], [TbulkHotF[steps-1]], [THotFavg], [Tcl[steps-1]], [TclHotF[steps-1]]], index=['Inlet Bulk Temperature', 'Outlet Bulk Temperature', 'Average Bulk Temperature', 'Outlet Bulk Temperature - Hot Channel', 'Average Coolant Temperature - Hot Channel', 'Highest Fuel Centerline Temperature', 'Highest Fuel Centerline Temperature - Hottest Channel'], columns=['Temperature - C'])
-df2 = pd.DataFrame({'z': z, 'Tbulk': Tbulk, 'TbulkHotF': TbulkHotF, 'Tcl': Tcl, 'TclHotF': TclHotF, 'Flux Profile': FluxPro, 'Fuel Melting Temperature': Fuel_props["UC"]["Tmelt"], 'Coolant Boiling Temperature': Tboil})
+df2 = pd.DataFrame({'z': z, 'Tbulk': Tbulk, 'TbulkHotF': TbulkHotF, 'Tcl': Tcl, 'TclHotF': TclHotF, 'Flux Profile': FluxPro, 'Fuel Melting Temperature': Fuel_props[Fuel_Type]["Tmelt"], 'Coolant Boiling Temperature': Tboil})
 if data_logic == 0:
 	df1.to_excel("TACOCAT_table.xlsx")
 	df2.to_csv('TACOCATData.csv') 
