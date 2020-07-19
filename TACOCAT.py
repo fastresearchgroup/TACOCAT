@@ -5,6 +5,7 @@ import HT9Props
 import HexDhCal
 import HegNu
 import TempBulkCal
+import TACOCAT_Read_In_File
 from scipy.integrate import trapz
 from scipy.integrate import quad
 
@@ -26,6 +27,10 @@ data_logic = 1
 #----------------------------------------------------------------------------------#
 ## General Core Information
 
+#Read in parameters
+Fuel_Type = TACOCAT_Read_In_File.Fuel_Type
+Coolant_Type = TACOCAT_Read_In_File.Coolant
+
 # Geometry - Core
 Hc = 0.35 #Active Height of Core is 2m
 steps = 36 #Needs to be changed, filler for z
@@ -39,7 +44,6 @@ FoCD = 0.64/100 #Cladding Outer Diameter - m
 WoD = 0.1/100 #Wire Wrap Diamerer - m
 PtoD = 1.18 #Pitch to Diameter Ratio
 NFuel = 1951 #Number of Fuel Rods
-Fuel_Type = "UC" #Fuel type used
 
 # Core Parameter - Inputs
 Qth = 3*10**6 #Core Thermal Production - W
@@ -106,10 +110,10 @@ Fuel_props = {
 #----------------------------------------------------------------------------------#
 ## Material Properties
 
-#Thermal Fluid Properties of NaK
-CoolantUsed = int(input('Enter the number for the coolant you would like to use: 1. NaK 2. FLiBe 3. FLiNak 4. NaF-ZrF4:  '))
+#Thermal Fluid Properties of Coolants
+#CoolantUsed = int(input('Enter the number for the coolant you would like to use: 1. NaK 2. FLiBe 3. FLiNaK 4. NaF_ZrF4:  '))
 
-if CoolantUsed == 1:
+if Coolant_Type == "NaK":
 	import NaK_Prop
 	rhoNa = NaK_Prop.rhoNa(Tbulkin + 273.15)
 	rhoK = NaK_Prop.rhoK(Tbulkin + 273.15)
@@ -122,7 +126,7 @@ if CoolantUsed == 1:
 	nu = NaK_Prop.nu(Tbulkin + 273.15)
 	TmeltCoolant = -12.6 #Melting Temperature of NaK - C
 	Tboil = 784.00 #Boiling Temperature of NaK - C
-elif CoolantUsed == 2:
+elif Coolant_Type == "FLiBe":
 	import FLiBe_Prop
 	rho = FLiBe_Prop.rho(Tbulkin + 273.15)
 	Cp = FLiBe_Prop.Cp(Tbulkin + 273.15)
@@ -130,7 +134,7 @@ elif CoolantUsed == 2:
 	nu = FLiBe_Prop.nu(Tbulkin + 273.15)
 	TmeltCoolant = 459 #Melting Temperature of FLiBe - C
 	Tboil = 1430 #Boiling Temperature of FLiBe - C
-elif CoolantUsed == 3:
+elif Coolant_Type == "FLiNaK":
 	import FLiNaK_Prop
 	rho = FLiNaK_Prop.rho(Tbulkin + 273.15)
 	Cp = FLiNaK_Prop.Cp(Tbulkin + 273.15)
@@ -138,14 +142,14 @@ elif CoolantUsed == 3:
 	nu = FLiNaK_Prop.nu(Tbulkin + 273.15)
 	TmeltCoolant = 454 #Melting Temperature of FLiNaK - C
 	Tboil = 1570 #Boiling Temperature of FLiNaK - C
-elif CoolantUsed == 4:
+elif Coolant_Type == "NaF_ZrF4":
 	import NaF_ZrF4_Prop
 	rho = NaF_ZrF4_Prop.rho(Tbulkin + 273.15)
 	Cp = NaF_ZrF4_Prop.Cp(Tbulkin + 273.15)
 	k = NaF_ZrF4_Prop.k(Tbulkin + 273.15)
 	nu = NaF_ZrF4_Prop.nu(Tbulkin + 273.15)
-	TmeltCoolant = 500 #Melting Temperature of NaF-ZrF4 - C
-	Tboil = 1350 #Boiling Temperature of NaF-ZrF4 - C
+	TmeltCoolant = 500 #Melting Temperature of NaF_ZrF4 - C
+	Tboil = 1350 #Boiling Temperature of NaF_ZrF4 - C
 
 Pr = Cp*nu*rho/k #Prandtl Number Calculation
 
@@ -198,7 +202,7 @@ for i in range(0,steps):
 
 Tavg = (Tbulk[0] + Tbulk[steps-1])/2
 THotFavg = (TbulkHotF[0] + TbulkHotF[steps-1])/2
-if CoolantUsed == 1:
+if Coolant_Type == "NaK":
 	rhoNamax = NaK_Prop.rhoNa(Tbulk[steps-1] + 273.15)
 	rhoKmax = NaK_Prop.rhoK(Tbulk[steps-1] + 273.15)
 	CpNamax = NaK_Prop.CpNa(Tbulk[steps-1] + 273.15)
@@ -208,17 +212,17 @@ if CoolantUsed == 1:
 	numax = NaK_Prop.nu(Tbulk[steps-1] + 273.15)
 	invrhoNaKmax = 0.22/rhoNamax + 0.78/rhoKmax
 	rhomax = 1/invrhoNaKmax #kg/m^3
-elif CoolantUsed == 2:
+elif Coolant_Type == "FLiBe":
 	rhomax = FLiBe_Prop.rho(Tbulk[steps-1] + 273.15)
 	Cpmax = FLiBe_Prop.Cp(Tbulk[steps-1] + 273.15)
 	kmax = FLiBe_Prop.k(Tbulk[steps-1] + 273.15)
 	numax = FLiBe_Prop.nu(Tbulk[steps-1] + 273.15)
-elif CoolantUsed == 3:
+elif Coolant_Type == "FLiNaK":
 	rhomax = FLiNaK_Prop.rho(Tbulk[steps-1] + 273.15)
 	Cpmax = FLiNaK_Prop.Cp(Tbulk[steps-1] + 273.15)
 	kmax = FLiNaK_Prop.k(Tbulk[steps-1] + 273.15)
 	numax = FLiNaK_Prop.nu(Tbulk[steps-1] + 273.15)
-elif CoolantUsed == 4:
+elif Coolant_Type == "NaF_ZrF4":
 	rhomax = NaF_ZrF4_Prop.rho(Tbulk[steps-1] + 273.15)
 	Cpmax = NaF_ZrF4_Prop.Cp(Tbulk[steps-1] + 273.15)
 	kmax = NaF_ZrF4_Prop.k(Tbulk[steps-1] + 273.15)
