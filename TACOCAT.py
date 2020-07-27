@@ -5,7 +5,7 @@ import HT9Props
 import HexDhCal
 import HegNu
 import TempBulkCal
-import TACOCAT_Read_In_File
+import TACOCAT_Read_In_File as TCinput
 from scipy.integrate import trapz
 from scipy.integrate import quad
 
@@ -22,17 +22,17 @@ from scipy.integrate import quad
 ## Print Logicals for saving plots and data files (0 - save, 1 or higher - do not save)
 
 print_logic = 1
-data_logic = 1
+data_logic = 0
 
 #----------------------------------------------------------------------------------#
 ## General Core Information
 
 #Read in parameters
-Fuel_Type = TACOCAT_Read_In_File.Fuel_Type
-Coolant_Type = TACOCAT_Read_In_File.Coolant
+Fuel_Type = TCinput.Fuel_Type
+Coolant_Type = TCinput.Coolant
+Hc = TCinput.Hc
 
 # Geometry - Core
-Hc = 0.35 #Active Height of Core is 2m
 steps = 36 #Needs to be changed, filler for z
 z = np.linspace(-Hc/2,Hc/2,steps) #this needs to be a numpy array of position along the core in - m
 Ar = 33.8/100 #Active Radius of the core - m
@@ -46,7 +46,7 @@ PtoD = 1.18 #Pitch to Diameter Ratio
 NFuel = 1951 #Number of Fuel Rods
 
 # Core Parameter - Inputs
-Qth = 3*10**6 #Core Thermal Production - W
+Qth = TCinput.Qth
 Tboil = 784.00 #Boiling Temperature of NaK - C
 Tbulkin = 550.00 #Bulk Temperature of NaK at the Inlet - C
 U_Zr10 = {
@@ -267,7 +267,7 @@ plt.legend(loc='center left')
 plt.xlabel('Axial Height - m',fontsize = fs)
 plt.ylabel('Temperature - C',fontsize = fs)
 plt.grid()
-fig = 'TACOCAT_Axial_Temperatures'
+fig = TCinput.Reactor_Title + '_Axial_Temperatures'
 if print_logic == 0:
     plt.savefig(fig + '.png', dpi = 300, format = "png",bbox_inches="tight")
     plt.savefig(fig + '.eps', dpi = 300, format = "eps",bbox_inches="tight")
@@ -312,8 +312,10 @@ print('--------------------------------------------------------')
 
 df1 = pd.DataFrame([[Tbulk[0]], [Tbulk[steps-1]], [Tavg], [TbulkHotF[steps-1]], [THotFavg], [Tcl[steps-1]], [TclHotF[steps-1]]], index=['Inlet Bulk Temperature', 'Outlet Bulk Temperature', 'Average Bulk Temperature', 'Outlet Bulk Temperature - Hot Channel', 'Average Coolant Temperature - Hot Channel', 'Highest Fuel Centerline Temperature', 'Highest Fuel Centerline Temperature - Hottest Channel'], columns=['Temperature - C'])
 df2 = pd.DataFrame({'z': z, 'Tbulk': Tbulk, 'TbulkHotF': TbulkHotF, 'Tcl': Tcl, 'TclHotF': TclHotF, 'Flux Profile': FluxPro, 'Fuel Melting Temperature': Fuel_props[Fuel_Type]["Tmelt"], 'Coolant Boiling Temperature': Tboil})
+
+title_data = TCinput.Reactor_Title + "_table"
 if data_logic == 0:
-	df1.to_excel("TACOCAT_table.xlsx")
-	df2.to_csv('TACOCATData.csv') 
+	df1.to_excel(title_data + ".xlsx")
+	df2.to_csv(title_data + '.csv') 
 
 print(df2)
