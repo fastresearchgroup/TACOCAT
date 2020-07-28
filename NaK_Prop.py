@@ -1,16 +1,11 @@
-# Lane Carasik and Tyler Hughes
-# Last Modified: 11/17/2015
 # Calculate fluid properties for NaK 
 # Reference: Thermophysical Properties of Materials for Nuclear
 # Note: 
 # 1. In the reference the equations are mislisted as j/kg-k were they are
 # actually kJ/kg-k
 # Engineering: A Tutorial and Collection of Data
-#function [rho,Cp,k,nu,Pr] = NaKProps(T) - does this need to be in code?
 
 import numpy as np 
-import matplotlib as mpl 
-
 
 def rhoNa(T):
 	rhoNa = (1/(10**-3))*(0.89660679 + 0.5161343*((T+273.15)*10**-3) - 1.8297218*((T+273.15)*10**-3)**2 + 2.2016247*((T+273.15)*10**-3)**3 - 1.3975634*((T+273.15)*10**-3)**4 + 0.4486694*((T+273.15)*10**-3)**5 - 0.057963628*(T*10**-3)**6) #kg/m^3
