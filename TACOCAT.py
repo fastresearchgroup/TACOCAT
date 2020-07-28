@@ -31,6 +31,7 @@ data_logic = 0
 Fuel_Type = TCinput.Fuel_Type
 Coolant_Type = TCinput.Coolant
 Hc = TCinput.Hc
+HotF = TCinput.HotF
 
 # Geometry - Core
 steps = 36 #Needs to be changed, filler for z
@@ -48,7 +49,7 @@ NFuel = 1951 #Number of Fuel Rods
 # Core Parameter - Inputs
 Qth = TCinput.Qth
 Tboil = 784.00 #Boiling Temperature of NaK - C
-Tbulkin = 550.00 #Bulk Temperature of NaK at the Inlet - C
+Tbulkin = TCinput.Tbulkin #Bulk Temperature of NaK at the Inlet - C
 U_Zr10 = {
 	"kfuel": 22, #Thermal Conductivity of Fuel - W/m-C @ 1000 C
 	"Tmelt": 1160.00 #Melting temperature - C
@@ -164,8 +165,6 @@ Uinlet = 0.0375
 
 #----------------------------------------------------------------------------------#
 ## Core Parameter Calculations 
-# Hottest Channel Factor Calculation
-HotF = 1.5
 
 # Power Density and Linear Generation Calculations
 Qavgp = Qth/CVol #Average Power Density Calculation - W/m^3
