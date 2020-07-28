@@ -22,7 +22,7 @@ from scipy.integrate import quad
 ## Print Logicals for saving plots and data files (0 - save, 1 or higher - do not save)
 
 print_logic = 1
-data_logic = 0
+data_logic = 1
 
 #----------------------------------------------------------------------------------#
 ## General Core Information
