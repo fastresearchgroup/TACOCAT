@@ -8,6 +8,7 @@
 
 import os
 import sys
+sys.path.insert(0,'..') #This adds the ability to call nafzirf props from the main folder
 sys.path.insert(0,'./Nafzirf') #Looking for data in a subfolder
 import numpy as np 
 import matplotlib.pyplot as plt  
