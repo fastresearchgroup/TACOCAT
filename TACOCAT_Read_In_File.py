@@ -17,6 +17,10 @@ Qth = 3*10**6 #Core Thermal Production - W
 #Mdot = #Total mass flow rate for the reactor. This will then be divided for subchannels.
 Tbulkin = 550.00 #Bulk Temperature of NaK at the Inlet - C
 HotF = 1.5 #Hottest Channel Factor Calculation
+
+#Provide the flux profile. Flux profile types include: Flatline, Linear, Exponential, Cosine
+FluxProfile = "Cosine"
+
 '''
 Example input:
 
