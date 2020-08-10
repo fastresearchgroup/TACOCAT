@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt 
 import pandas as pd
 import math
+import TACOCAT_Read_In_File as TCinput
 import TACOCAT
 
 z = TACOCAT.z
@@ -34,7 +35,7 @@ k = k + 1
 
 #Cosine Flux Profile
 CosineFlux = np.zeros(steps)
-CosineFlux[:] = np.cos((np.pi/TACOCAT.Hc)*z[:])
+CosineFlux[:] = np.cos((np.pi/TCinput.Hc)*z[:])
 plt.figure(k)
 plt.plot(z,CosineFlux, 'k-')
 plt.grid()
