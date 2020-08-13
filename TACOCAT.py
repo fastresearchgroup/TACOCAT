@@ -6,6 +6,7 @@ import HexDhCal
 import HegNu
 import TempBulkCal
 import TACOCAT_Read_In_File as TCinput
+#import Flux_Profiles
 from scipy.integrate import trapz
 from scipy.integrate import quad
 
@@ -30,6 +31,7 @@ data_logic = 1
 #Read in parameters
 Fuel_Type = TCinput.Fuel_Type
 Coolant_Type = TCinput.Coolant
+Flux_Type = TCinput.FluxProfile
 Hc = TCinput.Hc
 HotF = TCinput.HotF
 
@@ -182,7 +184,17 @@ h = Nu*k/HexDhCal.Dh1(HexDhCal.A1(PtoD,FoCD,WoD),HexDhCal.P1(FoCD,WoD)) #Heat Tr
 #Call axial bulk temperature distribution calculation
 
 FluxPro = np.zeros(steps)
-FluxPro[:] = np.cos((np.pi/Hc)*z[:])
+
+#FluxPro[:] = 1
+
+#FluxPro[:] = z[:]
+
+#FluxPro[:] = np.exp(z)
+
+#FluxPro[:] = np.cos((np.pi/Hc)*z[:])
+
+FluxPro[:] = float('Flux_Profiles.' + Flux_Type + 'Flux[:]')
+
 
 Tbulk = np.zeros(steps) #Initialize Bulk Temperature of Coolant - C
 Tbulk[0] = Tbulkin
