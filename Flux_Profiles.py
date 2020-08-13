@@ -3,10 +3,10 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import math
 import TACOCAT_Read_In_File as TCinput
-import TACOCAT
 
-z = TACOCAT.z
-steps = TACOCAT.steps
+steps = 36
+Hc = TCinput.Hc
+z = np.linspace(-Hc/2,Hc/2,steps)
 k = 1
 
 #Flat Line Flux Profile (x = 1)
@@ -35,7 +35,7 @@ k = k + 1
 
 #Cosine Flux Profile
 CosineFlux = np.zeros(steps)
-CosineFlux[:] = np.cos((np.pi/TCinput.Hc)*z[:])
+CosineFlux[:] = np.cos((np.pi/Hc)*z[:])
 plt.figure(k)
 plt.plot(z,CosineFlux, 'k-')
 plt.grid()
