@@ -8,6 +8,11 @@ import TempBulkCal
 import TACOCAT_Read_In_File as TCinput
 from scipy.integrate import trapz
 from scipy.integrate import quad
+import NaK_Prop
+import FLiBe_Prop
+import FLiNaK_Prop
+import NaF_ZrF4_Prop
+
 
 #References:
 	#Fuel:
@@ -48,7 +53,6 @@ NFuel = 1951 #Number of Fuel Rods
 
 # Core Parameter - Inputs
 Qth = TCinput.Qth
-Tboil = 784.00 #Boiling Temperature of NaK - C
 Tbulkin = TCinput.Tbulkin #Bulk Temperature of NaK at the Inlet - C
 U_Zr10 = {
 	"kfuel": 22, #Thermal Conductivity of Fuel - W/m-C @ 1000 C
@@ -114,8 +118,7 @@ Fuel_props = {
 #Thermal Fluid Properties of Coolants
 #CoolantUsed = int(input('Enter the number for the coolant you would like to use: 1. NaK 2. FLiBe 3. FLiNaK 4. NaF_ZrF4:  '))
 
-if Coolant_Type == "NaK":
-	import NaK_Prop
+'''if Coolant_Type == "NaK":
 	rhoNa = NaK_Prop.rhoNa(Tbulkin + 273.15)
 	rhoK = NaK_Prop.rhoK(Tbulkin + 273.15)
 	invrhoNaK = 0.22/rhoNa + 0.78/rhoK
@@ -128,7 +131,6 @@ if Coolant_Type == "NaK":
 	TmeltCoolant = -12.6 #Melting Temperature of NaK - C
 	Tboil = 784.00 #Boiling Temperature of NaK - C
 elif Coolant_Type == "FLiBe":
-	import FLiBe_Prop
 	rho = FLiBe_Prop.rho(Tbulkin + 273.15)
 	Cp = FLiBe_Prop.Cp(Tbulkin + 273.15)
 	k = FLiBe_Prop.k(Tbulkin + 273.15)
@@ -136,7 +138,6 @@ elif Coolant_Type == "FLiBe":
 	TmeltCoolant = 459 #Melting Temperature of FLiBe - C
 	Tboil = 1430 #Boiling Temperature of FLiBe - C
 elif Coolant_Type == "FLiNaK":
-	import FLiNaK_Prop
 	rho = FLiNaK_Prop.rho(Tbulkin + 273.15)
 	Cp = FLiNaK_Prop.Cp(Tbulkin + 273.15)
 	k = FLiNaK_Prop.k(Tbulkin + 273.15)
@@ -144,13 +145,70 @@ elif Coolant_Type == "FLiNaK":
 	TmeltCoolant = 454 #Melting Temperature of FLiNaK - C
 	Tboil = 1570 #Boiling Temperature of FLiNaK - C
 elif Coolant_Type == "NaF_ZrF4":
-	import NaF_ZrF4_Prop
 	rho = NaF_ZrF4_Prop.rho(Tbulkin + 273.15)
 	Cp = NaF_ZrF4_Prop.Cp(Tbulkin + 273.15)
 	k = NaF_ZrF4_Prop.k(Tbulkin + 273.15)
 	nu = NaF_ZrF4_Prop.nu(Tbulkin + 273.15)
 	TmeltCoolant = 500 #Melting Temperature of NaF_ZrF4 - C
-	Tboil = 1350 #Boiling Temperature of NaF_ZrF4 - C
+	Tboil = 1350 #Boiling Temperature of NaF_ZrF4 - C'''
+
+NaK = {
+	#"rhoNa": NaK_Prop.rhoNa(Tbulkin + 273.15),
+	#"rhoK": NaK_Prop.rhoK(Tbulkin + 273.15),
+	#"invrhoNaK": 0.22/rhoNa + 0.78/rhoK,
+	#"rho": 1/invrhoNaK, #kg/m^3
+	"rho": 1/((0.22/NaK_Prop.rhoNa(Tbulkin + 273.15)) +(0.78/NaK_Prop.rhoK(Tbulkin + 273.15))), #kg/m^3
+	#"CpNa": NaK_Prop.CpNa(Tbulkin + 273.15),
+	#"CpK": NaK_Prop.CpK(Tbulkin + 273.15),
+	"Cp": (10**3)*(0.22*NaK_Prop.CpNa(Tbulkin + 273.15) + 0.78*NaK_Prop.CpK(Tbulkin + 273.15)), #J/kg-K
+	"k": NaK_Prop.k(Tbulkin + 273.15),
+	"nu": NaK_Prop.nu(Tbulkin + 273.15),
+	"TmeltCoolant": -12.6, #Melting Temperature of NaK - C
+	"Tboil": 784.00 #Boiling Temperature of NaK - C
+}
+
+FLiBe = {
+	"rho": FLiBe_Prop.rho(Tbulkin + 273.15),
+	"Cp": FLiBe_Prop.Cp(Tbulkin + 273.15),
+	"k": FLiBe_Prop.k(Tbulkin + 273.15),
+	"nu": FLiBe_Prop.nu(Tbulkin + 273.15),
+	"TmeltCoolant": 459, #Melting Temperature of FLiBe - C
+	"Tboil": 1430 #Boiling Temperature of FLiBe - C
+}
+
+FLiNaK = {
+	"rho": FLiNaK_Prop.rho(Tbulkin + 273.15),
+	"Cp": FLiNaK_Prop.Cp(Tbulkin + 273.15),
+	"k": FLiNaK_Prop.k(Tbulkin + 273.15),
+	"nu": FLiNaK_Prop.nu(Tbulkin + 273.15),
+	"TmeltCoolant": 454, #Melting Temperature of FLiNaK - C
+	"Tboil": 1570 #Boiling Temperature of FLiNaK - C
+}
+
+NaF_ZrF4 = {
+	"rho": NaF_ZrF4_Prop.rho(Tbulkin + 273.15),
+	"Cp": NaF_ZrF4_Prop.Cp(Tbulkin + 273.15),
+	"k": NaF_ZrF4_Prop.k(Tbulkin + 273.15),
+	"nu": NaF_ZrF4_Prop.nu(Tbulkin + 273.15),
+	"TmeltCoolant": 500, #Melting Temperature of NaF_ZrF4 - C
+	"Tboil": 1350 #Boiling Temperature of NaF_ZrF4 - C
+}
+
+Coolant_Props = {
+	"NaK": NaK,
+	"FLiBe": FLiBe,
+	"FLiNaK": FLiNaK,
+	"NaF_ZrF4": NaF_ZrF4
+}
+
+rho = Coolant_Props[Coolant_Type]["rho"]
+Cp = Coolant_Props[Coolant_Type]["Cp"]
+k = Coolant_Props[Coolant_Type]["k"]
+nu = Coolant_Props[Coolant_Type]["nu"]
+TmeltCoolant = Coolant_Props[Coolant_Type]["TmeltCoolant"]
+Tboil = Coolant_Props[Coolant_Type]["Tboil"]
+
+
 
 Pr = Cp*nu*rho/k #Prandtl Number Calculation
 
@@ -201,7 +259,7 @@ for i in range(0,steps):
 
 Tavg = (Tbulk[0] + Tbulk[steps-1])/2
 THotFavg = (TbulkHotF[0] + TbulkHotF[steps-1])/2
-if Coolant_Type == "NaK":
+'''if Coolant_Type == "NaK":
 	rhoNamax = NaK_Prop.rhoNa(Tbulk[steps-1] + 273.15)
 	rhoKmax = NaK_Prop.rhoK(Tbulk[steps-1] + 273.15)
 	CpNamax = NaK_Prop.CpNa(Tbulk[steps-1] + 273.15)
@@ -225,7 +283,46 @@ elif Coolant_Type == "NaF_ZrF4":
 	rhomax = NaF_ZrF4_Prop.rho(Tbulk[steps-1] + 273.15)
 	Cpmax = NaF_ZrF4_Prop.Cp(Tbulk[steps-1] + 273.15)
 	kmax = NaF_ZrF4_Prop.k(Tbulk[steps-1] + 273.15)
-	numax = NaF_ZrF4_Prop.nu(Tbulk[steps-1] + 273.15)
+	numax = NaF_ZrF4_Prop.nu(Tbulk[steps-1] + 273.15)'''
+
+NaK_max = {
+	"rhomax": 1/(0.22/NaK_Prop.rhoNa(Tbulk[steps-1] + 273.15) + 0.78/NaK_Prop.rhoK(Tbulk[steps-1] + 273.15)),
+	"Cpmax": (10**3)*(0.22*NaK_Prop.CpNa(Tbulk[steps-1] + 273.15) + 0.78*NaK_Prop.CpK(Tbulk[steps-1] + 273.15)), #J/kg-K
+	"kmax": NaK_Prop.k(Tbulk[steps-1] + 273.15),
+	"numax": NaK_Prop.nu(Tbulk[steps-1] + 273.15)
+}
+
+FLiBe_max = {
+	"rhomax": FLiBe_Prop.rho(Tbulk[steps-1] + 273.15),
+	"Cpmax": FLiBe_Prop.Cp(Tbulk[steps-1] + 273.15),
+	"kmax": FLiBe_Prop.k(Tbulk[steps-1] + 273.15),
+	"numax": FLiBe_Prop.nu(Tbulk[steps-1] + 273.15)
+}
+
+FLiNaK_max = {
+	"rhomax": FLiNaK_Prop.rho(Tbulk[steps-1] + 273.15),
+	"Cpmax": FLiNaK_Prop.Cp(Tbulk[steps-1] + 273.15),
+	"kmax": FLiNaK_Prop.k(Tbulk[steps-1] + 273.15),
+	"numax": FLiNaK_Prop.nu(Tbulk[steps-1] + 273.15)
+}
+
+NaF_ZrF4_max = {
+	"rhomax": NaF_ZrF4_Prop.rho(Tbulk[steps-1] + 273.15),
+	"Cpmax": NaF_ZrF4_Prop.Cp(Tbulk[steps-1] + 273.15),
+	"kmax": NaF_ZrF4_Prop.k(Tbulk[steps-1] + 273.15),
+	"numax": NaF_ZrF4_Prop.nu(Tbulk[steps-1] + 273.15)
+}
+
+NaK.update(NaK_max)
+FLiBe.update(FLiBe_max)
+FLiNaK.update(FLiNaK_max)
+NaF_ZrF4.update(NaF_ZrF4_max)
+
+rhomax = Coolant_Props[Coolant_Type]["rhomax"]
+Cpmax = Coolant_Props[Coolant_Type]["Cpmax"]
+kmax = Coolant_Props[Coolant_Type]["kmax"]
+numax = Coolant_Props[Coolant_Type]["numax"]
+
 Prmax = Cpmax*numax*rhomax/kmax #Prandtl Number Calculation
 
 #Max and Averaged quantities with calculated outlet temperature
