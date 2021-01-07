@@ -9,11 +9,6 @@ from scipy.integrate import trapz
 from scipy.integrate import quad
 from Fuel_Props import Fuel_props
 
-#References:
-	#Fuel:
-		#UC: Manara, D., De Bruycker, F., Boboridis, K., Tougait, O., Eloirdi, R., & Malki, M. (2012). High temperature radiance spectroscopy measurements of solid and liquid uranium and plutonium carbides. Journal of Nuclear Materials, 1–3, 126–138.
-		#U-Zr10: L. B. CARASIK, P. O’NEAL, M. KENNINGTON, T. HUGHES, H. HONANG, N, GOTH, A 3 MW NaK Cooled Fast Reactor for Use as the First Lunar Base Fission Power Unit, Technical Report, 2015.
-		#All others: Todreas, N., Kazimi, M. (2012). Nuclear Systems: Thermal Hydraulic Fundamentals.
 #Assumptions
 #1. The core thermal production is assumed to set after heat deposition
 #(i.e. gamma isn't relevant)
