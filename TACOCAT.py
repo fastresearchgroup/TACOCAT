@@ -9,6 +9,11 @@ import TACOCAT_Read_In_File as TCinput
 from scipy.integrate import trapz
 from scipy.integrate import quad
 from Fuel_Props import Fuel_props
+from Coolant_Props import Coolant_props
+import NaK_Prop
+import FLiBe_Prop
+import FLiNaK_Prop
+import NaF_ZrF4_Prop
 
 #Assumptions
 #1. The core thermal production is assumed to set after heat deposition
@@ -28,9 +33,9 @@ Fuel_Type = TCinput.Fuel_Type
 Coolant_Type = TCinput.Coolant
 Hc = TCinput.Hc
 HotF = TCinput.HotF
+steps = TCinput.steps
 
 # Geometry - Core
-steps = 36 #Needs to be changed, filler for z
 z = np.linspace(-Hc/2,Hc/2,steps) #this needs to be a numpy array of position along the core in - m
 Ar = 33.8/100 #Active Radius of the core - m
 Ac = (2*(Ar**2)*np.pi/(3*3**0.5))**0.5 #Length of Hexagonal Size - m
@@ -45,108 +50,18 @@ NFuel = 1951 #Number of Fuel Rods
 # Core Parameter - Inputs
 Qth = TCinput.Qth
 Tbulkin = TCinput.Tbulkin #Bulk Temperature of NaK at the Inlet - C
-U_Zr10 = {
-	"kfuel": 22, #Thermal Conductivity of Fuel - W/m-C @ 1000 C
-	"Tmelt": 1160.00 #Melting temperature - C
-}
-
-UC = {
-	"kfuel": 23, #Thermal Conductivity of Fuel - W/m-C
-	"Tmelt": 2506.85 #Melting temperature - C (2780 K)
-}
-
-UO2 = {
-	"kfuel": 3.6, #Thermal Conductivity of fuel averaged between 200 C and 1000 C - W/m-C
-	"Tmelt": 2800 #Melting Temperature - C
-}
-
-PuO2 = {
-	"kfuel": 4.3, #Thermal Conductivity of fuel averaged between 200 C and 1000 C - W/m-C
-	"Tmelt": 2374 #Melting Temperature - C
-}
-
-ThO2 = {
-	"kfuel": 5.76, #Thermal Conductivity of fuel averaged between 200 C and 1000 C - W/m-C
-	"Tmelt": 3378 #Melting Temperature - C
-}
-
-UN = {
-	"kfuel": 21, #Thermal Conductivity of fuel averaged between 200 C and 1000 C - W/m-C
-	"Tmelt": 2800 #Melting Temperature - C
-}
-
-U3Si2 = {
-	"kfuel": 15, #Thermal Conductivity of fuel averaged between 200 C and 1000 C - W/m-C
-	"Tmelt": 1665 #Melting Temperature - C
-}
-
-MOX = {
-	"kfuel": 3.7, #Thermal Conductivity of fuel averaged between 200 C and 1000 C - W/m-C
-	"Tmelt": 2774 #Melting Temperature - C
-	#MOX values are for 94% UO2 and 6% PuO2
-}
-
-U = {
-	"kfuel": 32, #Thermal Conductivity of fuel averaged between 200 C and 1000 C - W/m-C
-	"Tmelt": 1133 #Melting Temperature - C
-}
-
-Fuel_props = {
-	"U_Zr10": U_Zr10,
-	"UC": UC,
-	"UO2": UO2,
-	"PuO2": PuO2,
-	"ThO2": ThO2,
-	"UN": UN,
-	"U3Si2": U3Si2,
-	"MOX": MOX,
-	"U": U
-}
-
 
 #----------------------------------------------------------------------------------#
 ## Material Properties
 
 #Thermal Fluid Properties of Coolants
-#CoolantUsed = int(input('Enter the number for the coolant you would like to use: 1. NaK 2. FLiBe 3. FLiNaK 4. NaF_ZrF4:  '))
 
-if Coolant_Type == "NaK":
-	import NaK_Prop
-	rhoNa = NaK_Prop.rhoNa(Tbulkin + 273.15)
-	rhoK = NaK_Prop.rhoK(Tbulkin + 273.15)
-	invrhoNaK = 0.22/rhoNa + 0.78/rhoK
-	rho = 1/invrhoNaK #kg/m^3
-	CpNa = NaK_Prop.CpNa(Tbulkin + 273.15)
-	CpK = NaK_Prop.CpK(Tbulkin + 273.15)
-	Cp = (10**3)*(0.22*CpNa + 0.78*CpK) #J/kg-K
-	k = NaK_Prop.k(Tbulkin + 273.15)
-	nu = NaK_Prop.nu(Tbulkin + 273.15)
-	TmeltCoolant = -12.6 #Melting Temperature of NaK - C
-	Tboil = 784.00 #Boiling Temperature of NaK - C
-elif Coolant_Type == "FLiBe":
-	import FLiBe_Prop
-	rho = FLiBe_Prop.rho(Tbulkin + 273.15)
-	Cp = FLiBe_Prop.Cp(Tbulkin + 273.15)
-	k = FLiBe_Prop.k(Tbulkin + 273.15)
-	nu = FLiBe_Prop.nu(Tbulkin + 273.15)
-	TmeltCoolant = 459 #Melting Temperature of FLiBe - C
-	Tboil = 1430 #Boiling Temperature of FLiBe - C
-elif Coolant_Type == "FLiNaK":
-	import FLiNaK_Prop
-	rho = FLiNaK_Prop.rho(Tbulkin + 273.15)
-	Cp = FLiNaK_Prop.Cp(Tbulkin + 273.15)
-	k = FLiNaK_Prop.k(Tbulkin + 273.15)
-	nu = FLiNaK_Prop.nu(Tbulkin + 273.15)
-	TmeltCoolant = 454 #Melting Temperature of FLiNaK - C
-	Tboil = 1570 #Boiling Temperature of FLiNaK - C
-elif Coolant_Type == "NaF_ZrF4":
-	import NaF_ZrF4_Prop
-	rho = NaF_ZrF4_Prop.rho(Tbulkin + 273.15)
-	Cp = NaF_ZrF4_Prop.Cp(Tbulkin + 273.15)
-	k = NaF_ZrF4_Prop.k(Tbulkin + 273.15)
-	nu = NaF_ZrF4_Prop.nu(Tbulkin + 273.15)
-	TmeltCoolant = 500 #Melting Temperature of NaF_ZrF4 - C
-	Tboil = 1350 #Boiling Temperature of NaF_ZrF4 - C
+rho = Coolant_props[Coolant_Type]["rho"]
+Cp = Coolant_props[Coolant_Type]["Cp"]
+k = Coolant_props[Coolant_Type]["k"]
+nu = Coolant_props[Coolant_Type]["nu"]
+TmeltCoolant = Coolant_props[Coolant_Type]["TmeltCoolant"]
+Tboil = Coolant_props[Coolant_Type]["Tboil"]
 
 Pr = Cp*nu*rho/k #Prandtl Number Calculation
 
@@ -197,31 +112,47 @@ for i in range(0,steps):
 
 Tavg = (Tbulk[0] + Tbulk[steps-1])/2
 THotFavg = (TbulkHotF[0] + TbulkHotF[steps-1])/2
-if Coolant_Type == "NaK":
-	rhoNamax = NaK_Prop.rhoNa(Tbulk[steps-1] + 273.15)
-	rhoKmax = NaK_Prop.rhoK(Tbulk[steps-1] + 273.15)
-	CpNamax = NaK_Prop.CpNa(Tbulk[steps-1] + 273.15)
-	CpKmax = NaK_Prop.CpK(Tbulk[steps-1] + 273.15)
-	Cpmax = (10**3)*(0.22*CpNamax + 0.78*CpKmax) #J/kg-K
-	kmax = NaK_Prop.k(Tbulk[steps-1] + 273.15)
-	numax = NaK_Prop.nu(Tbulk[steps-1] + 273.15)
-	invrhoNaKmax = 0.22/rhoNamax + 0.78/rhoKmax
-	rhomax = 1/invrhoNaKmax #kg/m^3
-elif Coolant_Type == "FLiBe":
-	rhomax = FLiBe_Prop.rho(Tbulk[steps-1] + 273.15)
-	Cpmax = FLiBe_Prop.Cp(Tbulk[steps-1] + 273.15)
-	kmax = FLiBe_Prop.k(Tbulk[steps-1] + 273.15)
-	numax = FLiBe_Prop.nu(Tbulk[steps-1] + 273.15)
-elif Coolant_Type == "FLiNaK":
-	rhomax = FLiNaK_Prop.rho(Tbulk[steps-1] + 273.15)
-	Cpmax = FLiNaK_Prop.Cp(Tbulk[steps-1] + 273.15)
-	kmax = FLiNaK_Prop.k(Tbulk[steps-1] + 273.15)
-	numax = FLiNaK_Prop.nu(Tbulk[steps-1] + 273.15)
-elif Coolant_Type == "NaF_ZrF4":
-	rhomax = NaF_ZrF4_Prop.rho(Tbulk[steps-1] + 273.15)
-	Cpmax = NaF_ZrF4_Prop.Cp(Tbulk[steps-1] + 273.15)
-	kmax = NaF_ZrF4_Prop.k(Tbulk[steps-1] + 273.15)
-	numax = NaF_ZrF4_Prop.nu(Tbulk[steps-1] + 273.15)
+
+NaK_max = {
+	"rhomax": 1/((0.22/NaK_Prop.rhoNa(Tbulk[steps-1] + 273.15))+(0.78/NaK_Prop.rhoK(Tbulk[steps-1] + 273.15))), #kg/m^3
+	"Cpmax": (10**3)*(0.22*NaK_Prop.CpNa(Tbulk[steps-1] + 273.15) + 0.78*NaK_Prop.CpK(Tbulk[steps-1] + 273.15)), #J/kg-K
+	"kmax": NaK_Prop.k(Tbulk[steps-1] + 273.15),
+	"numax": NaK_Prop.nu(Tbulk[steps-1] + 273.15)
+}
+
+FLiBe_max = {
+	"rhomax": FLiBe_Prop.rho(Tbulk[steps-1] + 273.15),
+	"Cpmax": FLiBe_Prop.Cp(Tbulk[steps-1] + 273.15),
+	"kmax": FLiBe_Prop.k(Tbulk[steps-1] + 273.15),
+	"numax": FLiBe_Prop.nu(Tbulk[steps-1] + 273.15)
+}
+
+FLiNaK_max = {
+	"rhomax": FLiNaK_Prop.rho(Tbulk[steps-1] + 273.15),
+	"Cpmax": FLiNaK_Prop.Cp(Tbulk[steps-1] + 273.15),
+	"kmax": FLiNaK_Prop.k(Tbulk[steps-1] + 273.15),
+	"numax": FLiNaK_Prop.nu(Tbulk[steps-1] + 273.15)
+}
+
+NaF_ZrF4_max = {
+	"rhomax": NaF_ZrF4_Prop.rho(Tbulk[steps-1] + 273.15),
+	"Cpmax": NaF_ZrF4_Prop.Cp(Tbulk[steps-1] + 273.15),
+	"kmax": NaF_ZrF4_Prop.k(Tbulk[steps-1] + 273.15),
+	"numax": NaF_ZrF4_Prop.nu(Tbulk[steps-1] + 273.15)
+}
+
+Coolant_props_max = {
+	"NaK": NaK_max,
+	"FLiBe": FLiBe_max,
+	"FLiNaK": FLiNaK_max,
+	"NaF_ZrF4": NaF_ZrF4_max
+}
+
+rhomax = Coolant_props_max[Coolant_Type]["rhomax"]
+Cpmax = Coolant_props_max[Coolant_Type]["Cpmax"]
+kmax = Coolant_props_max[Coolant_Type]["kmax"]
+numax = Coolant_props_max[Coolant_Type]["numax"]
+
 Prmax = Cpmax*numax*rhomax/kmax #Prandtl Number Calculation
 
 #Max and Averaged quantities with calculated outlet temperature
