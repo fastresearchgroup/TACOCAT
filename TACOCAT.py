@@ -5,6 +5,7 @@ import HT9Props
 import HexDhCal
 import HegNu
 import TempBulkCal
+import TACOCAT_Read_In_File as TCinput
 from scipy.integrate import trapz
 from scipy.integrate import quad
 from Fuel_Props import Fuel_props
@@ -22,8 +23,13 @@ data_logic = 1
 #----------------------------------------------------------------------------------#
 ## General Core Information
 
+#Read in parameters
+Fuel_Type = TCinput.Fuel_Type
+Coolant_Type = TCinput.Coolant
+Hc = TCinput.Hc
+HotF = TCinput.HotF
+
 # Geometry - Core
-Hc = 0.35 #Active Height of Core is 2m
 steps = 36 #Needs to be changed, filler for z
 z = np.linspace(-Hc/2,Hc/2,steps) #this needs to be a numpy array of position along the core in - m
 Ar = 33.8/100 #Active Radius of the core - m
@@ -35,20 +41,76 @@ FoCD = 0.64/100 #Cladding Outer Diameter - m
 WoD = 0.1/100 #Wire Wrap Diamerer - m
 PtoD = 1.18 #Pitch to Diameter Ratio
 NFuel = 1951 #Number of Fuel Rods
-Fuel_Type = "UC" #Fuel type used
 
 # Core Parameter - Inputs
-Qth = 3*10**6 #Core Thermal Production - W
-Tboil = 784.00 #Boiling Temperature of NaK - C
-Tbulkin = 550.00 #Bulk Temperature of NaK at the Inlet - C
+Qth = TCinput.Qth
+Tbulkin = TCinput.Tbulkin #Bulk Temperature of NaK at the Inlet - C
+U_Zr10 = {
+	"kfuel": 22, #Thermal Conductivity of Fuel - W/m-C @ 1000 C
+	"Tmelt": 1160.00 #Melting temperature - C
+}
+
+UC = {
+	"kfuel": 23, #Thermal Conductivity of Fuel - W/m-C
+	"Tmelt": 2506.85 #Melting temperature - C (2780 K)
+}
+
+UO2 = {
+	"kfuel": 3.6, #Thermal Conductivity of fuel averaged between 200 C and 1000 C - W/m-C
+	"Tmelt": 2800 #Melting Temperature - C
+}
+
+PuO2 = {
+	"kfuel": 4.3, #Thermal Conductivity of fuel averaged between 200 C and 1000 C - W/m-C
+	"Tmelt": 2374 #Melting Temperature - C
+}
+
+ThO2 = {
+	"kfuel": 5.76, #Thermal Conductivity of fuel averaged between 200 C and 1000 C - W/m-C
+	"Tmelt": 3378 #Melting Temperature - C
+}
+
+UN = {
+	"kfuel": 21, #Thermal Conductivity of fuel averaged between 200 C and 1000 C - W/m-C
+	"Tmelt": 2800 #Melting Temperature - C
+}
+
+U3Si2 = {
+	"kfuel": 15, #Thermal Conductivity of fuel averaged between 200 C and 1000 C - W/m-C
+	"Tmelt": 1665 #Melting Temperature - C
+}
+
+MOX = {
+	"kfuel": 3.7, #Thermal Conductivity of fuel averaged between 200 C and 1000 C - W/m-C
+	"Tmelt": 2774 #Melting Temperature - C
+	#MOX values are for 94% UO2 and 6% PuO2
+}
+
+U = {
+	"kfuel": 32, #Thermal Conductivity of fuel averaged between 200 C and 1000 C - W/m-C
+	"Tmelt": 1133 #Melting Temperature - C
+}
+
+Fuel_props = {
+	"U_Zr10": U_Zr10,
+	"UC": UC,
+	"UO2": UO2,
+	"PuO2": PuO2,
+	"ThO2": ThO2,
+	"UN": UN,
+	"U3Si2": U3Si2,
+	"MOX": MOX,
+	"U": U
+}
+
 
 #----------------------------------------------------------------------------------#
 ## Material Properties
 
-#Thermal Fluid Properties of NaK
-CoolantUsed = int(input('Enter the number for the coolant you would like to use: 1. NaK 2. FLiBe 3. FLiNak 4. NaF-ZrF4:  '))
+#Thermal Fluid Properties of Coolants
+#CoolantUsed = int(input('Enter the number for the coolant you would like to use: 1. NaK 2. FLiBe 3. FLiNaK 4. NaF_ZrF4:  '))
 
-if CoolantUsed == 1:
+if Coolant_Type == "NaK":
 	import NaK_Prop
 	rhoNa = NaK_Prop.rhoNa(Tbulkin + 273.15)
 	rhoK = NaK_Prop.rhoK(Tbulkin + 273.15)
@@ -61,7 +123,7 @@ if CoolantUsed == 1:
 	nu = NaK_Prop.nu(Tbulkin + 273.15)
 	TmeltCoolant = -12.6 #Melting Temperature of NaK - C
 	Tboil = 784.00 #Boiling Temperature of NaK - C
-elif CoolantUsed == 2:
+elif Coolant_Type == "FLiBe":
 	import FLiBe_Prop
 	rho = FLiBe_Prop.rho(Tbulkin + 273.15)
 	Cp = FLiBe_Prop.Cp(Tbulkin + 273.15)
@@ -69,7 +131,7 @@ elif CoolantUsed == 2:
 	nu = FLiBe_Prop.nu(Tbulkin + 273.15)
 	TmeltCoolant = 459 #Melting Temperature of FLiBe - C
 	Tboil = 1430 #Boiling Temperature of FLiBe - C
-elif CoolantUsed == 3:
+elif Coolant_Type == "FLiNaK":
 	import FLiNaK_Prop
 	rho = FLiNaK_Prop.rho(Tbulkin + 273.15)
 	Cp = FLiNaK_Prop.Cp(Tbulkin + 273.15)
@@ -77,14 +139,14 @@ elif CoolantUsed == 3:
 	nu = FLiNaK_Prop.nu(Tbulkin + 273.15)
 	TmeltCoolant = 454 #Melting Temperature of FLiNaK - C
 	Tboil = 1570 #Boiling Temperature of FLiNaK - C
-elif CoolantUsed == 4:
+elif Coolant_Type == "NaF_ZrF4":
 	import NaF_ZrF4_Prop
 	rho = NaF_ZrF4_Prop.rho(Tbulkin + 273.15)
 	Cp = NaF_ZrF4_Prop.Cp(Tbulkin + 273.15)
 	k = NaF_ZrF4_Prop.k(Tbulkin + 273.15)
 	nu = NaF_ZrF4_Prop.nu(Tbulkin + 273.15)
-	TmeltCoolant = 500 #Melting Temperature of NaF-ZrF4 - C
-	Tboil = 1350 #Boiling Temperature of NaF-ZrF4 - C
+	TmeltCoolant = 500 #Melting Temperature of NaF_ZrF4 - C
+	Tboil = 1350 #Boiling Temperature of NaF_ZrF4 - C
 
 Pr = Cp*nu*rho/k #Prandtl Number Calculation
 
@@ -99,8 +161,6 @@ Uinlet = 0.0375
 
 #----------------------------------------------------------------------------------#
 ## Core Parameter Calculations 
-# Hottest Channel Factor Calculation
-HotF = 1.5
 
 # Power Density and Linear Generation Calculations
 Qavgp = Qth/CVol #Average Power Density Calculation - W/m^3
@@ -137,7 +197,7 @@ for i in range(0,steps):
 
 Tavg = (Tbulk[0] + Tbulk[steps-1])/2
 THotFavg = (TbulkHotF[0] + TbulkHotF[steps-1])/2
-if CoolantUsed == 1:
+if Coolant_Type == "NaK":
 	rhoNamax = NaK_Prop.rhoNa(Tbulk[steps-1] + 273.15)
 	rhoKmax = NaK_Prop.rhoK(Tbulk[steps-1] + 273.15)
 	CpNamax = NaK_Prop.CpNa(Tbulk[steps-1] + 273.15)
@@ -147,17 +207,17 @@ if CoolantUsed == 1:
 	numax = NaK_Prop.nu(Tbulk[steps-1] + 273.15)
 	invrhoNaKmax = 0.22/rhoNamax + 0.78/rhoKmax
 	rhomax = 1/invrhoNaKmax #kg/m^3
-elif CoolantUsed == 2:
+elif Coolant_Type == "FLiBe":
 	rhomax = FLiBe_Prop.rho(Tbulk[steps-1] + 273.15)
 	Cpmax = FLiBe_Prop.Cp(Tbulk[steps-1] + 273.15)
 	kmax = FLiBe_Prop.k(Tbulk[steps-1] + 273.15)
 	numax = FLiBe_Prop.nu(Tbulk[steps-1] + 273.15)
-elif CoolantUsed == 3:
+elif Coolant_Type == "FLiNaK":
 	rhomax = FLiNaK_Prop.rho(Tbulk[steps-1] + 273.15)
 	Cpmax = FLiNaK_Prop.Cp(Tbulk[steps-1] + 273.15)
 	kmax = FLiNaK_Prop.k(Tbulk[steps-1] + 273.15)
 	numax = FLiNaK_Prop.nu(Tbulk[steps-1] + 273.15)
-elif CoolantUsed == 4:
+elif Coolant_Type == "NaF_ZrF4":
 	rhomax = NaF_ZrF4_Prop.rho(Tbulk[steps-1] + 273.15)
 	Cpmax = NaF_ZrF4_Prop.Cp(Tbulk[steps-1] + 273.15)
 	kmax = NaF_ZrF4_Prop.k(Tbulk[steps-1] + 273.15)
@@ -202,7 +262,7 @@ plt.legend(loc='center left')
 plt.xlabel('Axial Height - m',fontsize = fs)
 plt.ylabel('Temperature - C',fontsize = fs)
 plt.grid()
-fig = 'TACOCAT_Axial_Temperatures'
+fig = TCinput.Reactor_Title + '_Axial_Temperatures'
 if print_logic == 0:
     plt.savefig(fig + '.png', dpi = 300, format = "png",bbox_inches="tight")
     plt.savefig(fig + '.eps', dpi = 300, format = "eps",bbox_inches="tight")
@@ -247,8 +307,10 @@ print('--------------------------------------------------------')
 
 df1 = pd.DataFrame([[Tbulk[0]], [Tbulk[steps-1]], [Tavg], [TbulkHotF[steps-1]], [THotFavg], [Tcl[steps-1]], [TclHotF[steps-1]]], index=['Inlet Bulk Temperature', 'Outlet Bulk Temperature', 'Average Bulk Temperature', 'Outlet Bulk Temperature - Hot Channel', 'Average Coolant Temperature - Hot Channel', 'Highest Fuel Centerline Temperature', 'Highest Fuel Centerline Temperature - Hottest Channel'], columns=['Temperature - C'])
 df2 = pd.DataFrame({'z': z, 'Tbulk': Tbulk, 'TbulkHotF': TbulkHotF, 'Tcl': Tcl, 'TclHotF': TclHotF, 'Flux Profile': FluxPro, 'Fuel Melting Temperature': Fuel_props[Fuel_Type]["Tmelt"], 'Coolant Boiling Temperature': Tboil})
+
+title_data = TCinput.Reactor_Title + "_table"
 if data_logic == 0:
-	df1.to_excel("TACOCAT_table.xlsx")
-	df2.to_csv('TACOCATData.csv') 
+	df1.to_excel(title_data + ".xlsx")
+	df2.to_csv(title_data + '.csv') 
 
 print(df2)
