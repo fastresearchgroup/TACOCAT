@@ -1,14 +1,14 @@
 import numpy as np
 import matplotlib.pyplot as plt 
 import pandas as pd
-import HT9Props
-import HexDhCal
-import HegNu
-import TempBulkCal
+import src.HT9Props
+import src.HexDhCal
+import src.HegNu
+import src.TempBulkCal
 import TACOCAT_Read_In_File as TCinput
 from scipy.integrate import trapz
 from scipy.integrate import quad
-from Fuel_Props import Fuel_props
+from src.Fuel_Props import Fuel_props
 
 #Assumptions
 #1. The core thermal production is assumed to set after heat deposition
@@ -111,20 +111,20 @@ Fuel_props = {
 #CoolantUsed = int(input('Enter the number for the coolant you would like to use: 1. NaK 2. FLiBe 3. FLiNaK 4. NaF_ZrF4:  '))
 
 if Coolant_Type == "NaK":
-	import NaK_Prop
-	rhoNa = NaK_Prop.rhoNa(Tbulkin + 273.15)
-	rhoK = NaK_Prop.rhoK(Tbulkin + 273.15)
+	import src.NaK_Prop
+	rhoNa = src.NaK_Prop.rhoNa(Tbulkin + 273.15)
+	rhoK = src.NaK_Prop.rhoK(Tbulkin + 273.15)
 	invrhoNaK = 0.22/rhoNa + 0.78/rhoK
 	rho = 1/invrhoNaK #kg/m^3
-	CpNa = NaK_Prop.CpNa(Tbulkin + 273.15)
-	CpK = NaK_Prop.CpK(Tbulkin + 273.15)
+	CpNa = src.NaK_Prop.CpNa(Tbulkin + 273.15)
+	CpK = src.NaK_Prop.CpK(Tbulkin + 273.15)
 	Cp = (10**3)*(0.22*CpNa + 0.78*CpK) #J/kg-K
-	k = NaK_Prop.k(Tbulkin + 273.15)
-	nu = NaK_Prop.nu(Tbulkin + 273.15)
+	k = src.NaK_Prop.k(Tbulkin + 273.15)
+	nu = src.NaK_Prop.nu(Tbulkin + 273.15)
 	TmeltCoolant = -12.6 #Melting Temperature of NaK - C
 	Tboil = 784.00 #Boiling Temperature of NaK - C
 elif Coolant_Type == "FLiBe":
-	import FLiBe_Prop
+	import src.FLiBe_Prop
 	rho = FLiBe_Prop.rho(Tbulkin + 273.15)
 	Cp = FLiBe_Prop.Cp(Tbulkin + 273.15)
 	k = FLiBe_Prop.k(Tbulkin + 273.15)
@@ -132,7 +132,7 @@ elif Coolant_Type == "FLiBe":
 	TmeltCoolant = 459 #Melting Temperature of FLiBe - C
 	Tboil = 1430 #Boiling Temperature of FLiBe - C
 elif Coolant_Type == "FLiNaK":
-	import FLiNaK_Prop
+	import src.FLiNaK_Prop
 	rho = FLiNaK_Prop.rho(Tbulkin + 273.15)
 	Cp = FLiNaK_Prop.Cp(Tbulkin + 273.15)
 	k = FLiNaK_Prop.k(Tbulkin + 273.15)
@@ -140,7 +140,7 @@ elif Coolant_Type == "FLiNaK":
 	TmeltCoolant = 454 #Melting Temperature of FLiNaK - C
 	Tboil = 1570 #Boiling Temperature of FLiNaK - C
 elif Coolant_Type == "NaF_ZrF4":
-	import NaF_ZrF4_Prop
+	import src.NaF_ZrF4_Prop
 	rho = NaF_ZrF4_Prop.rho(Tbulkin + 273.15)
 	Cp = NaF_ZrF4_Prop.Cp(Tbulkin + 273.15)
 	k = NaF_ZrF4_Prop.k(Tbulkin + 273.15)
@@ -151,12 +151,12 @@ elif Coolant_Type == "NaF_ZrF4":
 Pr = Cp*nu*rho/k #Prandtl Number Calculation
 
 #Thermal Conductivity of Cladding - W/m-K @ 300 C
-kclad = HT9Props.k(Tbulkin + 273.15)
+kclad = src.HT9Props.k(Tbulkin + 273.15)
 
 #----------------------------------------------------------------------------------#
 ## Core Geometry Calculations
 # Geometric Calculations
-CVol = HexDhCal.Ha(Ac)*Hc #Volume of the core - m^3
+CVol = src.HexDhCal.Ha(Ac)*Hc #Volume of the core - m^3
 Uinlet = 0.0375
 
 #----------------------------------------------------------------------------------#
@@ -169,10 +169,10 @@ qlinHotF = qlin*HotF # Hottest Channel Linear Energy Generation Rate - W/m
 qppco = qlin/(np.pi*FoCD) # Average heat flux at rod/coolant interface - W/m^2
 
 # Coolant Calculations
-mdot = Uinlet*rho*HexDhCal.HaF(HexDhCal.Ha(Ac),NFuel,FoCD,WoD) # Mass flow rate for the fluid - kg/s
-Pe = (Uinlet*HexDhCal.Dh1(HexDhCal.A1(PtoD,FoCD,WoD),HexDhCal.P1(FoCD,WoD))/nu)*Pr # Peclet Number for Fluid
-Nu = HegNu.Nu(PtoD,Pe)
-h = Nu*k/HexDhCal.Dh1(HexDhCal.A1(PtoD,FoCD,WoD),HexDhCal.P1(FoCD,WoD)) #Heat Transfer Coefficient for Rod Bundles - W/m^2 - C
+mdot = Uinlet*rho*src.HexDhCal.HaF(src.HexDhCal.Ha(Ac),NFuel,FoCD,WoD) # Mass flow rate for the fluid - kg/s
+Pe = (Uinlet*src.HexDhCal.Dh1(src.HexDhCal.A1(PtoD,FoCD,WoD),src.HexDhCal.P1(FoCD,WoD))/nu)*Pr # Peclet Number for Fluid
+Nu = src.HegNu.Nu(PtoD,Pe)
+h = Nu*k/src.HexDhCal.Dh1(src.HexDhCal.A1(PtoD,FoCD,WoD),src.HexDhCal.P1(FoCD,WoD)) #Heat Transfer Coefficient for Rod Bundles - W/m^2 - C
 
 #Core Temperature Calculations
 #Call axial bulk temperature distribution calculation
@@ -185,8 +185,8 @@ Tbulk[0] = Tbulkin
 TbulkHotF = np.zeros(steps)
 TbulkHotF[0] = Tbulkin
 for i in range(1,steps):
-	Tbulk[i] = Tbulkin + (np.trapz(FluxPro[0:i+1],z[0:i+1])*NFuel*qlin)/(Cp*Uinlet*rho*HexDhCal.HaF(HexDhCal.Ha(Ac),NFuel,FoCD,WoD)) #Bulk Temperature of Coolant - C
-	TbulkHotF[i] = Tbulkin + (np.trapz(FluxPro[0:i+1],z[0:i+1])*NFuel*qlinHotF)/(Cp*Uinlet*rho*HexDhCal.HaF(HexDhCal.Ha(Ac),NFuel,FoCD,WoD)) #Bulk Temperature of Coolant - C
+	Tbulk[i] = Tbulkin + (np.trapz(FluxPro[0:i+1],z[0:i+1])*NFuel*qlin)/(Cp*Uinlet*rho*src.HexDhCal.HaF(src.HexDhCal.Ha(Ac),NFuel,FoCD,WoD)) #Bulk Temperature of Coolant - C
+	TbulkHotF[i] = Tbulkin + (np.trapz(FluxPro[0:i+1],z[0:i+1])*NFuel*qlinHotF)/(Cp*Uinlet*rho*src.HexDhCal.HaF(src.HexDhCal.Ha(Ac),NFuel,FoCD,WoD)) #Bulk Temperature of Coolant - C
 
 # Bulk Temperature of Coolant in Hottest Channel - C
 Tcl = np.zeros(steps)
@@ -198,13 +198,13 @@ for i in range(0,steps):
 Tavg = (Tbulk[0] + Tbulk[steps-1])/2
 THotFavg = (TbulkHotF[0] + TbulkHotF[steps-1])/2
 if Coolant_Type == "NaK":
-	rhoNamax = NaK_Prop.rhoNa(Tbulk[steps-1] + 273.15)
-	rhoKmax = NaK_Prop.rhoK(Tbulk[steps-1] + 273.15)
-	CpNamax = NaK_Prop.CpNa(Tbulk[steps-1] + 273.15)
-	CpKmax = NaK_Prop.CpK(Tbulk[steps-1] + 273.15)
+	rhoNamax = src.NaK_Prop.rhoNa(Tbulk[steps-1] + 273.15)
+	rhoKmax = src.NaK_Prop.rhoK(Tbulk[steps-1] + 273.15)
+	CpNamax = src.NaK_Prop.CpNa(Tbulk[steps-1] + 273.15)
+	CpKmax = src.NaK_Prop.CpK(Tbulk[steps-1] + 273.15)
 	Cpmax = (10**3)*(0.22*CpNamax + 0.78*CpKmax) #J/kg-K
-	kmax = NaK_Prop.k(Tbulk[steps-1] + 273.15)
-	numax = NaK_Prop.nu(Tbulk[steps-1] + 273.15)
+	kmax = src.NaK_Prop.k(Tbulk[steps-1] + 273.15)
+	numax = src.NaK_Prop.nu(Tbulk[steps-1] + 273.15)
 	invrhoNaKmax = 0.22/rhoNamax + 0.78/rhoKmax
 	rhomax = 1/invrhoNaKmax #kg/m^3
 elif Coolant_Type == "FLiBe":
@@ -227,18 +227,18 @@ Prmax = Cpmax*numax*rhomax/kmax #Prandtl Number Calculation
 #Max and Averaged quantities with calculated outlet temperature
 Pravg = (Pr + Prmax)/2 # Average Prandtl Number in a inner channel
 rhoavg = (rho + rhomax)/2 # Average density number in a inner channel
-Uoutlet = mdot/(rhomax*HexDhCal.HaF(HexDhCal.Ha(Ac),NFuel,FoCD,WoD)) # Outlet Velocity in a inner channel
+Uoutlet = mdot/(rhomax*src.HexDhCal.HaF(src.HexDhCal.Ha(Ac),NFuel,FoCD,WoD)) # Outlet Velocity in a inner channel
 Uavg = (Uinlet + Uoutlet)/2 # Average velocity in a inner channel
 Pemax = Prmax*Uoutlet*FoCD/numax # Max Peclet number in a inner channel
 Peavg = (Pe + Pemax)/2 # Average Peclect number in a inner channel
 Re1 = Peavg/Pravg # Average Reynolds number in a inner channel
 
-M = ((1.034/(PtoD**0.124))+(29.7*(PtoD**6.94)*Re1**0.086)/(HexDhCal.LeadW(FoCD,WoD)/FoCD)**2.239)**0.885
+M = ((1.034/(PtoD**0.124))+(29.7*(PtoD**6.94)*Re1**0.086)/(src.HexDhCal.LeadW(FoCD,WoD)/FoCD)**2.239)**0.885
 fsm = 0.316*Re1**(-0.25)
-dP = M*fsm*(Hc/HexDhCal.Dh1(HexDhCal.A1(PtoD,FoCD,WoD),HexDhCal.P1(FoCD,WoD)))*0.5*rhoavg*Uavg**2
+dP = M*fsm*(Hc/src.HexDhCal.Dh1(src.HexDhCal.A1(PtoD,FoCD,WoD),src.HexDhCal.P1(FoCD,WoD)))*0.5*rhoavg*Uavg**2
 
 #Heat Load Calculation
-QPri = Uavg*rhoavg*HexDhCal.HaF(HexDhCal.Ha(Ac),NFuel,FoCD,WoD)*((Cp + Cpmax)/2)*(Tbulk[steps-1]-Tbulk[0])
+QPri = Uavg*rhoavg*src.HexDhCal.HaF(src.HexDhCal.Ha(Ac),NFuel,FoCD,WoD)*((Cp + Cpmax)/2)*(Tbulk[steps-1]-Tbulk[0])
 
 #----------------------------------------------------------------------------------#
 ## Report out - Core Parameters
