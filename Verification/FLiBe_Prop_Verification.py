@@ -10,13 +10,13 @@ import os
 import sys
 sys.path.insert(0,'..') #This adds the ability to call flibe props from the main folder
 sys.path.insert(0,'./Flibe') #Looking for data in a subfolder
+from pathlib import Path 
 
 import numpy as np 
-from pathlib import Path 
-import matplotlib.pyplot as plt  
+import matplotlib.pyplot as plt 
+import pandas as pd 
 import src.FLiBe_Prop
 import Flibe_Cp_Verification_Data
-import pandas as pd
 
 path = os.getcwd()
 
