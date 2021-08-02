@@ -6,7 +6,7 @@
 import numpy as np
 import matplotlib as mpl
 
-import HexDhCal
+import src.HexDhCal
 from scipy.integrate import trapz
 
 Tbulk = np.array([1,0])

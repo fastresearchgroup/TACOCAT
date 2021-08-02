@@ -10,12 +10,13 @@ import os
 import sys
 sys.path.insert(0,'..') #This adds the ability to call nafzirf props from the main folder
 sys.path.insert(0,'./Nafzirf') #Looking for data in a subfolder
-import numpy as np 
-import matplotlib.pyplot as plt  
-import NaF_ZrF4_Prop
-import Nafzirf_Verification_Data
-import pandas as pd
 from pathlib import Path
+
+import numpy as np 
+import matplotlib.pyplot as plt
+import pandas as pd
+import src.NaF_ZrF4_Prop
+import Nafzirf_Verification_Data
 
 path = os.getcwd()
 
@@ -30,10 +31,10 @@ Cp = np.zeros(steps)
 K = np.zeros(steps)
 
 for i in range(0,steps):
-	Rho[i] = NaF_ZrF4_Prop.rho(T[i])
-	Nu[i] = NaF_ZrF4_Prop.nu(T2[i])*1000
-	Cp[i] = NaF_ZrF4_Prop.Cp(T2[i])
-	K[i] = NaF_ZrF4_Prop.k(T2[i])
+	Rho[i] = src.NaF_ZrF4_Prop.rho(T[i])
+	Nu[i] = src.NaF_ZrF4_Prop.nu(T2[i])*1000
+	Cp[i] = src.NaF_ZrF4_Prop.Cp(T2[i])
+	K[i] = src.NaF_ZrF4_Prop.k(T2[i])
 
 rho1 = np.zeros(steps)
 rho2 = np.zeros(steps)
