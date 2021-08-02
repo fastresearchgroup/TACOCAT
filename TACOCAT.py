@@ -67,10 +67,10 @@ if Coolant_Type == "NaK":
 	Tboil = 784.00 #Boiling Temperature of NaK - C
 elif Coolant_Type == "FLiBe":
 	import src.FLiBe_Prop
-	rho = FLiBe_Prop.rho(Tbulkin + 273.15)
-	Cp = FLiBe_Prop.Cp(Tbulkin + 273.15)
-	k = FLiBe_Prop.k(Tbulkin + 273.15)
-	nu = FLiBe_Prop.nu(Tbulkin + 273.15)
+	rho = src.FLiBe_Prop.rho(Tbulkin + 273.15)
+	Cp = src.FLiBe_Prop.Cp(Tbulkin + 273.15)
+	k = src.FLiBe_Prop.k(Tbulkin + 273.15)
+	nu = src.FLiBe_Prop.nu(Tbulkin + 273.15)
 	TmeltCoolant = 459 #Melting Temperature of FLiBe - C
 	Tboil = 1430 #Boiling Temperature of FLiBe - C
 elif Coolant_Type == "FLiNaK":
@@ -150,10 +150,10 @@ if Coolant_Type == "NaK":
 	invrhoNaKmax = 0.22/rhoNamax + 0.78/rhoKmax
 	rhomax = 1/invrhoNaKmax #kg/m^3
 elif Coolant_Type == "FLiBe":
-	rhomax = FLiBe_Prop.rho(Tbulk[steps-1] + 273.15)
-	Cpmax = FLiBe_Prop.Cp(Tbulk[steps-1] + 273.15)
-	kmax = FLiBe_Prop.k(Tbulk[steps-1] + 273.15)
-	numax = FLiBe_Prop.nu(Tbulk[steps-1] + 273.15)
+	rhomax = src.FLiBe_Prop.rho(Tbulk[steps-1] + 273.15)
+	Cpmax = src.FLiBe_Prop.Cp(Tbulk[steps-1] + 273.15)
+	kmax = src.FLiBe_Prop.k(Tbulk[steps-1] + 273.15)
+	numax = src.FLiBe_Prop.nu(Tbulk[steps-1] + 273.15)
 elif Coolant_Type == "FLiNaK":
 	rhomax = FLiNaK_Prop.rho(Tbulk[steps-1] + 273.15)
 	Cpmax = FLiNaK_Prop.Cp(Tbulk[steps-1] + 273.15)
