@@ -75,18 +75,18 @@ elif Coolant_Type == "FLiBe":
 	Tboil = 1430 #Boiling Temperature of FLiBe - C
 elif Coolant_Type == "FLiNaK":
 	import src.FLiNaK_Prop
-	rho = FLiNaK_Prop.rho(Tbulkin + 273.15)
-	Cp = FLiNaK_Prop.Cp(Tbulkin + 273.15)
-	k = FLiNaK_Prop.k(Tbulkin + 273.15)
-	nu = FLiNaK_Prop.nu(Tbulkin + 273.15)
+	rho = src.FLiNaK_Prop.rho(Tbulkin + 273.15)
+	Cp = src.FLiNaK_Prop.Cp(Tbulkin + 273.15)
+	k = src.FLiNaK_Prop.k(Tbulkin + 273.15)
+	nu = src.FLiNaK_Prop.nu(Tbulkin + 273.15)
 	TmeltCoolant = 454 #Melting Temperature of FLiNaK - C
 	Tboil = 1570 #Boiling Temperature of FLiNaK - C
 elif Coolant_Type == "NaF_ZrF4":
 	import src.NaF_ZrF4_Prop
-	rho = NaF_ZrF4_Prop.rho(Tbulkin + 273.15)
-	Cp = NaF_ZrF4_Prop.Cp(Tbulkin + 273.15)
-	k = NaF_ZrF4_Prop.k(Tbulkin + 273.15)
-	nu = NaF_ZrF4_Prop.nu(Tbulkin + 273.15)
+	rho = src.NaF_ZrF4_Prop.rho(Tbulkin + 273.15)
+	Cp = src.NaF_ZrF4_Prop.Cp(Tbulkin + 273.15)
+	k = src.NaF_ZrF4_Prop.k(Tbulkin + 273.15)
+	nu = src.NaF_ZrF4_Prop.nu(Tbulkin + 273.15)
 	TmeltCoolant = 500 #Melting Temperature of NaF_ZrF4 - C
 	Tboil = 1350 #Boiling Temperature of NaF_ZrF4 - C
 
@@ -155,15 +155,15 @@ elif Coolant_Type == "FLiBe":
 	kmax = src.FLiBe_Prop.k(Tbulk[steps-1] + 273.15)
 	numax = src.FLiBe_Prop.nu(Tbulk[steps-1] + 273.15)
 elif Coolant_Type == "FLiNaK":
-	rhomax = FLiNaK_Prop.rho(Tbulk[steps-1] + 273.15)
-	Cpmax = FLiNaK_Prop.Cp(Tbulk[steps-1] + 273.15)
-	kmax = FLiNaK_Prop.k(Tbulk[steps-1] + 273.15)
-	numax = FLiNaK_Prop.nu(Tbulk[steps-1] + 273.15)
+	rhomax = src.FLiNaK_Prop.rho(Tbulk[steps-1] + 273.15)
+	Cpmax = src.FLiNaK_Prop.Cp(Tbulk[steps-1] + 273.15)
+	kmax = src.FLiNaK_Prop.k(Tbulk[steps-1] + 273.15)
+	numax = src.FLiNaK_Prop.nu(Tbulk[steps-1] + 273.15)
 elif Coolant_Type == "NaF_ZrF4":
-	rhomax = NaF_ZrF4_Prop.rho(Tbulk[steps-1] + 273.15)
-	Cpmax = NaF_ZrF4_Prop.Cp(Tbulk[steps-1] + 273.15)
-	kmax = NaF_ZrF4_Prop.k(Tbulk[steps-1] + 273.15)
-	numax = NaF_ZrF4_Prop.nu(Tbulk[steps-1] + 273.15)
+	rhomax = src.NaF_ZrF4_Prop.rho(Tbulk[steps-1] + 273.15)
+	Cpmax = src.NaF_ZrF4_Prop.Cp(Tbulk[steps-1] + 273.15)
+	kmax = src.NaF_ZrF4_Prop.k(Tbulk[steps-1] + 273.15)
+	numax = src.NaF_ZrF4_Prop.nu(Tbulk[steps-1] + 273.15)
 Prmax = Cpmax*numax*rhomax/kmax #Prandtl Number Calculation
 
 #Max and Averaged quantities with calculated outlet temperature
