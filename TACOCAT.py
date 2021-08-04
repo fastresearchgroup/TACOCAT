@@ -17,8 +17,8 @@ from src.Fuel_Props import Fuel_props
 #----------------------------------------------------------------------------------#
 ## Print Logicals for saving plots and data files (0 - save, 1 or higher - do not save)
 
-print_logic = 1
-data_logic = 1
+print_logic = TCinput.print_logic
+data_logic = TCinput.data_logic
 
 #----------------------------------------------------------------------------------#
 ## General Core Information
