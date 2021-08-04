@@ -1,7 +1,7 @@
 #TACOCAT read in file
 
 #Provide the name of the reactor
-Reactor_Title = "Lunar_Reactor_689"
+Reactor_Title = "Placeholder"
 ## Print Logicals for saving plots and data files 
 # (0 - save, 1 or higher - do not save)
 print_logic = 0
