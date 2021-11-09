@@ -1,14 +1,14 @@
 import numpy as np
 import matplotlib.pyplot as plt 
 import pandas as pd
-import TACOCAT.HT9Props
-import src.HexDhCal
-import src.HegNu
-import src.TempBulkCal
+import TACOCAT.src.HT9Props
+import TACOCAT.src.HexDhCal
+import TACOCAT.src.HegNu
+import TACOCAT.src.TempBulkCal
 import TACOCAT_Read_In_File as TCinput
 from scipy.integrate import trapz
 from scipy.integrate import quad
-from src.Fuel_Props import Fuel_props
+from TACOCAT.src.Fuel_Props import Fuel_props
 
 #Assumptions
 #1. The core thermal production is assumed to set after heat deposition
@@ -53,8 +53,8 @@ Tbulkin = TCinput.Tbulkin #Bulk Temperature of NaK at the Inlet - C
 #CoolantUsed = int(input('Enter the number for the coolant you would like to use: 1. NaK 2. FLiBe 3. FLiNaK 4. NaF_ZrF4:  '))
 
 if Coolant_Type == "NaK":
-	import src.NaK_Prop
-	rhoNa = src.NaK_Prop.rhoNa(Tbulkin + 273.15)
+	import TACOCAT.src.NaK_Prop
+	rhoNa = NaK_Prop.rhoNa(Tbulkin + 273.15)
 	rhoK = src.NaK_Prop.rhoK(Tbulkin + 273.15)
 	invrhoNaK = 0.22/rhoNa + 0.78/rhoK
 	rho = 1/invrhoNaK #kg/m^3
@@ -66,7 +66,7 @@ if Coolant_Type == "NaK":
 	TmeltCoolant = -12.6 #Melting Temperature of NaK - C
 	Tboil = 784.00 #Boiling Temperature of NaK - C
 elif Coolant_Type == "FLiBe":
-	import src.FLiBe_Prop
+	import TACOCAT.src.FLiBe_Prop
 	rho = src.FLiBe_Prop.rho(Tbulkin + 273.15)
 	Cp = src.FLiBe_Prop.Cp(Tbulkin + 273.15)
 	k = src.FLiBe_Prop.k(Tbulkin + 273.15)
@@ -74,7 +74,7 @@ elif Coolant_Type == "FLiBe":
 	TmeltCoolant = 459 #Melting Temperature of FLiBe - C
 	Tboil = 1430 #Boiling Temperature of FLiBe - C
 elif Coolant_Type == "FLiNaK":
-	import src.FLiNaK_Prop
+	import TACOCAT.src.FLiNaK_Prop
 	rho = src.FLiNaK_Prop.rho(Tbulkin + 273.15)
 	Cp = src.FLiNaK_Prop.Cp(Tbulkin + 273.15)
 	k = src.FLiNaK_Prop.k(Tbulkin + 273.15)
@@ -82,7 +82,7 @@ elif Coolant_Type == "FLiNaK":
 	TmeltCoolant = 454 #Melting Temperature of FLiNaK - C
 	Tboil = 1570 #Boiling Temperature of FLiNaK - C
 elif Coolant_Type == "NaF_ZrF4":
-	import src.NaF_ZrF4_Prop
+	import TACOCAT.src.NaF_ZrF4_Prop
 	rho = src.NaF_ZrF4_Prop.rho(Tbulkin + 273.15)
 	Cp = src.NaF_ZrF4_Prop.Cp(Tbulkin + 273.15)
 	k = src.NaF_ZrF4_Prop.k(Tbulkin + 273.15)

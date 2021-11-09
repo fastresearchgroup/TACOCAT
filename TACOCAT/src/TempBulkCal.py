@@ -1,17 +1,12 @@
 #Lane Caraik
 #Last Modified: 12/15/2015
 
-
-
 import numpy as np
 import matplotlib as mpl
-
-import src.HexDhCal
+import TACOCAT.src.HexDhCal
 from scipy.integrate import trapz
 
 Tbulk = np.array([1,0])
-
-
 
 def Tbulk(z,FluxPro,Tbulkin,NFuel,qlin,Cp,Uinlet,rho,HaF):
 	for i in range(2,8):
