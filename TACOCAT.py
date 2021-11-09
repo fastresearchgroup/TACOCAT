@@ -44,7 +44,8 @@ NFuel = 1951 #Number of Fuel Rods
 
 # Core Parameter - Inputs
 Qth = TCinput.Qth
-Tbulkin = TCinput.Tbulkin #Bulk Temperature of NaK at the Inlet - C
+Tbulkin = TCinput.Tbulkin #Bulk Temperature of coolant at the Inlet - C
+Uinlet = TCinput.Uinlet #average inlet velocity in a subchannel - m/s
 
 #----------------------------------------------------------------------------------#
 ## Material Properties
@@ -99,7 +100,6 @@ kclad = clad.k(Tbulkin + 273.15)
 ## Core Geometry Calculations
 # Geometric Calculations
 CVol = Geom.Ha(Ac)*Hc #Volume of the core - m^3
-Uinlet = 0.0375
 
 #----------------------------------------------------------------------------------#
 ## Core Parameter Calculations 
@@ -218,8 +218,6 @@ title_data = TCinput.Reactor_Title + "_table"
 if data_logic == 0:
 	df1.to_excel(title_data + ".xlsx")
 	df2.to_csv(title_data + '.csv') 
-
-print(df2)
 
 #----------------------------------------------------------------------------------#
 ## Report out - Core Parameters

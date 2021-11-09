@@ -21,6 +21,7 @@ Qth = 3*10**6 #Core Thermal Production - W
 #Mdot = #Total mass flow rate for the reactor. This will then be divided for subchannels.
 Tbulkin = 550.00 #Bulk Temperature of NaK at the Inlet - C
 HotF = 1.5 #Hottest Channel Factor Calculation
+Uinlet = 0.0375 #average inlet velocity in a subchannel - m/s
 
 '''
 Example input:
