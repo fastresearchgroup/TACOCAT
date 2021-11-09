@@ -1,8 +1,4 @@
-# Lane Carasik
-# Last Modified: 12/15/2015
-
 import numpy as np
-
 
 #Geometric Calculations
 def Ha(Ac):
