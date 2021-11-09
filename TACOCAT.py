@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt 
 import pandas as pd
-import src.HT9Props
+import TACOCAT.HT9Props
 import src.HexDhCal
 import src.HegNu
 import src.TempBulkCal
