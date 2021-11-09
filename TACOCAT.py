@@ -68,26 +68,26 @@ if Coolant_Type == "NaK":
 	Tboil = 784.00 #Boiling Temperature of NaK - C
 elif Coolant_Type == "FLiBe":
 	import TACOCAT.src.FLiBe_Prop as fluid
-	rho = src.FLiBe_Prop.rho(Tbulkin + 273.15)
-	Cp = src.FLiBe_Prop.Cp(Tbulkin + 273.15)
-	k = src.FLiBe_Prop.k(Tbulkin + 273.15)
-	nu = src.FLiBe_Prop.nu(Tbulkin + 273.15)
+	rho = fluid.rho(Tbulkin + 273.15)
+	Cp = fluid.Cp(Tbulkin + 273.15)
+	k = fluid.k(Tbulkin + 273.15)
+	nu = fluid.nu(Tbulkin + 273.15)
 	TmeltCoolant = 459 #Melting Temperature of FLiBe - C
 	Tboil = 1430 #Boiling Temperature of FLiBe - C
 elif Coolant_Type == "FLiNaK":
 	import TACOCAT.src.FLiNaK_Prop as fluid
-	rho = src.FLiNaK_Prop.rho(Tbulkin + 273.15)
-	Cp = src.FLiNaK_Prop.Cp(Tbulkin + 273.15)
-	k = src.FLiNaK_Prop.k(Tbulkin + 273.15)
-	nu = src.FLiNaK_Prop.nu(Tbulkin + 273.15)
+	rho = fluid.rho(Tbulkin + 273.15)
+	Cp = fluid.Cp(Tbulkin + 273.15)
+	k = fluid.k(Tbulkin + 273.15)
+	nu = fluid.nu(Tbulkin + 273.15)
 	TmeltCoolant = 454 #Melting Temperature of FLiNaK - C
 	Tboil = 1570 #Boiling Temperature of FLiNaK - C
 elif Coolant_Type == "NaF_ZrF4":
 	import TACOCAT.src.NaF_ZrF4_Prop as fluid
-	rho = src.NaF_ZrF4_Prop.rho(Tbulkin + 273.15)
-	Cp = src.NaF_ZrF4_Prop.Cp(Tbulkin + 273.15)
-	k = src.NaF_ZrF4_Prop.k(Tbulkin + 273.15)
-	nu = src.NaF_ZrF4_Prop.nu(Tbulkin + 273.15)
+	rho = fluid.rho(Tbulkin + 273.15)
+	Cp = fluid.Cp(Tbulkin + 273.15)
+	k = fluid.k(Tbulkin + 273.15)
+	nu = fluid.nu(Tbulkin + 273.15)
 	TmeltCoolant = 500 #Melting Temperature of NaF_ZrF4 - C
 	Tboil = 1350 #Boiling Temperature of NaF_ZrF4 - C
 
@@ -153,20 +153,20 @@ if Coolant_Type == "NaK":
 	invrhoNaKmax = 0.22/rhoNamax + 0.78/rhoKmax
 	rhomax = 1/invrhoNaKmax #kg/m^3
 elif Coolant_Type == "FLiBe":
-	rhomax = src.FLiBe_Prop.rho(Tbulk[steps-1] + 273.15)
-	Cpmax = src.FLiBe_Prop.Cp(Tbulk[steps-1] + 273.15)
-	kmax = src.FLiBe_Prop.k(Tbulk[steps-1] + 273.15)
-	numax = src.FLiBe_Prop.nu(Tbulk[steps-1] + 273.15)
+	rhomax = fluid.rho(Tbulk[steps-1] + 273.15)
+	Cpmax = fluid.Cp(Tbulk[steps-1] + 273.15)
+	kmax = fluid.k(Tbulk[steps-1] + 273.15)
+	numax = fluid.nu(Tbulk[steps-1] + 273.15)
 elif Coolant_Type == "FLiNaK":
-	rhomax = src.FLiNaK_Prop.rho(Tbulk[steps-1] + 273.15)
-	Cpmax = src.FLiNaK_Prop.Cp(Tbulk[steps-1] + 273.15)
-	kmax = src.FLiNaK_Prop.k(Tbulk[steps-1] + 273.15)
-	numax = src.FLiNaK_Prop.nu(Tbulk[steps-1] + 273.15)
+	rhomax = fluid.rho(Tbulk[steps-1] + 273.15)
+	Cpmax = fluid.Cp(Tbulk[steps-1] + 273.15)
+	kmax = fluid.k(Tbulk[steps-1] + 273.15)
+	numax = fluid.nu(Tbulk[steps-1] + 273.15)
 elif Coolant_Type == "NaF_ZrF4":
-	rhomax = src.NaF_ZrF4_Prop.rho(Tbulk[steps-1] + 273.15)
-	Cpmax = src.NaF_ZrF4_Prop.Cp(Tbulk[steps-1] + 273.15)
-	kmax = src.NaF_ZrF4_Prop.k(Tbulk[steps-1] + 273.15)
-	numax = src.NaF_ZrF4_Prop.nu(Tbulk[steps-1] + 273.15)
+	rhomax = fluid.rho(Tbulk[steps-1] + 273.15)
+	Cpmax = fluid.Cp(Tbulk[steps-1] + 273.15)
+	kmax = fluid.k(Tbulk[steps-1] + 273.15)
+	numax = fluid.nu(Tbulk[steps-1] + 273.15)
 Prmax = Cpmax*numax*rhomax/kmax #Prandtl Number Calculation
 
 #Max and Averaged quantities with calculated outlet temperature
