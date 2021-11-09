@@ -53,20 +53,20 @@ Tbulkin = TCinput.Tbulkin #Bulk Temperature of NaK at the Inlet - C
 #CoolantUsed = int(input('Enter the number for the coolant you would like to use: 1. NaK 2. FLiBe 3. FLiNaK 4. NaF_ZrF4:  '))
 
 if Coolant_Type == "NaK":
-	import TACOCAT.src.NaK_Prop
-	rhoNa = NaK_Prop.rhoNa(Tbulkin + 273.15)
-	rhoK = src.NaK_Prop.rhoK(Tbulkin + 273.15)
-	invrhoNaK = 0.22/rhoNa + 0.78/rhoK
+	import TACOCAT.src.NaK_Prop as fluid
+	rho_Na = fluid.rhoNa(Tbulkin + 273.15)
+	rho_K = fluid.rhoK(Tbulkin + 273.15)
+	invrhoNaK = 0.22/rho_Na + 0.78/rho_K
 	rho = 1/invrhoNaK #kg/m^3
-	CpNa = src.NaK_Prop.CpNa(Tbulkin + 273.15)
-	CpK = src.NaK_Prop.CpK(Tbulkin + 273.15)
+	CpNa = fluid.CpNa(Tbulkin + 273.15)
+	CpK = fluid.CpK(Tbulkin + 273.15)
 	Cp = (10**3)*(0.22*CpNa + 0.78*CpK) #J/kg-K
-	k = src.NaK_Prop.k(Tbulkin + 273.15)
-	nu = src.NaK_Prop.nu(Tbulkin + 273.15)
+	k = fluid.k(Tbulkin + 273.15)
+	nu = fluid.nu(Tbulkin + 273.15)
 	TmeltCoolant = -12.6 #Melting Temperature of NaK - C
 	Tboil = 784.00 #Boiling Temperature of NaK - C
 elif Coolant_Type == "FLiBe":
-	import TACOCAT.src.FLiBe_Prop
+	import TACOCAT.src.FLiBe_Prop as fluid
 	rho = src.FLiBe_Prop.rho(Tbulkin + 273.15)
 	Cp = src.FLiBe_Prop.Cp(Tbulkin + 273.15)
 	k = src.FLiBe_Prop.k(Tbulkin + 273.15)
@@ -74,7 +74,7 @@ elif Coolant_Type == "FLiBe":
 	TmeltCoolant = 459 #Melting Temperature of FLiBe - C
 	Tboil = 1430 #Boiling Temperature of FLiBe - C
 elif Coolant_Type == "FLiNaK":
-	import TACOCAT.src.FLiNaK_Prop
+	import TACOCAT.src.FLiNaK_Prop as fluid
 	rho = src.FLiNaK_Prop.rho(Tbulkin + 273.15)
 	Cp = src.FLiNaK_Prop.Cp(Tbulkin + 273.15)
 	k = src.FLiNaK_Prop.k(Tbulkin + 273.15)
@@ -82,7 +82,7 @@ elif Coolant_Type == "FLiNaK":
 	TmeltCoolant = 454 #Melting Temperature of FLiNaK - C
 	Tboil = 1570 #Boiling Temperature of FLiNaK - C
 elif Coolant_Type == "NaF_ZrF4":
-	import TACOCAT.src.NaF_ZrF4_Prop
+	import TACOCAT.src.NaF_ZrF4_Prop as fluid
 	rho = src.NaF_ZrF4_Prop.rho(Tbulkin + 273.15)
 	Cp = src.NaF_ZrF4_Prop.Cp(Tbulkin + 273.15)
 	k = src.NaF_ZrF4_Prop.k(Tbulkin + 273.15)
