@@ -1,12 +1,15 @@
 import numpy as np
 import matplotlib.pyplot as plt 
 import pandas as pd
-import HT9Props
-import HexDhCal
-import HegNu
-import TempBulkCal
+import TACOCAT.src.HT9Props as clad
+import TACOCAT.src.HexDhCal as Geom
+import TACOCAT.src.HegNu as Nu
+import TACOCAT.src.TempBulkCal as TempBulk
+import TACOCAT_Read_In_File as TCinput
 from scipy.integrate import trapz
 from scipy.integrate import quad
+from TACOCAT.src.Fuel_Props import Fuel_props
+from TACOCAT.src.Geometry_Value import Core_Geometry
 
 #Assumptions
 #1. The core thermal production is assumed to set after heat deposition
@@ -15,14 +18,20 @@ from scipy.integrate import quad
 #----------------------------------------------------------------------------------#
 ## Print Logicals for saving plots and data files (0 - save, 1 or higher - do not save)
 
-print_logic = 1
-data_logic = 1
+print_logic = TCinput.print_logic
+data_logic = TCinput.data_logic
 
 #----------------------------------------------------------------------------------#
 ## General Core Information
 
+#Read in parameters
+Fuel_Type = TCinput.Fuel_Type
+Coolant_Type = TCinput.Coolant
+Geometry_Type = TCinput.Geometry
+Hc = TCinput.Hc
+HotF = TCinput.HotF
+
 # Geometry - Core
-Hc = 0.35 #Active Height of Core is 2m
 steps = 36 #Needs to be changed, filler for z
 z = np.linspace(-Hc/2,Hc/2,steps) #this needs to be a numpy array of position along the core in - m
 Ar = 33.8/100 #Active Radius of the core - m
@@ -36,72 +45,66 @@ PtoD = 1.18 #Pitch to Diameter Ratio
 NFuel = 1951 #Number of Fuel Rods
 
 # Core Parameter - Inputs
-Qth = 3*10**6 #Core Thermal Production - W
-Tmelt = 1160.00 #Melting temperature of UPu-Zr10 - C
-Tboil = 784.00 #Boiling Temperature of NaK - C
-Tbulkin = 550.00 #Bulk Temperature of NaK at the Inlet - C
-Tbulk = np.zeros(steps) #Initialize Bulk Temperature of Coolant - C
+Qth = TCinput.Qth
+Tbulkin = TCinput.Tbulkin #Bulk Temperature of coolant at the Inlet - C
+Uinlet = TCinput.Uinlet #average inlet velocity in a subchannel - m/s
 
 #----------------------------------------------------------------------------------#
 ## Material Properties
 
-#Thermal Fluid Properties of NaK
-CoolantUsed = int(input('Enter the number for the coolant you would like to use: 1. NaK 2. FLiBe 3. FLiNak 4. NaF-ZrF4:  '))
+#Thermal Fluid Properties of Coolants
+#CoolantUsed = int(input('Enter the number for the coolant you would like to use: 1. NaK 2. FLiBe 3. FLiNaK 4. NaF_ZrF4:  '))
 
-if CoolantUsed == 1:
-	import NaK_Prop
-	rhoNa = NaK_Prop.rhoNa(Tbulkin + 273.15)
-	rhoK = NaK_Prop.rhoK(Tbulkin + 273.15)
-	invrhoNaK = 0.22/rhoNa + 0.78/rhoK
+if Coolant_Type == "NaK":
+	import TACOCAT.src.NaK_Prop as fluid
+	rho_Na = fluid.rhoNa(Tbulkin + 273.15)
+	rho_K = fluid.rhoK(Tbulkin + 273.15)
+	invrhoNaK = 0.22/rho_Na + 0.78/rho_K
 	rho = 1/invrhoNaK #kg/m^3
-	CpNa = NaK_Prop.CpNa(Tbulkin + 273.15)
-	CpK = NaK_Prop.CpK(Tbulkin + 273.15)
+	CpNa = fluid.CpNa(Tbulkin + 273.15)
+	CpK = fluid.CpK(Tbulkin + 273.15)
 	Cp = (10**3)*(0.22*CpNa + 0.78*CpK) #J/kg-K
-	k = NaK_Prop.k(Tbulkin + 273.15)
-	nu = NaK_Prop.nu(Tbulkin + 273.15)
+	k = fluid.k(Tbulkin + 273.15)
+	nu = fluid.nu(Tbulkin + 273.15)
 	TmeltCoolant = -12.6 #Melting Temperature of NaK - C
 	Tboil = 784.00 #Boiling Temperature of NaK - C
-elif CoolantUsed == 2:
-	import FLiBe_Prop
-	rho = FLiBe_Prop.rho(Tbulkin + 273.15)
-	Cp = FLiBe_Prop.Cp(Tbulkin + 273.15)
-	k = FLiBe_Prop.k(Tbulkin + 273.15)
-	nu = FLiBe_Prop.nu(Tbulkin + 273.15)
+elif Coolant_Type == "FLiBe":
+	import TACOCAT.src.FLiBe_Prop as fluid
+	rho = fluid.rho(Tbulkin + 273.15)
+	Cp = fluid.Cp(Tbulkin + 273.15)
+	k = fluid.k(Tbulkin + 273.15)
+	nu = fluid.nu(Tbulkin + 273.15)
 	TmeltCoolant = 459 #Melting Temperature of FLiBe - C
 	Tboil = 1430 #Boiling Temperature of FLiBe - C
-elif CoolantUsed == 3:
-	import FLiNaK_Prop
-	rho = FLiNaK_Prop.rho(Tbulkin + 273.15)
-	Cp = FLiNaK_Prop.Cp(Tbulkin + 273.15)
-	k = FLiNaK_Prop.k(Tbulkin + 273.15)
-	nu = FLiNaK_Prop.nu(Tbulkin + 273.15)
+elif Coolant_Type == "FLiNaK":
+	import TACOCAT.src.FLiNaK_Prop as fluid
+	rho = fluid.rho(Tbulkin + 273.15)
+	Cp = fluid.Cp(Tbulkin + 273.15)
+	k = fluid.k(Tbulkin + 273.15)
+	nu = fluid.nu(Tbulkin + 273.15)
 	TmeltCoolant = 454 #Melting Temperature of FLiNaK - C
 	Tboil = 1570 #Boiling Temperature of FLiNaK - C
-elif CoolantUsed == 4:
-	import NaF_ZrF4_Prop
-	rho = NaF_ZrF4_Prop.rho(Tbulkin + 273.15)
-	Cp = NaF_ZrF4_Prop.Cp(Tbulkin + 273.15)
-	k = NaF_ZrF4_Prop.k(Tbulkin + 273.15)
-	nu = NaF_ZrF4_Prop.nu(Tbulkin + 273.15)
-	TmeltCoolant = 500 #Melting Temperature of NaF-ZrF4 - C
-	Tboil = 1350 #Boiling Temperature of NaF-ZrF4 - C
+elif Coolant_Type == "NaF_ZrF4":
+	import TACOCAT.src.NaF_ZrF4_Prop as fluid
+	rho = fluid.rho(Tbulkin + 273.15)
+	Cp = fluid.Cp(Tbulkin + 273.15)
+	k = fluid.k(Tbulkin + 273.15)
+	nu = fluid.nu(Tbulkin + 273.15)
+	TmeltCoolant = 500 #Melting Temperature of NaF_ZrF4 - C
+	Tboil = 1350 #Boiling Temperature of NaF_ZrF4 - C
 
 Pr = Cp*nu*rho/k #Prandtl Number Calculation
 
 #Thermal Conductivity of Cladding - W/m-K @ 300 C
-kclad = HT9Props.k(Tbulkin + 273.15)
-kfuel = 22 #Thermal Conductivity of Fuel - W/m-K @ 1000 C
+kclad = clad.k(Tbulkin + 273.15)
 
 #----------------------------------------------------------------------------------#
 ## Core Geometry Calculations
 # Geometric Calculations
-CVol = HexDhCal.Ha(Ac)*Hc #Volume of the core - m^3
-Uinlet = 0.0375
+CVol = Core_Geometry[Geometry_Type]["FaceArea"]*Hc #Volume of the core - m^3
 
 #----------------------------------------------------------------------------------#
 ## Core Parameter Calculations 
-# Hottest Channel Factor Calculation
-HotF = 1.5
 
 # Power Density and Linear Generation Calculations
 Qavgp = Qth/CVol #Average Power Density Calculation - W/m^3
@@ -110,119 +113,82 @@ qlinHotF = qlin*HotF # Hottest Channel Linear Energy Generation Rate - W/m
 qppco = qlin/(np.pi*FoCD) # Average heat flux at rod/coolant interface - W/m^2
 
 # Coolant Calculations
-mdot = Uinlet*rho*HexDhCal.HaF(HexDhCal.Ha(Ac),NFuel,FoCD,WoD) # Mass flow rate for the fluid - kg/s
-Pe = (Uinlet*HexDhCal.Dh1(HexDhCal.A1(PtoD,FoCD,WoD),HexDhCal.P1(FoCD,WoD))/nu)*Pr # Peclet Number for Fluid
-Nu = HegNu.Nu(PtoD,Pe)
-h = Nu*k/HexDhCal.Dh1(HexDhCal.A1(PtoD,FoCD,WoD),HexDhCal.P1(FoCD,WoD)) #Heat Transfer Coefficient for Rod Bundles - W/m^2 - C
+mdot = Uinlet*rho*Core_Geometry[Geometry_Type]["CoolantFlowArea"] # Mass flow rate for the fluid - kg/s
+Pe = (Uinlet*Core_Geometry[Geometry_Type]["InnerHydraulicDiameter"]/nu)*Pr # Peclet Number for Fluid
+Nu = Nu.Nu(PtoD,Pe)
+h = Nu*k/Core_Geometry[Geometry_Type]["InnerHydraulicDiameter"] #Heat Transfer Coefficient for Rod Bundles - W/m^2 - C
 
 #Core Temperature Calculations
 #Call axial bulk temperature distribution calculation
 
-Tbulk[0] = Tbulkin
 FluxPro = np.zeros(steps)
 FluxPro[:] = np.cos((np.pi/Hc)*z[:])
 
-for i in range(1,steps):
-	Tbulk[i] = Tbulkin + (np.trapz(FluxPro[0:i+1],z[0:i+1])*NFuel*qlin)/(Cp*Uinlet*rho*HexDhCal.HaF(HexDhCal.Ha(Ac),NFuel,FoCD,WoD)) #Bulk Temperature of Coolant - C
-
+Tbulk = np.zeros(steps) #Initialize Bulk Temperature of Coolant - C
+Tbulk[0] = Tbulkin
 TbulkHotF = np.zeros(steps)
 TbulkHotF[0] = Tbulkin
-
-#Bulk Temperature of Coolant - C
 for i in range(1,steps):
-	TbulkHotF[i] = Tbulkin + (np.trapz(FluxPro[0:i+1],z[0:i+1])*NFuel*qlinHotF)/(Cp*Uinlet*rho*HexDhCal.HaF(HexDhCal.Ha(Ac),NFuel,FoCD,WoD)) #Bulk Temperature of Coolant - C
+    # Bulk Temperature of Coolant in Average Channel - C
+	Tbulk[i] = Tbulkin + (np.trapz(FluxPro[0:i+1],z[0:i+1])*NFuel*qlin)/(Cp*Uinlet*rho*Core_Geometry[Geometry_Type]["CoolantFlowArea"]) #Bulk Temperature of Coolant - C
+    # Bulk Temperature of Coolant in Hottest Channel - C
+	TbulkHotF[i] = Tbulkin + (np.trapz(FluxPro[0:i+1],z[0:i+1])*NFuel*qlinHotF)/(Cp*Uinlet*rho*Core_Geometry[Geometry_Type]["CoolantFlowArea"]) #Bulk Temperature of Coolant - C
 
-# Bulk Temperature of Coolant in Hottest Channel - C
 Tcl = np.zeros(steps)
-for i in range(0,steps):
-	Tcl[i] = Tbulk[i] + ((FluxPro[i]*qlin)/(2*np.pi))*((1/(h*(FoCD/2))) + (1/(2*kfuel)) + (1/kclad)*np.log(FoCD/FoD)) #+ (qlin/(mdot*Cp))*quad(FluxPro, 1, 8)
-
 TclHotF = np.zeros(steps)
 for i in range(0,steps):
-	TclHotF[i] = TbulkHotF[i] + ((FluxPro[i]*qlinHotF)/(2*np.pi))*((1/(h*(FoCD/2))) + (1/(2*kfuel)) + (1/kclad)*np.log(FoCD/FoD))
+    # Centerline Temperature of Fuel in Average Channel - C
+	Tcl[i] = Tbulk[i] + ((FluxPro[i]*qlin)/(2*np.pi))*((1/(h*(FoCD/2))) + (1/(2*Fuel_props[Fuel_Type]["kfuel"])) + (1/kclad)*np.log(FoCD/FoD))
+    # Centerline Temperature of Fuel in Hottest Channel - C
+	TclHotF[i] = TbulkHotF[i] + ((FluxPro[i]*qlinHotF)/(2*np.pi))*((1/(h*(FoCD/2))) + (1/(2*Fuel_props[Fuel_Type]["kfuel"])) + (1/kclad)*np.log(FoCD/FoD))
 
 Tavg = (Tbulk[0] + Tbulk[steps-1])/2
 THotFavg = (TbulkHotF[0] + TbulkHotF[steps-1])/2
-if CoolantUsed == 1:
-	rhoNamax = NaK_Prop.rhoNa(Tbulk[steps-1] + 273.15)
-	rhoKmax = NaK_Prop.rhoK(Tbulk[steps-1] + 273.15)
-	CpNamax = NaK_Prop.CpNa(Tbulk[steps-1] + 273.15)
-	CpKmax = NaK_Prop.CpK(Tbulk[steps-1] + 273.15)
+if Coolant_Type == "NaK":
+	rhoNamax = fluid.rhoNa(Tbulk[steps-1] + 273.15)
+	rhoKmax = fluid.rhoK(Tbulk[steps-1] + 273.15)
+	CpNamax = fluid.CpNa(Tbulk[steps-1] + 273.15)
+	CpKmax = fluid.CpK(Tbulk[steps-1] + 273.15)
 	Cpmax = (10**3)*(0.22*CpNamax + 0.78*CpKmax) #J/kg-K
-	kmax = NaK_Prop.k(Tbulk[steps-1] + 273.15)
-	numax = NaK_Prop.nu(Tbulk[steps-1] + 273.15)
+	kmax = fluid.k(Tbulk[steps-1] + 273.15)
+	numax = fluid.nu(Tbulk[steps-1] + 273.15)
 	invrhoNaKmax = 0.22/rhoNamax + 0.78/rhoKmax
 	rhomax = 1/invrhoNaKmax #kg/m^3
-elif CoolantUsed == 2:
-	rhomax = FLiBe_Prop.rho(Tbulk[steps-1] + 273.15)
-	Cpmax = FLiBe_Prop.Cp(Tbulk[steps-1] + 273.15)
-	kmax = FLiBe_Prop.k(Tbulk[steps-1] + 273.15)
-	numax = FLiBe_Prop.nu(Tbulk[steps-1] + 273.15)
-elif CoolantUsed == 3:
-	rhomax = FLiNaK_Prop.rho(Tbulk[steps-1] + 273.15)
-	Cpmax = FLiNaK_Prop.Cp(Tbulk[steps-1] + 273.15)
-	kmax = FLiNaK_Prop.k(Tbulk[steps-1] + 273.15)
-	numax = FLiNaK_Prop.nu(Tbulk[steps-1] + 273.15)
-elif CoolantUsed == 4:
-	rhomax = NaF_ZrF4_Prop.rho(Tbulk[steps-1] + 273.15)
-	Cpmax = NaF_ZrF4_Prop.Cp(Tbulk[steps-1] + 273.15)
-	kmax = NaF_ZrF4_Prop.k(Tbulk[steps-1] + 273.15)
-	numax = NaF_ZrF4_Prop.nu(Tbulk[steps-1] + 273.15)
+elif Coolant_Type == "FLiBe":
+	rhomax = fluid.rho(Tbulk[steps-1] + 273.15)
+	Cpmax = fluid.Cp(Tbulk[steps-1] + 273.15)
+	kmax = fluid.k(Tbulk[steps-1] + 273.15)
+	numax = fluid.nu(Tbulk[steps-1] + 273.15)
+elif Coolant_Type == "FLiNaK":
+	rhomax = fluid.rho(Tbulk[steps-1] + 273.15)
+	Cpmax = fluid.Cp(Tbulk[steps-1] + 273.15)
+	kmax = fluid.k(Tbulk[steps-1] + 273.15)
+	numax = fluid.nu(Tbulk[steps-1] + 273.15)
+elif Coolant_Type == "NaF_ZrF4":
+	rhomax = fluid.rho(Tbulk[steps-1] + 273.15)
+	Cpmax = fluid.Cp(Tbulk[steps-1] + 273.15)
+	kmax = fluid.k(Tbulk[steps-1] + 273.15)
+	numax = fluid.nu(Tbulk[steps-1] + 273.15)
 Prmax = Cpmax*numax*rhomax/kmax #Prandtl Number Calculation
 
 #Max and Averaged quantities with calculated outlet temperature
 Pravg = (Pr + Prmax)/2 # Average Prandtl Number in a inner channel
 rhoavg = (rho + rhomax)/2 # Average density number in a inner channel
-Uoutlet = mdot/(rhomax*HexDhCal.HaF(HexDhCal.Ha(Ac),NFuel,FoCD,WoD)) # Outlet Velocity in a inner channel
+Uoutlet = mdot/(rhomax*Core_Geometry[Geometry_Type]["CoolantFlowArea"]) # Outlet Velocity in a inner channel
 Uavg = (Uinlet + Uoutlet)/2 # Average velocity in a inner channel
 Pemax = Prmax*Uoutlet*FoCD/numax # Max Peclet number in a inner channel
 Peavg = (Pe + Pemax)/2 # Average Peclect number in a inner channel
 Re1 = Peavg/Pravg # Average Reynolds number in a inner channel
 
-M = ((1.034/(PtoD**0.124))+(29.7*(PtoD**6.94)*Re1**0.086)/(HexDhCal.LeadW(FoCD,WoD)/FoCD)**2.239)**0.885
+if Geometry_Type == "Hexagonal":
+	M = ((1.034/(PtoD**0.124))+(29.7*(PtoD**6.94)*Re1**0.086)/(Geom.LeadW(FoCD,WoD)/FoCD)**2.239)**0.885 #modifier
+else:
+	M = 1
 fsm = 0.316*Re1**(-0.25)
-dP = M*fsm*(Hc/HexDhCal.Dh1(HexDhCal.A1(PtoD,FoCD,WoD),HexDhCal.P1(FoCD,WoD)))*0.5*rhoavg*Uavg**2
+dP = M*fsm*(Hc/Core_Geometry[Geometry_Type]["InnerHydraulicDiameter"])*0.5*rhoavg*Uavg**2
 
 #Heat Load Calculation
-QPri = Uavg*rhoavg*HexDhCal.HaF(HexDhCal.Ha(Ac),NFuel,FoCD,WoD)*((Cp + Cpmax)/2)*(Tbulk[steps-1]-Tbulk[0])
-
-#----------------------------------------------------------------------------------#
-## Report out - Core Parameters
-## Plots
-
-h = 10
-w = 8
-lw = 2.5
-fs = 12
-
-k = 1
-plt.figure(k, figsize=(h,w))
-plt.plot(z,Tbulk,'r--',linewidth = lw,label=r'$T_{bulk}$')
-plt.plot(z,TbulkHotF,'k--',linewidth = lw, label=r'$T_{bulk-HF}$')
-plt.plot(z,Tcl, 'g-',linewidth = lw, label=r'$T_{cl}$')
-plt.plot(z,TclHotF, 'c-',linewidth = lw, label=r'$T_{cl-HF}$')
-plt.axhline(y=Tboil, xmin = 0, xmax = 1, color = 'r',linewidth = lw, label='Coolant Boiling Temp')
-plt.axhline(y=TmeltCoolant, xmin = 0, xmax = 1, color = 'r',linewidth = lw, label='Coolant Melting Temp')
-plt.legend(loc='center left')
-plt.xlabel('Axial Height - m',fontsize = fs)
-plt.ylabel('Temperature - C',fontsize = fs)
-plt.grid()
-fig = 'TACOCAT_Axial_Temperatures'
-if print_logic == 0:
-    plt.savefig(fig + '.png', dpi = 300, format = "png",bbox_inches="tight")
-    plt.savefig(fig + '.eps', dpi = 300, format = "eps",bbox_inches="tight")
-    plt.savefig(fig + '.svg', dpi = 300, format = "svg",bbox_inches="tight")
-k = k + 1
-
-plt.figure(k, figsize=(h,w))
-plt.plot(z,FluxPro, 'k-')
-plt.suptitle('Axial Core Flux Profile')
-plt.ylabel('Normalized Height')
-plt.xlabel('Normalized Flux')
-plt.grid()
-k = k + 1
-
-plt.show()
+QPri = Uavg*rhoavg*Core_Geometry[Geometry_Type]["CoolantFlowArea"]*((Cp + Cpmax)/2)*(Tbulk[steps-1]-Tbulk[0])
 
 #----------------------------------------------------------------------------------#
 ## Report out - Core Parameters
@@ -251,9 +217,48 @@ print('--------------------------------------------------------')
 ## Create data files for each run and print out the data
 
 df1 = pd.DataFrame([[Tbulk[0]], [Tbulk[steps-1]], [Tavg], [TbulkHotF[steps-1]], [THotFavg], [Tcl[steps-1]], [TclHotF[steps-1]]], index=['Inlet Bulk Temperature', 'Outlet Bulk Temperature', 'Average Bulk Temperature', 'Outlet Bulk Temperature - Hot Channel', 'Average Coolant Temperature - Hot Channel', 'Highest Fuel Centerline Temperature', 'Highest Fuel Centerline Temperature - Hottest Channel'], columns=['Temperature - C'])
-df2 = pd.DataFrame({'z': z, 'Tbulk': Tbulk, 'TbulkHotF': TbulkHotF, 'Tcl': Tcl, 'TclHotF': TclHotF, 'Flux Profile': FluxPro, 'Fuel Melting Temperature': Tmelt, 'Coolant Boiling Temperature': Tboil})
-if data_logic == 0:
-	df1.to_excel("TACOCAT_table.xlsx")
-	df2.to_csv('TACOCATData.csv') 
+df2 = pd.DataFrame({'z': z, 'Tbulk': Tbulk, 'TbulkHotF': TbulkHotF, 'Tcl': Tcl, 'TclHotF': TclHotF, 'Flux Profile': FluxPro, 'Fuel Melting Temperature': Fuel_props[Fuel_Type]["Tmelt"], 'Coolant Boiling Temperature': Tboil})
 
-print(df2)
+title_data = TCinput.Reactor_Title + "_table"
+if data_logic == 0:
+	df1.to_excel(title_data + ".xlsx")
+	df2.to_csv(title_data + '.csv') 
+
+#----------------------------------------------------------------------------------#
+## Report out - Core Parameters
+## Plots
+
+h = 10
+w = 8
+
+lw = 2.5
+fs = 14
+
+k = 1
+plt.figure(k, figsize=(h,w))
+plt.plot(z,Tbulk,'r--',linewidth = lw,label=r'$T_{bulk}$')
+plt.plot(z,TbulkHotF,'k--',linewidth = lw, label=r'$T_{bulk-HF}$')
+plt.plot(z,Tcl, 'g-',linewidth = lw, label=r'$T_{cl}$')
+plt.plot(z,TclHotF, 'c-',linewidth = lw, label=r'$T_{cl-HF}$')
+plt.axhline(y=Tboil, xmin = 0, xmax = 1, color = 'r',linewidth = lw, label='Coolant Boiling Temp')
+plt.axhline(y=TmeltCoolant, xmin = 0, xmax = 1, color = 'b',linewidth = lw, label='Coolant Melting Temp')
+plt.legend(loc='center left')
+plt.xlabel('Axial Height - m',fontsize = fs)
+plt.ylabel('Temperature - C',fontsize = fs)
+plt.grid()
+fig = TCinput.Reactor_Title + '_Axial_Temperatures'
+if print_logic == 0:
+    plt.savefig(fig + '.png', dpi = 300, format = "png",bbox_inches="tight")
+    plt.savefig(fig + '.eps', dpi = 300, format = "eps",bbox_inches="tight")
+    plt.savefig(fig + '.svg', dpi = 300, format = "svg",bbox_inches="tight")
+k = k + 1
+
+plt.figure(k, figsize=(h,w))
+plt.plot(z,FluxPro, 'k-')
+plt.suptitle('Axial Core Flux Profile')
+plt.ylabel('Normalized Height')
+plt.xlabel('Normalized Flux')
+plt.grid()
+k = k + 1
+
+plt.show()
