@@ -1,15 +1,15 @@
 import numpy as np
 import matplotlib.pyplot as plt 
 import pandas as pd
-import HT9Props as clad
-import HexDhCal as Geom
-import HegNu as Nu
-import TempBulkCal as TempBulk
+import TACOCAT.src.HT9Props as clad
+import TACOCAT.src.HexDhCal as Geom
+import TACOCAT.src.HegNu as Nu
+import TACOCAT.src.TempBulkCal as TempBulk
 import TACOCAT_Read_In_File as TCinput
 from scipy.integrate import trapz
 from scipy.integrate import quad
-from Fuel_Props import Fuel_props
-from Geometry_Value import Core_Geometry
+from TACOCAT.src.Fuel_Props import Fuel_props
+from TACOCAT.src.Geometry_Value import Core_Geometry
 
 #Assumptions
 #1. The core thermal production is assumed to set after heat deposition
