@@ -1,0 +1,10 @@
+
+__pycache__/
+
+# Outputs that need to be ignored, * enables generic file titles.
+TACOCAT.csv
+*_Axial_Temperatures.eps
+*_Axial_Temperatures.png
+*_Axial_Temperatures.svg
+*_table.csv
+*_table.xlsx
