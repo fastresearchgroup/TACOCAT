@@ -10,12 +10,13 @@ import os
 import sys
 sys.path.insert(0,'..') #This adds the ability to call flibe props from the main folder
 sys.path.insert(0,'./Flibe') #Looking for data in a subfolder
-import numpy as np 
 from pathlib import Path 
-import matplotlib.pyplot as plt  
-import FLiBe_Prop
+
+import numpy as np 
+import matplotlib.pyplot as plt 
+import pandas as pd 
+import src.FLiBe_Prop
 import Flibe_Cp_Verification_Data
-import pandas as pd
 
 path = os.getcwd()
 
@@ -30,10 +31,10 @@ Cp = np.zeros(steps)
 K = np.zeros(steps)
 
 for i in range(0,steps):
-	Rho[i] = FLiBe_Prop.rho(T[i])
-	Nu[i] = FLiBe_Prop.nu(T2[i])*1000
-	Cp[i] = FLiBe_Prop.Cp(T2[i])
-	K[i] = FLiBe_Prop.k(T2[i])
+	Rho[i] = src.FLiBe_Prop.rho(T[i])
+	Nu[i] = src.FLiBe_Prop.nu(T2[i])*1000
+	Cp[i] = src.FLiBe_Prop.Cp(T2[i])
+	K[i] = src.FLiBe_Prop.k(T2[i])
 
 linestyles = ['None','--','None',':','None','-','--','-.']
 markers = ['D', 'None', '^', 'None', 's', 'None', 'None', 'None']

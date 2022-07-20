@@ -16,6 +16,7 @@ Coolant = "NaK"
 #Provide reactor geometry. Geometry types include: Hexagonal, Wire_Wrapped_Hexagonal, Square
 Geometry = "Wire_Wrapped_Hexagonal"
 
+
 Hc = 0.35 #Active Height of Core is 2m
 Qth = 3*10**6 #Core Thermal Production - W
 #Mdot = #Total mass flow rate for the reactor. This will then be divided for subchannels.
