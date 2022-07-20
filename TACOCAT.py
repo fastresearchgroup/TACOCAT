@@ -9,7 +9,7 @@ import TACOCAT_Read_In_File as TCinput
 from scipy.integrate import trapz
 from scipy.integrate import quad
 from TACOCAT.src.Fuel_Props import Fuel_props
-from Geometry_Value import Core_Geometry
+from TACOCAT.src.Geometry_Value import Core_Geometry
 
 #Assumptions
 #1. The core thermal production is assumed to set after heat deposition
@@ -180,7 +180,7 @@ Pemax = Prmax*Uoutlet*FoCD/numax # Max Peclet number in a inner channel
 Peavg = (Pe + Pemax)/2 # Average Peclect number in a inner channel
 Re1 = Peavg/Pravg # Average Reynolds number in a inner channel
 
-if Geometry_Type == "Hexagonal":
+if Geometry_Type == "Wire_Wraped_Hexagonal":
 	M = ((1.034/(PtoD**0.124))+(29.7*(PtoD**6.94)*Re1**0.086)/(Geom.LeadW(FoCD,WoD)/FoCD)**2.239)**0.885 #modifier
 else:
 	M = 1

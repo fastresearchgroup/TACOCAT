@@ -1,7 +1,7 @@
 #Trevor Franklin
 #Geometry Values
 
-import SquareDhCal
+import TACOCAT.src.SquareDhCal
 import TACOCAT.src.HexDhCal
 import numpy as np
 
@@ -35,9 +35,9 @@ Wire_Wrapped_Hexagonal = {
 	}
 
 Square = {
-	"FaceArea" : SquareDhCal.Sa(PtoD,FoCD,NFRA),
-	"CoolantFlowArea" : SquareDhCal.SaF(Sa,NFuel,FoCD),
-	"InnerHydraulicDiameter" : SquareDhCal.DH1(SquareDhCal.A1(PtoD,FoCD),SquareDhCal.P1(FoCD)),
+	"FaceArea" : TACOCAT.src.SquareDhCal.Sa(PtoD,FoCD,NFRA),
+	"CoolantFlowArea" : TACOCAT.src.SquareDhCal.SaF(Sa,NFuel,FoCD),
+	"InnerHydraulicDiameter" : TACOCAT.src.SquareDhCal.DH1(TACOCAT.src.SquareDhCal.A1(PtoD,FoCD),TACOCAT.src.SquareDhCal.P1(FoCD)),
 	}
 
 Core_Geometry = {
