@@ -28,13 +28,20 @@ Hexagonal = {
 	"InnerHydraulicDiameter" : TACOCAT.src.HexDhCal.Dh1(TACOCAT.src.HexDhCal.A1(PtoD,FoCD,WoD),TACOCAT.src.HexDhCal.P1(FoCD,WoD)),
 	}
 
+Wire_Wrapped_Hexagonal = {
+	"FaceArea" : TACOCAT.src.HexDhCal.Ha(Ac),
+	"CoolantFlowArea" : TACOCAT.src.HexDhCal.HaF(TACOCAT.src.HexDhCal.Ha(Ac),NFuel,FoCD,WoD),
+	"InnerHydraulicDiameter" : TACOCAT.src.HexDhCal.Dh1(TACOCAT.src.HexDhCal.A1(PtoD,FoCD,WoD),TACOCAT.src.HexDhCal.P1(FoCD,WoD)),
+	}
+
 Square = {
 	"FaceArea" : SquareDhCal.Sa(PtoD,FoCD,NFRA),
 	"CoolantFlowArea" : SquareDhCal.SaF(Sa,NFuel,FoCD),
 	"InnerHydraulicDiameter" : SquareDhCal.DH1(SquareDhCal.A1(PtoD,FoCD),SquareDhCal.P1(FoCD)),
-}
+	}
 
 Core_Geometry = {
 	"Hexagonal" : Hexagonal,
 	"Square" : Square,
-}
+	"Wire_Wrapped_Hexagonal" : Wire_Wrapped_Hexagonal,
+	}
