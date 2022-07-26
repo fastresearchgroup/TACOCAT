@@ -3,7 +3,12 @@
 
 import pytest
 import numpy as np
-from TACOCAT import SquareDhCal
+import os
+import sys
+sys.path.insert(0,'..') #This adds the ability to geometry calculations from the main folder
+sys.path.insert(0,'./TACOCAT/src') #Looking for data in a subfolder
+from pathlib import Path
+import SquareDhCal
 
 def test_Sa():
 	assert SquareDhCal.Sa(1,1,1) == 1
