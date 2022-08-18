@@ -110,46 +110,6 @@ for i in range(0,steps):
 Tavg = (Tbulk[0] + Tbulk[steps-1])/2
 THotFavg = (TbulkHotF[0] + TbulkHotF[steps-1])/2
 
-NaK_max = {
-	"rhomax": 1/((0.22/NaK_Prop.rhoNa(Tbulk[steps-1] + 273.15))+(0.78/NaK_Prop.rhoK(Tbulk[steps-1] + 273.15))), #kg/m^3
-	"Cpmax": (10**3)*(0.22*NaK_Prop.CpNa(Tbulk[steps-1] + 273.15) + 0.78*NaK_Prop.CpK(Tbulk[steps-1] + 273.15)), #J/kg-K
-	"kmax": NaK_Prop.k(Tbulk[steps-1] + 273.15),
-	"numax": NaK_Prop.nu(Tbulk[steps-1] + 273.15)
-}
-
-FLiBe_max = {
-	"rhomax": FLiBe_Prop.rho(Tbulk[steps-1] + 273.15),
-	"Cpmax": FLiBe_Prop.Cp(Tbulk[steps-1] + 273.15),
-	"kmax": FLiBe_Prop.k(Tbulk[steps-1] + 273.15),
-	"numax": FLiBe_Prop.nu(Tbulk[steps-1] + 273.15)
-}
-
-FLiNaK_max = {
-	"rhomax": FLiNaK_Prop.rho(Tbulk[steps-1] + 273.15),
-	"Cpmax": FLiNaK_Prop.Cp(Tbulk[steps-1] + 273.15),
-	"kmax": FLiNaK_Prop.k(Tbulk[steps-1] + 273.15),
-	"numax": FLiNaK_Prop.nu(Tbulk[steps-1] + 273.15)
-}
-
-NaF_ZrF4_max = {
-	"rhomax": NaF_ZrF4_Prop.rho(Tbulk[steps-1] + 273.15),
-	"Cpmax": NaF_ZrF4_Prop.Cp(Tbulk[steps-1] + 273.15),
-	"kmax": NaF_ZrF4_Prop.k(Tbulk[steps-1] + 273.15),
-	"numax": NaF_ZrF4_Prop.nu(Tbulk[steps-1] + 273.15)
-}
-
-Coolant_props_max = {
-	"NaK": NaK_max,
-	"FLiBe": FLiBe_max,
-	"FLiNaK": FLiNaK_max,
-	"NaF_ZrF4": NaF_ZrF4_max
-}
-
-rhomax = Coolant_props_max[Coolant_Type]["rhomax"]
-Cpmax = Coolant_props_max[Coolant_Type]["Cpmax"]
-kmax = Coolant_props_max[Coolant_Type]["kmax"]
-numax = Coolant_props_max[Coolant_Type]["numax"]
-
 Prmax = Cpmax*numax*rhomax/kmax #Prandtl Number Calculation
 
 #Max and Averaged quantities with calculated outlet temperature
