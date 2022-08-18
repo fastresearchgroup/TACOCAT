@@ -10,6 +10,7 @@ from scipy.integrate import trapz
 from scipy.integrate import quad
 from TACOCAT.src.Fuel_Props import Fuel_props
 from TACOCAT.src.Geometry_Value import Core_Geometry
+from TACOCAT.src.Coolant_Value import Coolant
 
 #Assumptions
 #1. The core thermal production is assumed to set after heat deposition
