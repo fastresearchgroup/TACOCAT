@@ -29,9 +29,6 @@ data_logic = TCinput.data_logic
 Fuel_Type = TCinput.Fuel_Type
 Coolant_Type = TCinput.Coolant
 Geometry_Type = TCinput.Geometry
-
-Hc = TCinput.Hc
-HotF = TCinput.HotF
 Hc = TCinput.Hc
 HotF = TCinput.HotF
 
@@ -64,9 +61,7 @@ kclad = clad.k(Tbulkin + 273.15)
 #----------------------------------------------------------------------------------#
 ## Core Geometry Calculations
 # Geometric Calculations
-
 CVol = Core_Geometry[Geometry_Type]["FaceArea"]*Hc #Volume of the core - m^3
-
 
 #----------------------------------------------------------------------------------#
 ## Core Parameter Calculations 
@@ -203,4 +198,3 @@ plt.grid()
 k = k + 1
 
 plt.show()
-
