@@ -9,6 +9,8 @@ import TACOCAT_Read_In_File as TCinput
 from scipy.integrate import trapz
 from scipy.integrate import quad
 from TACOCAT.src.Fuel_Props import Fuel_props
+from TACOCAT.src.Geometry_Value import Core_Geometry
+
 
 #Assumptions
 #1. The core thermal production is assumed to set after heat deposition
@@ -26,6 +28,8 @@ data_logic = TCinput.data_logic
 #Read in parameters
 Fuel_Type = TCinput.Fuel_Type
 Coolant_Type = TCinput.Coolant
+Geometry_Type = TCinput.Geometry
+
 Hc = TCinput.Hc
 HotF = TCinput.HotF
 
@@ -99,7 +103,9 @@ kclad = clad.k(Tbulkin + 273.15)
 #----------------------------------------------------------------------------------#
 ## Core Geometry Calculations
 # Geometric Calculations
-CVol = Geom.Ha(Ac)*Hc #Volume of the core - m^3
+
+CVol = Core_Geometry[Geometry_Type]["FaceArea"]*Hc #Volume of the core - m^3
+
 
 #----------------------------------------------------------------------------------#
 ## Core Parameter Calculations 
@@ -111,10 +117,11 @@ qlinHotF = qlin*HotF # Hottest Channel Linear Energy Generation Rate - W/m
 qppco = qlin/(np.pi*FoCD) # Average heat flux at rod/coolant interface - W/m^2
 
 # Coolant Calculations
-mdot = Uinlet*rho*Geom.HaF(Geom.Ha(Ac),NFuel,FoCD,WoD) # Mass flow rate for the fluid - kg/s
-Pe = (Uinlet*Geom.Dh1(Geom.A1(PtoD,FoCD,WoD),Geom.P1(FoCD,WoD))/nu)*Pr # Peclet Number for Fluid
+mdot = Uinlet*rho*Core_Geometry[Geometry_Type]["CoolantFlowArea"] # Mass flow rate for the fluid - kg/s
+Pe = (Uinlet*Core_Geometry[Geometry_Type]["InnerHydraulicDiameter"]/nu)*Pr # Peclet Number for Fluid
 Nu = Nu.Nu(PtoD,Pe)
-h = Nu*k/Geom.Dh1(Geom.A1(PtoD,FoCD,WoD),Geom.P1(FoCD,WoD)) #Heat Transfer Coefficient for Rod Bundles - W/m^2 - C
+h = Nu*k/Core_Geometry[Geometry_Type]["InnerHydraulicDiameter"] #Heat Transfer Coefficient for Rod Bundles - W/m^2 - C
+
 
 #Core Temperature Calculations
 #Call axial bulk temperature distribution calculation
@@ -128,9 +135,10 @@ TbulkHotF = np.zeros(steps)
 TbulkHotF[0] = Tbulkin
 for i in range(1,steps):
     # Bulk Temperature of Coolant in Average Channel - C
-	Tbulk[i] = Tbulkin + (np.trapz(FluxPro[0:i+1],z[0:i+1])*NFuel*qlin)/(Cp*Uinlet*rho*Geom.HaF(Geom.Ha(Ac),NFuel,FoCD,WoD)) #Bulk Temperature of Coolant - C
+	Tbulk[i] = Tbulkin + (np.trapz(FluxPro[0:i+1],z[0:i+1])*NFuel*qlin)/(Cp*Uinlet*rho*Core_Geometry[Geometry_Type]["CoolantFlowArea"]) #Bulk Temperature of Coolant - C
     # Bulk Temperature of Coolant in Hottest Channel - C
-	TbulkHotF[i] = Tbulkin + (np.trapz(FluxPro[0:i+1],z[0:i+1])*NFuel*qlinHotF)/(Cp*Uinlet*rho*Geom.HaF(Geom.Ha(Ac),NFuel,FoCD,WoD)) #Bulk Temperature of Coolant - C
+	TbulkHotF[i] = Tbulkin + (np.trapz(FluxPro[0:i+1],z[0:i+1])*NFuel*qlinHotF)/(Cp*Uinlet*rho*Core_Geometry[Geometry_Type]["CoolantFlowArea"]) #Bulk Temperature of Coolant - C
+
 
 Tcl = np.zeros(steps)
 TclHotF = np.zeros(steps)
@@ -172,18 +180,23 @@ Prmax = Cpmax*numax*rhomax/kmax #Prandtl Number Calculation
 #Max and Averaged quantities with calculated outlet temperature
 Pravg = (Pr + Prmax)/2 # Average Prandtl Number in a inner channel
 rhoavg = (rho + rhomax)/2 # Average density number in a inner channel
-Uoutlet = mdot/(rhomax*Geom.HaF(Geom.Ha(Ac),NFuel,FoCD,WoD)) # Outlet Velocity in a inner channel
+Uoutlet = mdot/(rhomax*Core_Geometry[Geometry_Type]["CoolantFlowArea"]) # Outlet Velocity in a inner channel
+
 Uavg = (Uinlet + Uoutlet)/2 # Average velocity in a inner channel
 Pemax = Prmax*Uoutlet*FoCD/numax # Max Peclet number in a inner channel
 Peavg = (Pe + Pemax)/2 # Average Peclect number in a inner channel
 Re1 = Peavg/Pravg # Average Reynolds number in a inner channel
 
-M = ((1.034/(PtoD**0.124))+(29.7*(PtoD**6.94)*Re1**0.086)/(Geom.LeadW(FoCD,WoD)/FoCD)**2.239)**0.885
+if Geometry_Type == "Wire_Wraped_Hexagonal":
+	M = ((1.034/(PtoD**0.124))+(29.7*(PtoD**6.94)*Re1**0.086)/(Geom.LeadW(FoCD,WoD)/FoCD)**2.239)**0.885 #modifier
+else:
+	M = 1
 fsm = 0.316*Re1**(-0.25)
-dP = M*fsm*(Hc/Geom.Dh1(Geom.A1(PtoD,FoCD,WoD),Geom.P1(FoCD,WoD)))*0.5*rhoavg*Uavg**2
+dP = M*fsm*(Hc/Core_Geometry[Geometry_Type]["InnerHydraulicDiameter"])*0.5*rhoavg*Uavg**2
 
 #Heat Load Calculation
-QPri = Uavg*rhoavg*Geom.HaF(Geom.Ha(Ac),NFuel,FoCD,WoD)*((Cp + Cpmax)/2)*(Tbulk[steps-1]-Tbulk[0])
+QPri = Uavg*rhoavg*Core_Geometry[Geometry_Type]["CoolantFlowArea"]*((Cp + Cpmax)/2)*(Tbulk[steps-1]-Tbulk[0])
+
 
 #----------------------------------------------------------------------------------#
 ## Report out - Core Parameters
@@ -257,3 +270,4 @@ plt.grid()
 k = k + 1
 
 plt.show()
+
