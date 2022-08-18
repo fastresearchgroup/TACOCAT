@@ -9,12 +9,13 @@ import os
 import sys
 sys.path.insert(0,'..') #This adds the ability to call flinak prop from the main folder
 sys.path.insert(0,'./Flinak') #Looking for data in a subfolder
-import numpy as np 
 from pathlib import Path
-import matplotlib.pyplot as plt  
-import FLiNaK_Prop
-import Flinak_Verification_Data
+
+import numpy as np 
+import matplotlib.pyplot as plt
 import pandas as pd
+import src.FLiNaK_Prop
+import Flinak_Verification_Data
 
 path = os.getcwd()
 
@@ -29,10 +30,10 @@ Cp = np.zeros(steps)
 K = np.zeros(steps)
 
 for i in range(0,steps):
-	Rho[i] = FLiNaK_Prop.rho(T[i]+273.15)
-	Nu[i] = FLiNaK_Prop.nu(T2[i])*1000
-	Cp[i] = FLiNaK_Prop.Cp(T2[i])
-	K[i] = FLiNaK_Prop.k(T2[i])
+	Rho[i] = src.FLiNaK_Prop.rho(T[i]+273.15)
+	Nu[i] = src.FLiNaK_Prop.nu(T2[i])*1000
+	Cp[i] = src.FLiNaK_Prop.Cp(T2[i])
+	K[i] = src.FLiNaK_Prop.k(T2[i])
 
 linestyles = ['--','-','--','--']
 colors = ['blue','firebrick','yellowgreen','purple']

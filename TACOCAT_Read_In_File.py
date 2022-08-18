@@ -1,23 +1,29 @@
 #TACOCAT read in file
 
 #Provide the name of the reactor
-Reactor_Title = "Lunar_Reactor_689"
+Reactor_Title = "Placeholder"
+## Print Logicals for saving plots and data files 
+# (0 - save, 1 or higher - do not save)
+print_logic = 1
+data_logic = 1
 
 #Provide chemical composition of fuel. Fuel types include: U_Zr10, UC, UO2, PuO2, ThO2, UN, U3Si2, MOX, U
-Fuel_Type = "UC"
+Fuel_Type = "U_Zr10"
 
 #Provide chemical composition of coolant. Coolant types include: NaK, FLiBe, FLiNaK, NaF_ZrF4
 Coolant = "NaK"
 
-#Provide reactor geometry. Geometry types include: 
-Geometry = ""
+#Provide reactor geometry. Geometry types include: Hexagonal, Wire_Wrapped_Hexagonal, Square
+Geometry = "Wire_Wrapped_Hexagonal"
+
 
 Hc = 0.35 #Active Height of Core is 2m
 Qth = 3*10**6 #Core Thermal Production - W
 #Mdot = #Total mass flow rate for the reactor. This will then be divided for subchannels.
 Tbulkin = 550.00 #Bulk Temperature of NaK at the Inlet - C
 HotF = 1.5 #Hottest Channel Factor Calculation
-steps = 36 #Needs to be changed, filler for z
+Uinlet = 0.0375 #average inlet velocity in a subchannel - m/s
+
 '''
 Example input:
 
