@@ -56,16 +56,7 @@ Uinlet = TCinput.Uinlet #average inlet velocity in a subchannel - m/s
 #----------------------------------------------------------------------------------#
 ## Material Properties
 
-#Thermal Fluid Properties of Coolants
-
-rho = Coolant_props[Coolant_Type]["rho"]
-Cp = Coolant_props[Coolant_Type]["Cp"]
-k = Coolant_props[Coolant_Type]["k"]
-nu = Coolant_props[Coolant_Type]["nu"]
-TmeltCoolant = Coolant_props[Coolant_Type]["TmeltCoolant"]
-Tboil = Coolant_props[Coolant_Type]["Tboil"]
-
-Pr = Cp*nu*rho/k #Prandtl Number Calculation
+Pr = Coolant[Coolant_Type]["Cp"]*Coolant[Coolant_Type]["nu"]*Coolant[Coolant_Type]["rho"]/Coolant[Coolant_Type]["k"] #Prandtl Number Calculation
 
 #Thermal Conductivity of Cladding - W/m-K @ 300 C
 kclad = clad.k(Tbulkin + 273.15)
