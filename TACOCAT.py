@@ -32,7 +32,8 @@ Geometry_Type = TCinput.Geometry
 
 Hc = TCinput.Hc
 HotF = TCinput.HotF
-#steps = TCinput.steps
+Hc = TCinput.Hc
+HotF = TCinput.HotF
 
 # Geometry - Core
 steps = 36
