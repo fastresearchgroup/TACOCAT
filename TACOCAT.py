@@ -110,7 +110,7 @@ for i in range(0,steps):
 Tavg = (Tbulk[0] + Tbulk[steps-1])/2
 THotFavg = (TbulkHotF[0] + TbulkHotF[steps-1])/2
 
-Prmax = Cpmax*numax*rhomax/kmax #Prandtl Number Calculation
+Prmax = Coolant[Coolant_Type]["Cpmax"]*Coolant[Coolant_Type]["numax"]*Coolant[Coolant_Type]["rhomax"]/Coolant[Coolant_Type]["kmax"]#Prandtl Number Calculation
 
 #Max and Averaged quantities with calculated outlet temperature
 Pravg = (Pr + Prmax)/2 # Average Prandtl Number in a inner channel
