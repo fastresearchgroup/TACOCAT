@@ -29,8 +29,6 @@ def test_ExponentialFlux():
     z_values = np.exp(z)
     np.testing.assert_array_equal(z_values, Flux_Profiles.ExponentialFlux[:])
 
-def test_CosFlux():
-    x, y = [-1, 0, 1], [1, 1, 1]
-    x_plot, y_plot = ax.lines[0].get_xydata()
-    plt.show()
-    np.testing.assert_array_equal(y_plot, plt.plot(z,CosFlux[:]))
+def test_CosineFlux():
+    z_value = np.cos((np.pi/Hc)*z)
+    np.testing.assert_array_equal(z_value, Flux_Profiles.CosineFlux[:])
