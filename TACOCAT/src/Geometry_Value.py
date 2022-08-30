@@ -4,10 +4,15 @@
 import TACOCAT.src.SquareDhCal
 import TACOCAT.src.HexDhCal
 import numpy as np
+import os
+import sys
+sys.path.insert(0,'../..') #This adds the ability to geometry calculations from the main folder
+import TACOCAT_Read_In_File as TCinput
 
 #---------------------------------------------------------------------------------------#
 # Geometry - Core
 steps = 36
+Hc = TCinput.Hc
 z = np.linspace(-Hc/2,Hc/2,steps) #this needs to be a numpy array of position along the core in - m
 Ar = 33.8/100 #Active Radius of the core - m
 Ac = (2*(Ar**2)*np.pi/(3*3**0.5))**0.5 #Length of Hexagonal Size - m
