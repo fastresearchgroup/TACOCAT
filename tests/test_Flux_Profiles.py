@@ -1,5 +1,5 @@
 #Trevor Franklin
-#Unit Test for Hex Geometry
+#Unit Test for Flux
 
 import pytest
 import numpy as np
