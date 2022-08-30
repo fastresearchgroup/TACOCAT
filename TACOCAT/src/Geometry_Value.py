@@ -7,6 +7,7 @@ import numpy as np
 
 #---------------------------------------------------------------------------------------#
 # Geometry - Core
+steps = 36
 Ar = 33.8/100 #Active Radius of the core - m
 Ac = (2*(Ar**2)*np.pi/(3*3**0.5))**0.5 #Length of Hexagonal Size - m
 
