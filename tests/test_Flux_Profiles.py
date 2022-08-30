@@ -15,4 +15,22 @@ def test_FlatLineFlux():
     x, y = [-1, 0, 1], [1, 1, 1]
     x_plot, y_plot = ax.lines[0].get_xydata()
     plt.show()
-    #np.testing.assert_array_equal(y_plot, plt.plot(z,FlatLineFlux))
+    np.testing.assert_array_equal(y_plot, plt.plot(z,FlatLineFlux[:]))
+
+def test_LinearFlux():
+    x, y = [-1, 0, 1], [1, 1, 1]
+    x_plot, y_plot = ax.lines[0].get_xydata()
+    plt.show()
+    np.testing.assert_array_equal(y_plot, plt.plot(z,LinearFlux[:]))
+
+def test_ExponentialFlux():
+    x, y = [-1, 0, 1], [1, 1, 1]
+    x_plot, y_plot = ax.lines[0].get_xydata()
+    plt.show()
+    np.testing.assert_array_equal(y_plot, plt.plot(z,ExponentialFlux[:]))
+
+def test_CosFlux():
+    x, y = [-1, 0, 1], [1, 1, 1]
+    x_plot, y_plot = ax.lines[0].get_xydata()
+    plt.show()
+    np.testing.assert_array_equal(y_plot, plt.plot(z,CosFlux[:]))
