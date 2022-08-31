@@ -61,7 +61,7 @@ qppco = qlin/(np.pi*Geometry.FoCD) # Average heat flux at rod/coolant interface 
 # Coolant Calculations
 mdot = Uinlet*Coolant[Coolant_Type]["rho"]*Core_Geometry[Geometry_Type]["CoolantFlowArea"] # Mass flow rate for the fluid - kg/s
 Pe = (Uinlet*Core_Geometry[Geometry_Type]["InnerHydraulicDiameter"]/Coolant[Coolant_Type]["nu"])*Pr # Peclet Number for Fluid
-Nu = Nu.Nu(PtoD,Pe)
+Nu = Nu.Nu(Geometry.PtoD,Pe)
 h = Nu*Coolant[Coolant_Type]["k"]/Core_Geometry[Geometry_Type]["InnerHydraulicDiameter"] #Heat Transfer Coefficient for Rod Bundles - W/m^2 - C
 
 #Core Temperature Calculations
