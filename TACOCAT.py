@@ -68,7 +68,7 @@ h = Nu*Coolant[Coolant_Type]["k"]/Core_Geometry[Geometry_Type]["InnerHydraulicDi
 #Call axial bulk temperature distribution calculation
 
 FluxPro = np.zeros(Geometry.steps)
-FluxPro[:] = np.cos((np.pi/Hc)*z[:])
+FluxPro[:] = np.cos((np.pi/Hc)*Geometry.z[:])
 
 Tbulk = np.zeros(steps) #Initialize Bulk Temperature of Coolant - C
 Tbulk[0] = Tbulkin
