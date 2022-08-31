@@ -56,7 +56,7 @@ CVol = Core_Geometry[Geometry_Type]["FaceArea"]*Hc #Volume of the core - m^3
 Qavgp = Qth/CVol #Average Power Density Calculation - W/m^3
 qlin = Qth/(Geometry.NFuel*Hc) # Average Rod Linear Energy Generation Rate - W/m
 qlinHotF = qlin*HotF # Hottest Channel Linear Energy Generation Rate - W/m
-qppco = qlin/(np.pi*FoCD) # Average heat flux at rod/coolant interface - W/m^2
+qppco = qlin/(np.pi*Geometry.FoCD) # Average heat flux at rod/coolant interface - W/m^2
 
 # Coolant Calculations
 mdot = Uinlet*Coolant[Coolant_Type]["rho"]*Core_Geometry[Geometry_Type]["CoolantFlowArea"] # Mass flow rate for the fluid - kg/s
