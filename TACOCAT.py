@@ -38,7 +38,6 @@ Uinlet = TCinput.Uinlet #average inlet velocity in a subchannel - m/s
 
 #----------------------------------------------------------------------------------#
 ## Material Properties
-
 Pr = Coolant[Coolant_Type]["Cp"]*Coolant[Coolant_Type]["nu"]*Coolant[Coolant_Type]["rho"]/Coolant[Coolant_Type]["k"] #Prandtl Number Calculation
 
 #Thermal Conductivity of Cladding - W/m-K @ 300 C
@@ -70,7 +69,7 @@ h = Nu*Coolant[Coolant_Type]["k"]/Core_Geometry[Geometry_Type]["InnerHydraulicDi
 FluxPro = np.zeros(Geometry.steps)
 FluxPro[:] = np.cos((np.pi/Hc)*Geometry.z[:])
 
-Tbulk = np.zeros(steps) #Initialize Bulk Temperature of Coolant - C
+Tbulk = np.zeros(Geometry.steps) #Initialize Bulk Temperature of Coolant - C
 Tbulk[0] = Tbulkin
 TbulkHotF = np.zeros(steps)
 TbulkHotF[0] = Tbulkin
