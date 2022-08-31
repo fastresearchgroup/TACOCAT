@@ -6,6 +6,7 @@ import TACOCAT.src.HexDhCal as Geom
 import TACOCAT.src.HegNu as Nu
 import TACOCAT.src.TempBulkCal as TempBulk
 import TACOCAT_Read_In_File as TCinput
+import TACOCAT.src.Geometry_Value as Geometry
 from scipy.integrate import trapz
 from scipy.integrate import quad
 from TACOCAT.src.Fuel_Props import Fuel_props
@@ -53,7 +54,7 @@ CVol = Core_Geometry[Geometry_Type]["FaceArea"]*Hc #Volume of the core - m^3
 
 # Power Density and Linear Generation Calculations
 Qavgp = Qth/CVol #Average Power Density Calculation - W/m^3
-qlin = Qth/(NFuel*Hc) # Average Rod Linear Energy Generation Rate - W/m
+qlin = Qth/(Geometry.NFuel*Hc) # Average Rod Linear Energy Generation Rate - W/m
 qlinHotF = qlin*HotF # Hottest Channel Linear Energy Generation Rate - W/m
 qppco = qlin/(np.pi*FoCD) # Average heat flux at rod/coolant interface - W/m^2
 
