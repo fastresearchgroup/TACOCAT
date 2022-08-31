@@ -71,7 +71,7 @@ FluxPro[:] = np.cos((np.pi/Hc)*Geometry.z[:])
 
 Tbulk = np.zeros(Geometry.steps) #Initialize Bulk Temperature of Coolant - C
 Tbulk[0] = Tbulkin
-TbulkHotF = np.zeros(steps)
+TbulkHotF = np.zeros(Geometry.steps)
 TbulkHotF[0] = Tbulkin
 for i in range(1,steps):
     # Bulk Temperature of Coolant in Average Channel - C
