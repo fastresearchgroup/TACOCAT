@@ -88,7 +88,7 @@ for i in range(0,Geometry.steps):
 	TclHotF[i] = TbulkHotF[i] + ((FluxPro[i]*qlinHotF)/(2*np.pi))*((1/(h*(Geometry.FoCD/2))) + (1/(2*Fuel_props[Fuel_Type]["kfuel"])) + (1/kclad)*np.log(Geometry.FoCD/Geometry.FoD))
 
 Tavg = (Tbulk[0] + Tbulk[Geometry.steps-1])/2
-THotFavg = (TbulkHotF[0] + TbulkHotF[steps-1])/2
+THotFavg = (TbulkHotF[0] + TbulkHotF[Geometry.steps-1])/2
 
 Prmax = Coolant[Coolant_Type]["Cpmax"]*Coolant[Coolant_Type]["numax"]*Coolant[Coolant_Type]["rhomax"]/Coolant[Coolant_Type]["kmax"]#Prandtl Number Calculation
 
@@ -97,7 +97,7 @@ Pravg = (Pr + Prmax)/2 # Average Prandtl Number in a inner channel
 rhoavg = (Coolant[Coolant_Type]["rho"] + Coolant[Coolant_Type]["rhomax"])/2 # Average density number in a inner channel
 Uoutlet = mdot/(Coolant[Coolant_Type]["rhomax"]*Core_Geometry[Geometry_Type]["CoolantFlowArea"]) # Outlet Velocity in a inner channel
 Uavg = (Uinlet + Uoutlet)/2 # Average velocity in a inner channel
-Pemax = Prmax*Uoutlet*FoCD/Coolant[Coolant_Type]["numax"] # Max Peclet number in a inner channel
+Pemax = Prmax*Uoutlet*Geometry.FoCD/Coolant[Coolant_Type]["numax"] # Max Peclet number in a inner channel
 Peavg = (Pe + Pemax)/2 # Average Peclect number in a inner channel
 Re1 = Peavg/Pravg # Average Reynolds number in a inner channel
 
