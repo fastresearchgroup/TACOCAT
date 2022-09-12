@@ -83,9 +83,9 @@ Tcl = np.zeros(Geometry.steps)
 TclHotF = np.zeros(Geometry.steps)
 for i in range(0,Geometry.steps):
     # Centerline Temperature of Fuel in Average Channel - C
-	Tcl[i] = Tbulk[i] + ((FluxPro[i]*qlin)/(2*np.pi))*((1/(h*(FoCD/2))) + (1/(2*Fuel_props[Fuel_Type]["kfuel"])) + (1/kclad)*np.log(FoCD/FoD))
+	Tcl[i] = Tbulk[i] + ((FluxPro[i]*qlin)/(2*np.pi))*((1/(h*(Geometry.FoCD/2))) + (1/(2*Fuel_props[Fuel_Type]["kfuel"])) + (1/kclad)*np.log(Geometry.FoCD/Geometry.FoD))
     # Centerline Temperature of Fuel in Hottest Channel - C
-	TclHotF[i] = TbulkHotF[i] + ((FluxPro[i]*qlinHotF)/(2*np.pi))*((1/(h*(FoCD/2))) + (1/(2*Fuel_props[Fuel_Type]["kfuel"])) + (1/kclad)*np.log(FoCD/FoD))
+	TclHotF[i] = TbulkHotF[i] + ((FluxPro[i]*qlinHotF)/(2*np.pi))*((1/(h*(Geometry.FoCD/2))) + (1/(2*Fuel_props[Fuel_Type]["kfuel"])) + (1/kclad)*np.log(Geometry.FoCD/Geometry.FoD))
 
 Tavg = (Tbulk[0] + Tbulk[steps-1])/2
 THotFavg = (TbulkHotF[0] + TbulkHotF[steps-1])/2
