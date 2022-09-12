@@ -79,7 +79,7 @@ for i in range(1,Geometry.steps):
     # Bulk Temperature of Coolant in Hottest Channel - C
 	TbulkHotF[i] = Tbulkin + (np.trapz(FluxPro[0:i+1],Geometry.z[0:i+1])*Geometry.NFuel*qlinHotF)/(Coolant[Coolant_Type]["Cp"]*Uinlet*Coolant[Coolant_Type]["rho"]*Core_Geometry[Geometry_Type]["CoolantFlowArea"]) #Bulk Temperature of Coolant - C
 
-Tcl = np.zeros(steps)
+Tcl = np.zeros(Geometry.steps)
 TclHotF = np.zeros(steps)
 for i in range(0,steps):
     # Centerline Temperature of Fuel in Average Channel - C
