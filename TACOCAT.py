@@ -157,10 +157,10 @@ fs = 14
 
 k = 1
 plt.figure(k, figsize=(h,w))
-plt.plot(z,Tbulk,'r--',linewidth = lw,label=r'$T_{bulk}$')
-plt.plot(z,TbulkHotF,'k--',linewidth = lw, label=r'$T_{bulk-HF}$')
-plt.plot(z,Tcl, 'g-',linewidth = lw, label=r'$T_{cl}$')
-plt.plot(z,TclHotF, 'c-',linewidth = lw, label=r'$T_{cl-HF}$')
+plt.plot(Geometry.z,Tbulk,'r--',linewidth = lw,label=r'$T_{bulk}$')
+plt.plot(Geometry.z,TbulkHotF,'k--',linewidth = lw, label=r'$T_{bulk-HF}$')
+plt.plot(Geometry.z,Tcl, 'g-',linewidth = lw, label=r'$T_{cl}$')
+plt.plot(Geometry.z,TclHotF, 'c-',linewidth = lw, label=r'$T_{cl-HF}$')
 plt.axhline(y=Coolant[Coolant_Type]["Tboil"], xmin = 0, xmax = 1, color = 'r',linewidth = lw, label='Coolant Boiling Temp')
 plt.axhline(y=Coolant[Coolant_Type]["TmeltCoolant"], xmin = 0, xmax = 1, color = 'b',linewidth = lw, label='Coolant Melting Temp')
 plt.legend(loc='center left')
@@ -175,7 +175,7 @@ if print_logic == 0:
 k = k + 1
 
 plt.figure(k, figsize=(h,w))
-plt.plot(z,FluxPro, 'k-')
+plt.plot(Geometry.z,FluxPro, 'k-')
 plt.suptitle('Axial Core Flux Profile')
 plt.ylabel('Normalized Height')
 plt.xlabel('Normalized Flux')
