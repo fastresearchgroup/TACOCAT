@@ -138,7 +138,7 @@ print('--------------------------------------------------------')
 ## Create data files for each run and print out the data
 
 df1 = pd.DataFrame([[Tbulk[0]], [Tbulk[Geometry.steps-1]], [Tavg], [TbulkHotF[Geometry.steps-1]], [THotFavg], [Tcl[Geometry.steps-1]], [TclHotF[Geometry.steps-1]]], index=['Inlet Bulk Temperature', 'Outlet Bulk Temperature', 'Average Bulk Temperature', 'Outlet Bulk Temperature - Hot Channel', 'Average Coolant Temperature - Hot Channel', 'Highest Fuel Centerline Temperature', 'Highest Fuel Centerline Temperature - Hottest Channel'], columns=['Temperature - C'])
-df2 = pd.DataFrame({'z': z, 'Tbulk': Tbulk, 'TbulkHotF': TbulkHotF, 'Tcl': Tcl, 'TclHotF': TclHotF, 'Flux Profile': FluxPro, 'Fuel Melting Temperature': Fuel_props[Fuel_Type]["Tmelt"], 'Coolant Boiling Temperature': Coolant[Coolant_Type]["Tboil"]})
+df2 = pd.DataFrame({'z': Geometry.z, 'Tbulk': Tbulk, 'TbulkHotF': TbulkHotF, 'Tcl': Tcl, 'TclHotF': TclHotF, 'Flux Profile': FluxPro, 'Fuel Melting Temperature': Fuel_props[Fuel_Type]["Tmelt"], 'Coolant Boiling Temperature': Coolant[Coolant_Type]["Tboil"]})
 
 title_data = TCinput.Reactor_Title + "_table"
 if data_logic == 0:
