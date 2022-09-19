@@ -109,7 +109,7 @@ fsm = 0.316*Re1**(-0.25)
 dP = M*fsm*(Hc/Core_Geometry[Geometry_Type]["InnerHydraulicDiameter"])*0.5*rhoavg*Uavg**2
 
 #Heat Load Calculation
-QPri = Uavg*rhoavg*Core_Geometry[Geometry_Type]["CoolantFlowArea"]*((Coolant[Coolant_Type]["Cp"] + Coolant[Coolant_Type]["Cpmax"])/2)*(Tbulk[steps-1]-Tbulk[0])
+QPri = Uavg*rhoavg*Core_Geometry[Geometry_Type]["CoolantFlowArea"]*((Coolant[Coolant_Type]["Cp"] + Coolant[Coolant_Type]["Cpmax"])/2)*(Tbulk[Geometry.steps-1]-Tbulk[0])
 
 #----------------------------------------------------------------------------------#
 ## Report out - Core Parameters
