@@ -102,7 +102,7 @@ Peavg = (Pe + Pemax)/2 # Average Peclect number in a inner channel
 Re1 = Peavg/Pravg # Average Reynolds number in a inner channel
 
 if Geometry_Type == "Wire_Wraped_Hexagonal":
-	M = ((1.034/(PtoD**0.124))+(29.7*(PtoD**6.94)*Re1**0.086)/(Geom.LeadW(FoCD,WoD)/FoCD)**2.239)**0.885 #modifier
+	M = ((1.034/(Geometry.PtoD**0.124))+(29.7*(Geometry.PtoD**6.94)*Re1**0.086)/(Geom.LeadW(FoCD,WoD)/Geometry.FoCD)**2.239)**0.885 #modifier
 else:
 	M = 1
 fsm = 0.316*Re1**(-0.25)
