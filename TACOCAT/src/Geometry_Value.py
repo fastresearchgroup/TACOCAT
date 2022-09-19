@@ -5,11 +5,8 @@ import TACOCAT.src.HexDhCal
 import numpy as np
 import os
 import sys
-import TACOCAT.src.Coolant_Value as Coolant 
-from TACOCAT.src.Coolant_Value import Coolant
 sys.path.insert(0,'../..') #This adds the ability to geometry calculations from the main folder
 import TACOCAT_Read_In_File as TCinput
-import TACOCAT as TC
 
 # Geometry - Core
 steps = 36
