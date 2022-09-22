@@ -28,7 +28,7 @@ ExponentialFlux = np.zeros(steps)
 ExponentialFlux[:] = np.exp(z)
 
 
-#Cosine Flux Profile
+#Chopped Cosine Flux Profile
 CosineFlux = np.zeros(steps)
 CosineFlux[:] = np.cos((np.pi/Hc)*z[:])
 
