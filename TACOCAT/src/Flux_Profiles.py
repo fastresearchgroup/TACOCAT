@@ -17,11 +17,9 @@ k = 1
 FlatLineFlux = np.zeros(steps)
 FlatLineFlux[:] = 1
 
-
 #Linear Flux Profile (y=x)
 LinearFlux = np.zeros(steps)
 LinearFlux[:] = z[:]
-
 
 #Exponential Flux Profile
 ExponentialFlux = np.zeros(steps)

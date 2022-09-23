@@ -6,6 +6,7 @@ import TACOCAT.src.HexDhCal as Geom
 import TACOCAT.src.HegNu as Nu
 import TACOCAT.src.TempBulkCal as TempBulk
 import TACOCAT_Read_In_File as TCinput
+import TACOCAT.src.Geometry_Value as Geometry
 from scipy.integrate import trapz
 from scipy.integrate import quad
 from TACOCAT.src.Fuel_Props import Fuel_props
@@ -31,28 +32,12 @@ Coolant_Type = TCinput.Coolant
 Geometry_Type = TCinput.Geometry
 Hc = TCinput.Hc
 HotF = TCinput.HotF
-
-# Geometry - Core
-steps = 36
-z = np.linspace(-Hc/2,Hc/2,steps) #this needs to be a numpy array of position along the core in - m
-Ar = 33.8/100 #Active Radius of the core - m
-Ac = (2*(Ar**2)*np.pi/(3*3**0.5))**0.5 #Length of Hexagonal Size - m
-
-# Geometry - Fuel
-FoD = 0.58/100 #Fuel Outer Diameter - m
-FoCD = 0.64/100 #Cladding Outer Diameter - m
-WoD = 0.1/100 #Wire Wrap Diamerer - m
-PtoD = 1.18 #Pitch to Diameter Ratio
-NFuel = 1951 #Number of Fuel Rods
-
-# Core Parameter - Inputs
 Qth = TCinput.Qth
 Tbulkin = TCinput.Tbulkin #Bulk Temperature of coolant at the Inlet - C
 Uinlet = TCinput.Uinlet #average inlet velocity in a subchannel - m/s
 
 #----------------------------------------------------------------------------------#
 ## Material Properties
-
 Pr = Coolant[Coolant_Type]["Cp"]*Coolant[Coolant_Type]["nu"]*Coolant[Coolant_Type]["rho"]/Coolant[Coolant_Type]["k"] #Prandtl Number Calculation
 
 #Thermal Conductivity of Cladding - W/m-K @ 300 C
@@ -68,42 +53,42 @@ CVol = Core_Geometry[Geometry_Type]["FaceArea"]*Hc #Volume of the core - m^3
 
 # Power Density and Linear Generation Calculations
 Qavgp = Qth/CVol #Average Power Density Calculation - W/m^3
-qlin = Qth/(NFuel*Hc) # Average Rod Linear Energy Generation Rate - W/m
+qlin = Qth/(Geometry.NFuel*Hc) # Average Rod Linear Energy Generation Rate - W/m
 qlinHotF = qlin*HotF # Hottest Channel Linear Energy Generation Rate - W/m
-qppco = qlin/(np.pi*FoCD) # Average heat flux at rod/coolant interface - W/m^2
+qppco = qlin/(np.pi*Geometry.FoCD) # Average heat flux at rod/coolant interface - W/m^2
 
 # Coolant Calculations
 mdot = Uinlet*Coolant[Coolant_Type]["rho"]*Core_Geometry[Geometry_Type]["CoolantFlowArea"] # Mass flow rate for the fluid - kg/s
 Pe = (Uinlet*Core_Geometry[Geometry_Type]["InnerHydraulicDiameter"]/Coolant[Coolant_Type]["nu"])*Pr # Peclet Number for Fluid
-Nu = Nu.Nu(PtoD,Pe)
+Nu = Nu.Nu(Geometry.PtoD,Pe)
 h = Nu*Coolant[Coolant_Type]["k"]/Core_Geometry[Geometry_Type]["InnerHydraulicDiameter"] #Heat Transfer Coefficient for Rod Bundles - W/m^2 - C
 
 #Core Temperature Calculations
 #Call axial bulk temperature distribution calculation
 
-FluxPro = np.zeros(steps)
-FluxPro[:] = np.cos((np.pi/Hc)*z[:])
+FluxPro = np.zeros(Geometry.steps)
+FluxPro[:] = np.cos((np.pi/Hc)*Geometry.z[:])
 
-Tbulk = np.zeros(steps) #Initialize Bulk Temperature of Coolant - C
+Tbulk = np.zeros(Geometry.steps) #Initialize Bulk Temperature of Coolant - C
 Tbulk[0] = Tbulkin
-TbulkHotF = np.zeros(steps)
+TbulkHotF = np.zeros(Geometry.steps)
 TbulkHotF[0] = Tbulkin
-for i in range(1,steps):
+for i in range(1,Geometry.steps):
     # Bulk Temperature of Coolant in Average Channel - C
-	Tbulk[i] = Tbulkin + (np.trapz(FluxPro[0:i+1],z[0:i+1])*NFuel*qlin)/(Coolant[Coolant_Type]["Cp"]*Uinlet*Coolant[Coolant_Type]["rho"]*Core_Geometry[Geometry_Type]["CoolantFlowArea"]) #Bulk Temperature of Coolant - C
+	Tbulk[i] = Tbulkin + (np.trapz(FluxPro[0:i+1],Geometry.z[0:i+1])*Geometry.NFuel*qlin)/(Coolant[Coolant_Type]["Cp"]*Uinlet*Coolant[Coolant_Type]["rho"]*Core_Geometry[Geometry_Type]["CoolantFlowArea"]) #Bulk Temperature of Coolant - C
     # Bulk Temperature of Coolant in Hottest Channel - C
-	TbulkHotF[i] = Tbulkin + (np.trapz(FluxPro[0:i+1],z[0:i+1])*NFuel*qlinHotF)/(Coolant[Coolant_Type]["Cp"]*Uinlet*Coolant[Coolant_Type]["rho"]*Core_Geometry[Geometry_Type]["CoolantFlowArea"]) #Bulk Temperature of Coolant - C
+	TbulkHotF[i] = Tbulkin + (np.trapz(FluxPro[0:i+1],Geometry.z[0:i+1])*Geometry.NFuel*qlinHotF)/(Coolant[Coolant_Type]["Cp"]*Uinlet*Coolant[Coolant_Type]["rho"]*Core_Geometry[Geometry_Type]["CoolantFlowArea"]) #Bulk Temperature of Coolant - C
 
-Tcl = np.zeros(steps)
-TclHotF = np.zeros(steps)
-for i in range(0,steps):
+Tcl = np.zeros(Geometry.steps)
+TclHotF = np.zeros(Geometry.steps)
+for i in range(0,Geometry.steps):
     # Centerline Temperature of Fuel in Average Channel - C
-	Tcl[i] = Tbulk[i] + ((FluxPro[i]*qlin)/(2*np.pi))*((1/(h*(FoCD/2))) + (1/(2*Fuel_props[Fuel_Type]["kfuel"])) + (1/kclad)*np.log(FoCD/FoD))
+	Tcl[i] = Tbulk[i] + ((FluxPro[i]*qlin)/(2*np.pi))*((1/(h*(Geometry.FoCD/2))) + (1/(2*Fuel_props[Fuel_Type]["kfuel"])) + (1/kclad)*np.log(Geometry.FoCD/Geometry.FoD))
     # Centerline Temperature of Fuel in Hottest Channel - C
-	TclHotF[i] = TbulkHotF[i] + ((FluxPro[i]*qlinHotF)/(2*np.pi))*((1/(h*(FoCD/2))) + (1/(2*Fuel_props[Fuel_Type]["kfuel"])) + (1/kclad)*np.log(FoCD/FoD))
+	TclHotF[i] = TbulkHotF[i] + ((FluxPro[i]*qlinHotF)/(2*np.pi))*((1/(h*(Geometry.FoCD/2))) + (1/(2*Fuel_props[Fuel_Type]["kfuel"])) + (1/kclad)*np.log(Geometry.FoCD/Geometry.FoD))
 
-Tavg = (Tbulk[0] + Tbulk[steps-1])/2
-THotFavg = (TbulkHotF[0] + TbulkHotF[steps-1])/2
+Tavg = (Tbulk[0] + Tbulk[Geometry.steps-1])/2
+THotFavg = (TbulkHotF[0] + TbulkHotF[Geometry.steps-1])/2
 
 Prmax = Coolant[Coolant_Type]["Cpmax"]*Coolant[Coolant_Type]["numax"]*Coolant[Coolant_Type]["rhomax"]/Coolant[Coolant_Type]["kmax"]#Prandtl Number Calculation
 
@@ -112,19 +97,19 @@ Pravg = (Pr + Prmax)/2 # Average Prandtl Number in a inner channel
 rhoavg = (Coolant[Coolant_Type]["rho"] + Coolant[Coolant_Type]["rhomax"])/2 # Average density number in a inner channel
 Uoutlet = mdot/(Coolant[Coolant_Type]["rhomax"]*Core_Geometry[Geometry_Type]["CoolantFlowArea"]) # Outlet Velocity in a inner channel
 Uavg = (Uinlet + Uoutlet)/2 # Average velocity in a inner channel
-Pemax = Prmax*Uoutlet*FoCD/Coolant[Coolant_Type]["numax"] # Max Peclet number in a inner channel
+Pemax = Prmax*Uoutlet*Geometry.FoCD/Coolant[Coolant_Type]["numax"] # Max Peclet number in a inner channel
 Peavg = (Pe + Pemax)/2 # Average Peclect number in a inner channel
 Re1 = Peavg/Pravg # Average Reynolds number in a inner channel
 
 if Geometry_Type == "Wire_Wraped_Hexagonal":
-	M = ((1.034/(PtoD**0.124))+(29.7*(PtoD**6.94)*Re1**0.086)/(Geom.LeadW(FoCD,WoD)/FoCD)**2.239)**0.885 #modifier
+	M = ((1.034/(Geometry.PtoD**0.124))+(29.7*(Geometry.PtoD**6.94)*Re1**0.086)/(Geom.LeadW(FoCD,WoD)/Geometry.FoCD)**2.239)**0.885 #modifier
 else:
 	M = 1
 fsm = 0.316*Re1**(-0.25)
 dP = M*fsm*(Hc/Core_Geometry[Geometry_Type]["InnerHydraulicDiameter"])*0.5*rhoavg*Uavg**2
 
 #Heat Load Calculation
-QPri = Uavg*rhoavg*Core_Geometry[Geometry_Type]["CoolantFlowArea"]*((Coolant[Coolant_Type]["Cp"] + Coolant[Coolant_Type]["Cpmax"])/2)*(Tbulk[steps-1]-Tbulk[0])
+QPri = Uavg*rhoavg*Core_Geometry[Geometry_Type]["CoolantFlowArea"]*((Coolant[Coolant_Type]["Cp"] + Coolant[Coolant_Type]["Cpmax"])/2)*(Tbulk[Geometry.steps-1]-Tbulk[0])
 
 #----------------------------------------------------------------------------------#
 ## Report out - Core Parameters
@@ -139,12 +124,12 @@ print('Hot Channel Factor:',HotF)
 print('Mass Flow Rate:',mdot,'kg/s')
 print('Velocity:',Uinlet,'m/s')
 print('Inlet Bulk Temperature:',Tbulk[0],'C')
-print('Outlet Bulk Temperature:',Tbulk[steps-1],'C')
+print('Outlet Bulk Temperature:',Tbulk[Geometry.steps-1],'C')
 print('Average Bulk Temperature:',Tavg,'C')
-print('Outlet Bulk Temperature - Hot Channel',TbulkHotF[steps-1],'C')
+print('Outlet Bulk Temperature - Hot Channel',TbulkHotF[Geometry.steps-1],'C')
 print('Average Coolant Temperature - Hot Channel:',THotFavg,'C')
-print('Highest Centerline Temperature:',Tcl[steps-1],'C')
-print('Highest Centerline Temperature - Hottest Channel:',TclHotF[steps-1],'C')
+print('Highest Centerline Temperature:',Tcl[Geometry.steps-1],'C')
+print('Highest Centerline Temperature - Hottest Channel:',TclHotF[Geometry.steps-1],'C')
 print('Pressure Drop - Bundle:',dP,'Pa')
 print('--------------------------------------------------------')
 
@@ -152,8 +137,8 @@ print('--------------------------------------------------------')
 ## Report out - Core Parameters
 ## Create data files for each run and print out the data
 
-df1 = pd.DataFrame([[Tbulk[0]], [Tbulk[steps-1]], [Tavg], [TbulkHotF[steps-1]], [THotFavg], [Tcl[steps-1]], [TclHotF[steps-1]]], index=['Inlet Bulk Temperature', 'Outlet Bulk Temperature', 'Average Bulk Temperature', 'Outlet Bulk Temperature - Hot Channel', 'Average Coolant Temperature - Hot Channel', 'Highest Fuel Centerline Temperature', 'Highest Fuel Centerline Temperature - Hottest Channel'], columns=['Temperature - C'])
-df2 = pd.DataFrame({'z': z, 'Tbulk': Tbulk, 'TbulkHotF': TbulkHotF, 'Tcl': Tcl, 'TclHotF': TclHotF, 'Flux Profile': FluxPro, 'Fuel Melting Temperature': Fuel_props[Fuel_Type]["Tmelt"], 'Coolant Boiling Temperature': Coolant[Coolant_Type]["Tboil"]})
+df1 = pd.DataFrame([[Tbulk[0]], [Tbulk[Geometry.steps-1]], [Tavg], [TbulkHotF[Geometry.steps-1]], [THotFavg], [Tcl[Geometry.steps-1]], [TclHotF[Geometry.steps-1]]], index=['Inlet Bulk Temperature', 'Outlet Bulk Temperature', 'Average Bulk Temperature', 'Outlet Bulk Temperature - Hot Channel', 'Average Coolant Temperature - Hot Channel', 'Highest Fuel Centerline Temperature', 'Highest Fuel Centerline Temperature - Hottest Channel'], columns=['Temperature - C'])
+df2 = pd.DataFrame({'z': Geometry.z, 'Tbulk': Tbulk, 'TbulkHotF': TbulkHotF, 'Tcl': Tcl, 'TclHotF': TclHotF, 'Flux Profile': FluxPro, 'Fuel Melting Temperature': Fuel_props[Fuel_Type]["Tmelt"], 'Coolant Boiling Temperature': Coolant[Coolant_Type]["Tboil"]})
 
 title_data = TCinput.Reactor_Title + "_table"
 if data_logic == 0:
@@ -172,10 +157,10 @@ fs = 14
 
 k = 1
 plt.figure(k, figsize=(h,w))
-plt.plot(z,Tbulk,'r--',linewidth = lw,label=r'$T_{bulk}$')
-plt.plot(z,TbulkHotF,'k--',linewidth = lw, label=r'$T_{bulk-HF}$')
-plt.plot(z,Tcl, 'g-',linewidth = lw, label=r'$T_{cl}$')
-plt.plot(z,TclHotF, 'c-',linewidth = lw, label=r'$T_{cl-HF}$')
+plt.plot(Geometry.z,Tbulk,'r--',linewidth = lw,label=r'$T_{bulk}$')
+plt.plot(Geometry.z,TbulkHotF,'k--',linewidth = lw, label=r'$T_{bulk-HF}$')
+plt.plot(Geometry.z,Tcl, 'g-',linewidth = lw, label=r'$T_{cl}$')
+plt.plot(Geometry.z,TclHotF, 'c-',linewidth = lw, label=r'$T_{cl-HF}$')
 plt.axhline(y=Coolant[Coolant_Type]["Tboil"], xmin = 0, xmax = 1, color = 'r',linewidth = lw, label='Coolant Boiling Temp')
 plt.axhline(y=Coolant[Coolant_Type]["TmeltCoolant"], xmin = 0, xmax = 1, color = 'b',linewidth = lw, label='Coolant Melting Temp')
 plt.legend(loc='center left')
@@ -190,7 +175,7 @@ if print_logic == 0:
 k = k + 1
 
 plt.figure(k, figsize=(h,w))
-plt.plot(z,FluxPro, 'k-')
+plt.plot(Geometry.z,FluxPro, 'k-')
 plt.suptitle('Axial Core Flux Profile')
 plt.ylabel('Normalized Height')
 plt.xlabel('Normalized Flux')
