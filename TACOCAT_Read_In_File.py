@@ -4,7 +4,7 @@
 Reactor_Title = "Placeholder"
 ## Print Logicals for saving plots and data files 
 # (0 - save, 1 or higher - do not save)
-print_logic = 1
+print_logic = 0
 data_logic = 1
 
 #Provide chemical composition of fuel. Fuel types include: U_Zr10, UC, UO2, PuO2, ThO2, UN, U3Si2, MOX, U
