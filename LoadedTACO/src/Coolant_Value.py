@@ -3,10 +3,10 @@
 
 import numpy as np
 import TACOCAT_Read_In_File as TCinput
-import TACOCAT.src.NaK_Prop as NaK_Prop
-import TACOCAT.src.NaF_ZrF4_Prop as NaF_ZrF4_Prop
-import TACOCAT.src.FLiBe_Prop as FLiBe_Prop
-import TACOCAT.src.FLiNaK_Prop as FLiNaK_Prop
+import LoadedTACO.src.NaK_Prop as NaK_Prop
+import LoadedTACO.src.NaF_ZrF4_Prop as NaF_ZrF4_Prop
+import LoadedTACO.src.FLiBe_Prop as FLiBe_Prop
+import LoadedTACO.src.FLiNaK_Prop as FLiNaK_Prop
 
 steps = 36
 Tbulkin = TCinput.Tbulkin
