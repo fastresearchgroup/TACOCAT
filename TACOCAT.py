@@ -1,17 +1,17 @@
 import numpy as np
 import matplotlib.pyplot as plt 
 import pandas as pd
-import TACOCAT.src.HT9Props as clad
-import TACOCAT.src.HexDhCal as Geom
-import TACOCAT.src.HegNu as Nu
-import TACOCAT.src.TempBulkCal as TempBulk
+import LoadedTACO.src.HT9Props as clad
+import LoadedTACO.src.HexDhCal as Geom
+import LoadedTACO.src.HegNu as Nu
+import LoadedTACO.src.TempBulkCal as TempBulk
 import TACOCAT_Read_In_File as TCinput
-import TACOCAT.src.Geometry_Value as Geometry
+import LoadedTACO.src.Geometry_Value as Geometry
 from scipy.integrate import trapz
 from scipy.integrate import quad
-from TACOCAT.src.Fuel_Props import Fuel_props
-from TACOCAT.src.Geometry_Value import Core_Geometry
-from TACOCAT.src.Coolant_Value import Coolant
+from LoadedTACO.src.Fuel_Props import Fuel_props
+from LoadedTACO.src.Geometry_Value import Core_Geometry
+from LoadedTACO.src.Coolant_Value import Coolant
 
 #Assumptions
 #1. The core thermal production is assumed to set after heat deposition
@@ -25,6 +25,10 @@ data_logic = TCinput.data_logic
 
 #----------------------------------------------------------------------------------#
 ## General Core Information
+
+def test(x,y):
+	z = x+y
+	return z
 
 #Read in parameters
 Fuel_Type = TCinput.Fuel_Type
