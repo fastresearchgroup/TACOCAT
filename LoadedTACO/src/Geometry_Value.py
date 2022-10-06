@@ -26,20 +26,20 @@ NFRA = 45 #PlaceHolder for number of rodes in an array
 #---------------------------------------------------------------------------------------#
 #Dictionary value input
 #Hexagonal
-FaceArea_Hex = TACOCAT.src.HexDhCal.Ha(Ac)
-CoolantFlowArea_Hex = TACOCAT.src.HexDhCal.HaF(TACOCAT.src.HexDhCal.Ha(Ac),NFuel,FoCD,WoD)
-InnerHydraulicDiameter_Hex = TACOCAT.src.HexDhCal.Dh1(TACOCAT.src.HexDhCal.A1(PtoD,FoCD,WoD),TACOCAT.src.HexDhCal.P1(FoCD,WoD))
+FaceArea_Hex = LoadedTACO.src.HexDhCal.Ha(Ac)
+CoolantFlowArea_Hex = LoadedTACO.src.HexDhCal.HaF(TACOCAT.src.HexDhCal.Ha(Ac),NFuel,FoCD,WoD)
+InnerHydraulicDiameter_Hex = LoadedTACO.src.HexDhCal.Dh1(TACOCAT.src.HexDhCal.A1(PtoD,FoCD,WoD),TACOCAT.src.HexDhCal.P1(FoCD,WoD))
 
 
 #Wire Wrapped Hex
-FaceArea_WWHex = TACOCAT.src.HexDhCal.Ha(Ac)
-CoolantFlowArea_WWHex = TACOCAT.src.HexDhCal.HaF(TACOCAT.src.HexDhCal.Ha(Ac),NFuel,FoCD,WoD)
-InnerHydraulicDiameter_WWHex = TACOCAT.src.HexDhCal.Dh1(TACOCAT.src.HexDhCal.A1(PtoD,FoCD,WoD),TACOCAT.src.HexDhCal.P1(FoCD,WoD))
+FaceArea_WWHex = LoadedTACO.src.HexDhCal.Ha(Ac)
+CoolantFlowArea_WWHex = LoadedTACO.src.HexDhCal.HaF(TACOCAT.src.HexDhCal.Ha(Ac),NFuel,FoCD,WoD)
+InnerHydraulicDiameter_WWHex = LoadedTACO.src.HexDhCal.Dh1(TACOCAT.src.HexDhCal.A1(PtoD,FoCD,WoD),TACOCAT.src.HexDhCal.P1(FoCD,WoD))
 
 #Square
-FaceArea_Square = TACOCAT.src.SquareDhCal.Sa(PtoD,FoCD,NFRA)
-CoolantFlowArea_Square = TACOCAT.src.SquareDhCal.SaF(TACOCAT.src.SquareDhCal.Sa(PtoD,FoCD,NFRA),NFuel,FoCD)
-InnerHydraulicDiameter_Square = TACOCAT.src.SquareDhCal.DH1(TACOCAT.src.SquareDhCal.A1(PtoD,FoCD),TACOCAT.src.SquareDhCal.P1(FoCD))
+FaceArea_Square = LoadedTACO.src.SquareDhCal.Sa(PtoD,FoCD,NFRA)
+CoolantFlowArea_Square = LoadedTACO.src.SquareDhCal.SaF(TACOCAT.src.SquareDhCal.Sa(PtoD,FoCD,NFRA),NFuel,FoCD)
+InnerHydraulicDiameter_Square = LoadedTACO.src.SquareDhCal.DH1(TACOCAT.src.SquareDhCal.A1(PtoD,FoCD),TACOCAT.src.SquareDhCal.P1(FoCD))
 #---------------------------------------------------------------------------------------#
 #Dictionary
 Hexagonal = {
