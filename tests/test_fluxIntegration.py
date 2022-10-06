@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 import os
 import sys
 sys.path.insert(0,'..') #This adds the ability to pull Flux profiles from the main folder
-import TACOCAT
+from TACOCAT import Tbulk
 
-Test = TACOCAT.test(2,2)
+x = Tbulk
 
-print(Test)
+print(x)
