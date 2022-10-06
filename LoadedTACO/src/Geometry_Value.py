@@ -27,19 +27,19 @@ NFRA = 45 #PlaceHolder for number of rodes in an array
 #Dictionary value input
 #Hexagonal
 FaceArea_Hex = LoadedTACO.src.HexDhCal.Ha(Ac)
-CoolantFlowArea_Hex = LoadedTACO.src.HexDhCal.HaF(TACOCAT.src.HexDhCal.Ha(Ac),NFuel,FoCD,WoD)
-InnerHydraulicDiameter_Hex = LoadedTACO.src.HexDhCal.Dh1(TACOCAT.src.HexDhCal.A1(PtoD,FoCD,WoD),TACOCAT.src.HexDhCal.P1(FoCD,WoD))
+CoolantFlowArea_Hex = LoadedTACO.src.HexDhCal.HaF(LoadedTACO.src.HexDhCal.Ha(Ac),NFuel,FoCD,WoD)
+InnerHydraulicDiameter_Hex = LoadedTACO.src.HexDhCal.Dh1(LoadedTACO.src.HexDhCal.A1(PtoD,FoCD,WoD),LoadedTACO.src.HexDhCal.P1(FoCD,WoD))
 
 
 #Wire Wrapped Hex
 FaceArea_WWHex = LoadedTACO.src.HexDhCal.Ha(Ac)
-CoolantFlowArea_WWHex = LoadedTACO.src.HexDhCal.HaF(TACOCAT.src.HexDhCal.Ha(Ac),NFuel,FoCD,WoD)
-InnerHydraulicDiameter_WWHex = LoadedTACO.src.HexDhCal.Dh1(TACOCAT.src.HexDhCal.A1(PtoD,FoCD,WoD),TACOCAT.src.HexDhCal.P1(FoCD,WoD))
+CoolantFlowArea_WWHex = LoadedTACO.src.HexDhCal.HaF(LoadedTACO.src.HexDhCal.Ha(Ac),NFuel,FoCD,WoD)
+InnerHydraulicDiameter_WWHex = LoadedTACO.src.HexDhCal.Dh1(LoadedTACO.src.HexDhCal.A1(PtoD,FoCD,WoD),LoadedTACO.src.HexDhCal.P1(FoCD,WoD))
 
 #Square
 FaceArea_Square = LoadedTACO.src.SquareDhCal.Sa(PtoD,FoCD,NFRA)
-CoolantFlowArea_Square = LoadedTACO.src.SquareDhCal.SaF(TACOCAT.src.SquareDhCal.Sa(PtoD,FoCD,NFRA),NFuel,FoCD)
-InnerHydraulicDiameter_Square = LoadedTACO.src.SquareDhCal.DH1(TACOCAT.src.SquareDhCal.A1(PtoD,FoCD),TACOCAT.src.SquareDhCal.P1(FoCD))
+CoolantFlowArea_Square = LoadedTACO.src.SquareDhCal.SaF(LoadedTACO.src.SquareDhCal.Sa(PtoD,FoCD,NFRA),NFuel,FoCD)
+InnerHydraulicDiameter_Square = LoadedTACO.src.SquareDhCal.DH1(LoadedTACO.src.SquareDhCal.A1(PtoD,FoCD),LoadedTACO.src.SquareDhCal.P1(FoCD))
 #---------------------------------------------------------------------------------------#
 #Dictionary
 Hexagonal = {
