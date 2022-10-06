@@ -1,7 +1,7 @@
 #Trevor Franklin
 
-import TACOCAT.src.SquareDhCal 
-import TACOCAT.src.HexDhCal 
+import LoadedTACO.src.SquareDhCal 
+import LoadedTACO.src.HexDhCal 
 import numpy as np
 import os
 import sys
