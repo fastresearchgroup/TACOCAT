@@ -16,8 +16,8 @@ Coolant = "NaK"
 #Provide reactor geometry. Geometry types include: Hexagonal, Wire_Wrapped_Hexagonal, Square
 Geometry = "Wire_Wrapped_Hexagonal"
 
-#Provide flux profile. Flux profile includes: Flatline, linear, exponential, cosine
-Flux_Profile = "cosine"
+#Provide flux profile. Flux profile includes: Flatline, Linear, Exponential, Cosine
+Flux = "Cosine"
 
 Hc = 0.35 #Active Height of Core is 2m
 Qth = 3*10**6 #Core Thermal Production - W
@@ -39,6 +39,6 @@ Coolant = "NaK"
 Geometry = "Wire_Wrapped_Hexagonal"
 
 #Provide flux profile. Flux profile includes: Flatline, linear, exponential, cosine
-Flux_Profile = "cosine"
+Flux_Profile = "Cosine"
 
 '''
