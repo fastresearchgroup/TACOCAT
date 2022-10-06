@@ -3,7 +3,7 @@
 
 import numpy as np
 import matplotlib as mpl
-from TACOCAT.src.Geometry_Value import Core_Geometry
+from LoadedTACO.src.Geometry_Value import Core_Geometry
 from scipy.integrate import trapz
 import os
 import sys
