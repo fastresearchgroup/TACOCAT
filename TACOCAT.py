@@ -26,10 +26,6 @@ data_logic = TCinput.data_logic
 #----------------------------------------------------------------------------------#
 ## General Core Information
 
-def test(x,y):
-	z = x+y
-	return z
-
 #Read in parameters
 Fuel_Type = TCinput.Fuel_Type
 Coolant_Type = TCinput.Coolant
