@@ -82,14 +82,14 @@ def HotFBulkTemp(FluxPro):
 	TbulkHotF[0] = Tbulkin
 	for i in range(0,Geometry.steps):
 		TbulkHotF[i] = Tbulkin + (np.trapz(FluxPro[0:i+1],Geometry.z[0:i+1])*Geometry.NFuel*qlinHotF)/(Coolant[Coolant_Type]["Cp"]*Uinlet*Coolant[Coolant_Type]["rho"]*Core_Geometry[Geometry_Type]["CoolantFlowArea"]) #Bulk Temperature of Coolant - C
-	return TbulkHotF[i]
+	return TbulkHotF
 
 FluxPro = Fluxes[Flux_Type]["Profile"]
-print(BulkTemp(FluxPro))
 
 Tbulk = np.zeros(Geometry.steps)
 Tbulk = BulkTemp(FluxPro)
-print(Tbulk)
+TbulkHotF = np.zeros(Geometry.steps)
+TbulkHotF = HotFBulkTemp(FluxPro)
 
 Tcl = np.zeros(Geometry.steps)
 TclHotF = np.zeros(Geometry.steps)
@@ -97,14 +97,10 @@ for i in range(0,Geometry.steps):
     # Centerline Temperature of Fuel in Average Channel - C
 	Tcl[i] = Tbulk[i] + ((FluxPro[i]*qlin)/(2*np.pi))*((1/(h*(Geometry.FoCD/2))) + (1/(2*Fuel_props[Fuel_Type]["kfuel"])) + (1/kclad)*np.log(Geometry.FoCD/Geometry.FoD))
     # Centerline Temperature of Fuel in Hottest Channel - C
-	TclHotF[i] = HotFBulkTemp(FluxPro) + ((FluxPro[i]*qlinHotF)/(2*np.pi))*((1/(h*(Geometry.FoCD/2))) + (1/(2*Fuel_props[Fuel_Type]["kfuel"])) + (1/kclad)*np.log(Geometry.FoCD/Geometry.FoD))
+	TclHotF[i] = TbulkHotF[i] + ((FluxPro[i]*qlinHotF)/(2*np.pi))*((1/(h*(Geometry.FoCD/2))) + (1/(2*Fuel_props[Fuel_Type]["kfuel"])) + (1/kclad)*np.log(Geometry.FoCD/Geometry.FoD))
 
 
 Tavg = (Tbulk[0] + Tbulk[Geometry.steps-1])/2
-
-TbulkHotF = np.zeros(Geometry.steps)
-Tbulk[i] = HotFBulkTemp(FluxPro)
-
 THotFavg = (TbulkHotF[0] + TbulkHotF[Geometry.steps-1])/2
 
 Prmax = Coolant[Coolant_Type]["Cpmax"]*Coolant[Coolant_Type]["numax"]*Coolant[Coolant_Type]["rhomax"]/Coolant[Coolant_Type]["kmax"]#Prandtl Number Calculation
