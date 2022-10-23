@@ -7,8 +7,8 @@ import matplotlib.pyplot as plt
 import os
 import sys
 sys.path.insert(0,'..') #This adds the ability to pull Flux profiles from the main folder
-sys.path.insert(0,'./TACOCAT/src') #Looking for data in a subfolder
-import Flux_Profiles
+sys.path.insert(0,'./LoadedTACO/src') #Looking for data in a subfolder
+import LoadedTACO.src.Flux_Profiles
 sys.path.insert(0,'..') #This adds the ability to pull Flux profiles from the main folder
 import TACOCAT_Read_In_File as TCinput
 
