@@ -1,6 +1,7 @@
 #Trevor Franklin
 
 import pytest
+from pytest import approx
 import numpy as np
 import matplotlib.pyplot as plt
 import TACOCAT.TACOCAT as TC
@@ -31,7 +32,7 @@ for i in range(1,steps):
 
 #np.testing.assert_allclose(TestTB, TempBulk, rtol=10)
 def test_Temp_Bulk_Array():
-	assert TestTB.list()==TempBulk.list()
+	assert list(TempBulk)==approx(list(TestTB), abs=10)
 
 '''
 plt.plot(z,TempBulk)
