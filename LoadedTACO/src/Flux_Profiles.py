@@ -30,3 +30,17 @@ ExponentialFlux[:] = np.exp(z)
 CosineFlux = np.zeros(steps)
 CosineFlux[:] = np.cos((np.pi/Hc)*z[:])
 
+#--------------------------------------------------------------------#
+#Dictionary
+
+Flatline = {"Profile" : FlatLineFlux[:]}
+Linear = {"Profile" : LinearFlux[:]}
+Exponential = {"Profile" : ExponentialFlux[:]}
+Cosine = {"Profile" : CosineFlux[:]}
+
+Fluxes = {
+	"Flatline" : Flatline,
+	"Linear" : Linear,
+	"Exponential" : Exponential,
+	"Cosine" : Cosine, 
+}

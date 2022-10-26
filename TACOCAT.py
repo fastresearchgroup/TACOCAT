@@ -12,6 +12,7 @@ from scipy.integrate import quad
 from LoadedTACO.src.Fuel_Props import Fuel_props
 from LoadedTACO.src.Geometry_Value import Core_Geometry
 from LoadedTACO.src.Coolant_Value import Coolant
+from LoadedTACO.src.Flux_Profiles import Fluxes
 
 #Assumptions
 #1. The core thermal production is assumed to set after heat deposition
@@ -30,6 +31,7 @@ data_logic = TCinput.data_logic
 Fuel_Type = TCinput.Fuel_Type
 Coolant_Type = TCinput.Coolant
 Geometry_Type = TCinput.Geometry
+Flux_Type = TCinput.Flux
 Hc = TCinput.Hc
 HotF = TCinput.HotF
 Qth = TCinput.Qth
@@ -67,7 +69,7 @@ h = Nu*Coolant[Coolant_Type]["k"]/Core_Geometry[Geometry_Type]["InnerHydraulicDi
 #Call axial bulk temperature distribution calculation
 
 FluxPro = np.zeros(Geometry.steps)
-FluxPro[:] = np.cos((np.pi/Hc)*Geometry.z[:])
+FluxPro[:] = Fluxes[Flux_Type]["Profile"]
 
 Tbulk = np.zeros(Geometry.steps) #Initialize Bulk Temperature of Coolant - C
 Tbulk[0] = Tbulkin
