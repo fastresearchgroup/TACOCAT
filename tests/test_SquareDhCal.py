@@ -3,7 +3,7 @@
 
 import pytest
 import numpy as np
-import LoadedTACO.src.SquareDhCal
+import LoadedTACO.src.SquareDhCal as SquareDhCal
 
 def test_Sa():
 	assert SquareDhCal.Sa(1,1,1) == 1

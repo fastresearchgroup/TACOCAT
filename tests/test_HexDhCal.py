@@ -3,7 +3,7 @@
 
 import pytest
 import numpy as np
-import LoadedTACO.src.HexDhCal
+import LoadedTACO.src.HexDhCal as HexDhCal
 
 def test_Ha():
 	assert round(HexDhCal.Ha(1), 5) == 2.59808

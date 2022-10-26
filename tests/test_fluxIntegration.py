@@ -2,12 +2,8 @@
 
 import pytest
 import numpy as np
-import matplotlib.pyplot as plt 
-#import os
-#import sys
-#sys.path.insert(0,'..') #This adds the ability to pull modules from the main folder
-#from pathlib import Path
-import TACOCAT
+import matplotlib.pyplot as plt
+import TACOCAT.TACOCAT as TC
 import LoadedTACO.src.Flux_Profiles as Flux_Profiles
 import LoadedTACO.src.Geometry_Value as geometry
 import TACOCAT_Read_In_File as TCinput 
@@ -26,14 +22,16 @@ C = (geometry.NFuel*qlin)/(Coolant[Coolant_Type]["Cp"]*TCinput.Uinlet*Coolant[Co
 TestingTB = np.zeros(steps)
 TestingTB[:] = (1/2)*z[:]**2
 
-TempBulk = TACOCAT.BulkTemp(Flux_Profiles.LinearFlux)
+TempBulk = TC.BulkTemp(Flux_Profiles.LinearFlux)
 
 TestTB = np.zeros(steps)
 TestTB[0] = TCinput.Tbulkin
 for i in range(1,steps):
 	TestTB[i] = C*TestingTB[i]+TCinput.Tbulkin
 
-np.testing.assert_allclose(TestTB, TempBulk, rtol=10)
+#np.testing.assert_allclose(TestTB, TempBulk, rtol=10)
+def test_Temp_Bulk_Array():
+	assert TestTB.list()==TempBulk.list()
 
 '''
 plt.plot(z,TempBulk)
