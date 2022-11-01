@@ -38,6 +38,15 @@ Qth = TCinput.Qth
 Tbulkin = TCinput.Tbulkin #Bulk Temperature of coolant at the Inlet - C
 Uinlet = TCinput.Uinlet #average inlet velocity in a subchannel - m/s
 
+#Coolant Parameters
+Cp = Coolant[Coolant_Type]["Cp"]
+rho = Coolant[Coolant_Type]["rho"]
+
+#Geometry Parameters
+z = Geometry.z
+NFuel = Geometry.NFuel
+A_xs = Core_Geometry[Geometry_Type]["CoolantFlowArea"]
+
 #----------------------------------------------------------------------------------#
 ## Material Properties
 Pr = Coolant[Coolant_Type]["Cp"]*Coolant[Coolant_Type]["nu"]*Coolant[Coolant_Type]["rho"]/Coolant[Coolant_Type]["k"] #Prandtl Number Calculation
@@ -69,25 +78,25 @@ h = Nu*Coolant[Coolant_Type]["k"]/Core_Geometry[Geometry_Type]["InnerHydraulicDi
 #Call axial bulk temperature distribution calculation
 
 # Bulk Temperature of Coolant in Average Channel - C
-def BulkTemp(FluxPro):
+def BulkTemp(Tbulkin,FluxPro,z,NFuel,qlin,Cp,Uinlet,rho,A_xs):
 	Tbulk = np.zeros(Geometry.steps) #Initialize Bulk Temperature of Coolant - C
-	Tbulk[0] = Tbulkin
 	for i in range(0,Geometry.steps):
-		Tbulk[i] = Tbulkin + (np.trapz(FluxPro[0:i+1],Geometry.z[0:i+1])*Geometry.NFuel*qlin)/(Coolant[Coolant_Type]["Cp"]*Uinlet*Coolant[Coolant_Type]["rho"]*Core_Geometry[Geometry_Type]["CoolantFlowArea"]) #Bulk Temperature of Coolant - C
+		Tbulk[i] = Tbulkin + (np.trapz(FluxPro[0:i+1],z[0:i+1])*NFuel*qlin)/(Cp*Uinlet*rho*A_xs) #Bulk Temperature of Coolant - C
+	Tbulk[0] = Tbulkin
 	return Tbulk
 
 # Bulk Temperature of Coolant in Hottest Channel - C
 def HotFBulkTemp(FluxPro):
 	TbulkHotF = np.zeros(Geometry.steps)
-	TbulkHotF[0] = Tbulkin
 	for i in range(0,Geometry.steps):
 		TbulkHotF[i] = Tbulkin + (np.trapz(FluxPro[0:i+1],Geometry.z[0:i+1])*Geometry.NFuel*qlinHotF)/(Coolant[Coolant_Type]["Cp"]*Uinlet*Coolant[Coolant_Type]["rho"]*Core_Geometry[Geometry_Type]["CoolantFlowArea"]) #Bulk Temperature of Coolant - C
+	TbulkHotF[0] = Tbulkin
 	return TbulkHotF
 
 FluxPro = Fluxes[Flux_Type]["Profile"]
 
 Tbulk = np.zeros(Geometry.steps)
-Tbulk = BulkTemp(FluxPro)
+Tbulk = BulkTemp(Tbulkin,FluxPro,z,NFuel,qlin,Cp,Uinlet,rho,A_xs)
 TbulkHotF = np.zeros(Geometry.steps)
 TbulkHotF = HotFBulkTemp(FluxPro)
 
