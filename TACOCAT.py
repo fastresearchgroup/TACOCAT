@@ -86,10 +86,10 @@ def BulkTemp(Tbulkin,FluxPro,z,NFuel,qlin,Cp,Uinlet,rho,A_xs):
 	return Tbulk
 
 # Bulk Temperature of Coolant in Hottest Channel - C
-def HotFBulkTemp(FluxPro):
+def HotFBulkTemp(Tbulkin,FluxPro,z,NFuel,qlinHotF,Cp,Uinlet,rho,A_xs):
 	TbulkHotF = np.zeros(Geometry.steps)
 	for i in range(0,Geometry.steps):
-		TbulkHotF[i] = Tbulkin + (np.trapz(FluxPro[0:i+1],Geometry.z[0:i+1])*Geometry.NFuel*qlinHotF)/(Coolant[Coolant_Type]["Cp"]*Uinlet*Coolant[Coolant_Type]["rho"]*Core_Geometry[Geometry_Type]["CoolantFlowArea"]) #Bulk Temperature of Coolant - C
+		TbulkHotF[i] = Tbulkin + (np.trapz(FluxPro[0:i+1],z[0:i+1])*NFuel*qlinHotF)/(Cp*Uinlet*rho*A_xs) #Bulk Temperature of Coolant - C
 	TbulkHotF[0] = Tbulkin
 	return TbulkHotF
 
@@ -98,7 +98,7 @@ FluxPro = Fluxes[Flux_Type]["Profile"]
 Tbulk = np.zeros(Geometry.steps)
 Tbulk = BulkTemp(Tbulkin,FluxPro,z,NFuel,qlin,Cp,Uinlet,rho,A_xs)
 TbulkHotF = np.zeros(Geometry.steps)
-TbulkHotF = HotFBulkTemp(FluxPro)
+TbulkHotF = HotFBulkTemp(Tbulkin,FluxPro,z,NFuel,qlinHotF,Cp,Uinlet,rho,A_xs)
 
 Tcl = np.zeros(Geometry.steps)
 TclHotF = np.zeros(Geometry.steps)
