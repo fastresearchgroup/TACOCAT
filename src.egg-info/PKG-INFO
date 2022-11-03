@@ -1,0 +1,12 @@
+Metadata-Version: 2.1
+Name: src
+Version: 0.0.0
+Summary: package for TACOCAT files
+Author: Dr. Lane Carasik, Trevor Franklin, Sierra Tutwiller
+License: MIT
+Platform: windows
+Platform: unix
+Platform: osx
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 3
+License-File: LICENSE
