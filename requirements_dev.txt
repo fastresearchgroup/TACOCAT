@@ -1,0 +1,5 @@
+pytest==7.0.0
+pytest-cov==3.0.0
+tox==3.27.0
+numpy==1.19.5
+matplotlib==3.3.4
