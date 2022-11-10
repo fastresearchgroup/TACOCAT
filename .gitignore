@@ -8,3 +8,7 @@ TACOCAT.csv
 *_Axial_Temperatures.svg
 *_table.csv
 *_table.xlsx
+.coverage
+.tox/
+42.0
+src.egg-info/
