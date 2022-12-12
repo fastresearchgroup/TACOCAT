@@ -3,12 +3,7 @@
 
 import pytest
 import numpy as np
-import os
-import sys
-sys.path.insert(0,'..') #This adds the ability to geometry calculations from the main folder
-sys.path.insert(0,'./TACOCAT/src') #Looking for data in a subfolder
-from pathlib import Path
-import HexDhCal
+import LoadedTACO.src.HexDhCal as HexDhCal
 
 def test_Ha():
 	assert round(HexDhCal.Ha(1), 5) == 2.59808
