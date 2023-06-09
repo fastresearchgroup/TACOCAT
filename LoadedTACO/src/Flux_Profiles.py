@@ -40,5 +40,5 @@ Fluxes = {
 	"Flatline" : Flatline,
 	"Linear" : Linear,
 	"Exponential" : Exponential,
-	"Cosine" : Cosine, 
+	"Chopped_Cosine" : Cosine, 
 }
