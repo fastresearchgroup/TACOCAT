@@ -9,6 +9,8 @@ TACOCAT.csv
 *_table.csv
 *_table.xlsx
 .coverage
+src.egg-info/
+src.egg-info/PKG-INFO
+src.egg-info/SOURCES.txt
 .tox/
 42.0
-src.egg-info/
