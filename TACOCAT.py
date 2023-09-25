@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt 
 import pandas as pd
-import LoadedTACO.src.HT9Props as clad
+from LoadedTACO.src.Clad_Props import Clad_Props
 import LoadedTACO.src.HexDhCal as Geom
 import LoadedTACO.src.HegNu as Nu
 import LoadedTACO.src.TempBulkCal as TempBulk
@@ -37,6 +37,7 @@ HotF = TCinput.HotF
 Qth = TCinput.Qth
 Tbulkin = TCinput.Tbulkin #Bulk Temperature of coolant at the Inlet - C
 Uinlet = TCinput.Uinlet #average inlet velocity in a subchannel - m/s
+Cladding = TCinput.Clad_Props
 
 #Coolant Parameters
 Cp = Coolant[Coolant_Type]["Cp"]
@@ -52,8 +53,7 @@ A_xs = Core_Geometry[Geometry_Type]["CoolantFlowArea"]
 Pr = Coolant[Coolant_Type]["Cp"]*Coolant[Coolant_Type]["nu"]*Coolant[Coolant_Type]["rho"]/Coolant[Coolant_Type]["k"] #Prandtl Number Calculation
 
 #Thermal Conductivity of Cladding - W/m-K @ 300 C
-kclad = clad.k(Tbulkin + 273.15)
-
+kclad = Clad_Props[Cladding]["kclad"] #(Tbulkin + 273.15)
 #----------------------------------------------------------------------------------#
 ## Core Geometry Calculations
 # Geometric Calculations
@@ -153,6 +153,7 @@ print('Average Coolant Temperature - Hot Channel:',THotFavg,'C')
 print('Highest Centerline Temperature:',Tcl[Geometry.steps-1],'C')
 print('Highest Centerline Temperature - Hottest Channel:',TclHotF[Geometry.steps-1],'C')
 print('Pressure Drop - Bundle:',dP,'Pa')
+print(' Cladding Thermal Conductivity:', kclad, 'W/m-K')
 print('--------------------------------------------------------')
 
 #----------------------------------------------------------------------------------#
