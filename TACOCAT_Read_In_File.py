@@ -22,7 +22,7 @@ Flux = "Chopped_Cosine"
 #Provide cladding materiak. Cladding types include:
      #Graphite_384_2,Zirc_2_Nickel_Free,Stain_Steel_316,Stain_Steel_304L,Stain_Steel_304,Zirc_2,Kanth_AMPT
 #Provide Clad Properties. Cladding includes:
-Clad_Props = "Graphite_384_1" #Cladding Properties for Graphite
+Clad_Props = "Zirc_2_Nickel_Free" #Cladding Properties for Graphite
 
 Hc = 0.35 #Active Height of Core is 2m
 Qth = 3*10**6 #Core Thermal Production - W
