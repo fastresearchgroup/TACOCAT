@@ -10,9 +10,8 @@ Then the melting points were averaged.
 The melting temperatures were found in both Celsius and Kelvin.  
 
 Thermal conductivity for different cladding materials. The provided melting temperatures were added in Kelvin below.
-------------
+----------
 
-============    ====================       ===================     ==========================================
 Material        Thermal Conductivity       Melting Temperature      References
 ============    ====================       ===================     ==========================================
 Graphite-384_1          90.016             Not available          https://www.osti.gov/servlets/purl/4609704
