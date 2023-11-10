@@ -24,12 +24,18 @@ Zircaloy-2                            19.02                     2123.15 K       
 
 Zircaloy-2 Nickel-Free                18.1725                   Not available                                                                
              .. csv-table:: Example :rst:dir:`csv-table`
-   :header: "Header Text 1", "Header Text 2", "Header Text 3"
+   : Cladding Properties: "Material"    "Thermal Conductivity"  "Melting Temperature"        "References"
 
-   "Data 1.1",               "Data 1.2",      "Data 1.3"
-   "Data 2.1",               "Data 2.2",      "Data 2.3"
-   "Data 3.1",               ,                "Data 1.3 (Data 1.2 left out)"
-   "Data 4.1",               "Data 4.2 (Data 4.3 left out)"                                                    
+                            
+                        "Graphite-384_1"         "90.016"          "Not available"             "https://www.osti.gov/servlets/purl/4609704"
+
+                    "Stainless Steel 304"       "21.83583333"       "1673.15-1728.15 K"       "https://app.knovel.com/hotlink/itble/rcid:kpMMDS0002/id:kt012J4NH2/matweb-metal-material/table-2-material-properties"
+
+                    "Stainless Steel 304L"      "21.83583333"       "1673.15-1728.15 K"        "Kim, C S. Thermophysical properties of stainless steels. United States: N. p., 1975. Web. doi:10.2172/4152287".
+
+                        "Zircaloy-2"              "19.02"            "2123.15 K"              "https://matweb.com/search/DataSheet.aspx?MatGUID=3f64b985402445c0a5af911135909344"
+
+                    "Zircaloy-2 Nickel-Free"      "18.1725"           "Not available"                                                      
 
 The eight cladding props collected are listed above. 
 The information gathered was found in academic articles and web pages. 
