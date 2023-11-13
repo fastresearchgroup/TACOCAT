@@ -45,8 +45,8 @@ The following two graphs show the difference between the Thermal Conductivities 
 As seen when viewing both graphs, there is not much difference in the two graphs. 
 This is due to the Thermal Conductivities being averaged.
 It is assumed that if they are not averaged, a bigger difference would be seen when the graphs were compared.
-..image::/Images/Figure 2023-09-26 153204-Zirc_2.png
-C:\Users\skyet\Documents\CladPropsRST\Figure 2023-09-26 153218-Zirc_2.png
+.. image::Figure2023-09-26153204-Zirc_2.png
+C:\Users\skyet\Documents\CladPropsRST\Figure2023-09-26 153218-Zirc_2.png
 (Graphs for Zircaloy-2)
 C:\Users\skyet\Documents\CladPropsRST\Figure 2023-09-26 153237-Graphite 381.png
 C:\Users\skyet\Documents\CladPropsRST\Figure 2023-09-26 153300-Graphite 381.png
