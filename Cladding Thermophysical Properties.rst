@@ -5,9 +5,7 @@ Cladding materials are a material that covers the outer layer of a reactor.
 This prevents radioactive material from being discharged. 
 There were several things that were collected when finding the information for the cladding materials. 
 First, the Thermal Conductivity of each material was collected. 
-These Thermal Conductivities were averaged between 100 const temperature = 30\u00B0;
-
- and 1000 :math:`\degree` C. 
+These Thermal Conductivities were averaged between 100°C and 1000°C. 
 Then the melting points were averaged. 
 The melting temperatures were found in both Celsius and Kelvin.  
 
@@ -24,7 +22,16 @@ Stainless Steel 304L                  21.83583333               1673.15-1728.15 
 
 Zircaloy-2                            19.02                     2123.15 K                    https://matweb.com/search/DataSheet.aspx?MatGUID=3f64b985402445c0a5af911135909344
 
-Zircaloy-2 Nickel-Free                18.1725                   Not available                                                                
+Zircaloy-2 Nickel-Free                18.1725                   Not available      
+             -- materials.sql
+
+CREATE TABLE materials (
+    MaterialName VARCHAR(50),
+    ThermalConductivity NUMERIC,
+    MeltingTemperature NUMERIC,
+    References VARCHAR(255)
+);
+                                             
              .. csv-table:: Example :rst:dir:`csv-table`
    : Cladding Properties: "Material"    "Thermal Conductivity"  "Melting Temperature"        "References"
 
