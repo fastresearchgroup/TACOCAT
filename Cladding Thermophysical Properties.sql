@@ -24,28 +24,7 @@ Zircaloy-2                            19.02                     2123.15 K       
 
 Zircaloy-2 Nickel-Free                18.1725                   Not available      
              -- materials.sql
-
-CREATE TABLE materials (
-    MaterialName Graphite(50),
-    ThermalConductivity 10,
-    MeltingTemperature 50,
-    References VARCHAR(255)
-);
-                                             
-             .. csv-table:: Example :rst:dir:`csv-table`
-   : Cladding Properties: "Material"    "Thermal Conductivity"  "Melting Temperature"        "References"
-
-                            
-                        "Graphite-384_1"         "90.016"          "Not available"             "https://www.osti.gov/servlets/purl/4609704"
-
-                    "Stainless Steel 304"       "21.83583333"       "1673.15-1728.15 K"       "https://app.knovel.com/hotlink/itble/rcid:kpMMDS0002/id:kt012J4NH2/matweb-metal-material/table-2-material-properties"
-
-                    "Stainless Steel 304L"      "21.83583333"       "1673.15-1728.15 K"        "Kim, C S. Thermophysical properties of stainless steels. United States: N. p., 1975. Web. doi:10.2172/4152287".
-
-                        "Zircaloy-2"              "19.02"            "2123.15 K"              "https://matweb.com/search/DataSheet.aspx?MatGUID=3f64b985402445c0a5af911135909344"
-
-                    "Zircaloy-2 Nickel-Free"      "18.1725"           "Not available"                                                      
-
+                      
 The eight cladding props collected are listed above. 
 The information gathered was found in academic articles and web pages. 
 The information was put into Python and a Clad Props library was created. 
@@ -54,6 +33,8 @@ The following two graphs show the difference between the Thermal Conductivities 
 As seen when viewing both graphs, there is not much difference in the two graphs. 
 This is due to the Thermal Conductivities being averaged.
 It is assumed that if they are not averaged, a bigger difference would be seen when the graphs were compared.
+![Alt Text](C:\Users\skyet\Documents\CladPropsRST\Figure 2023-09-26 153300-Graphite 381.png)
+
 .. image::Figure2023-09-26153204-Zirc_2.png
 C:\Users\skyet\Documents\CladPropsRST\Figure2023-09-26 153218-Zirc_2.png
 (Graphs for Zircaloy-2)
