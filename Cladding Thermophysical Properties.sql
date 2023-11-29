@@ -23,7 +23,7 @@ Stainless Steel 304L                  21.83583333               1673.15-1728.15 
 Zircaloy-2                            19.02                     2123.15 K                    https://matweb.com/search/DataSheet.aspx?MatGUID=3f64b985402445c0a5af911135909344
 
 Zircaloy-2 Nickel-Free                18.1725                   Not available      
-             -- materials.sql
+ -- materials.sql
                       
 The eight cladding props collected are listed above. 
 The information gathered was found in academic articles and web pages. 
@@ -35,7 +35,7 @@ This is due to the Thermal Conductivities being averaged.
 It is assumed that if they are not averaged, a bigger difference would be seen when the graphs were compared.
 ![Alt Text](C:\Users\skyet\Documents\CladPropsRST\Figure 2023-09-26 153300-Graphite 381.png)
 
-.. image::Figure2023-09-26153204-Zirc_2.png
+.. image:: Figure2023-09-26153204-Zirc_2.png
 C:\Users\skyet\Documents\CladPropsRST\Figure2023-09-26 153218-Zirc_2.png
 (Graphs for Zircaloy-2)
 C:\Users\skyet\Documents\CladPropsRST\Figure 2023-09-26 153237-Graphite 381.png
