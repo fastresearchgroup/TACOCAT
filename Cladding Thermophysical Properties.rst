@@ -33,16 +33,13 @@ As seen when viewing both graphs, there is not much difference in the two graphs
 This is due to the Thermal Conductivities being averaged.
 It is assumed that if they are not averaged, a bigger difference would be seen when the graphs were compared.
 
-.. figure:: fig
+.. image:: Figure2023-09-26153300-Graphite_381.png
 Graph produced using Graphite 384_1 data
-.. figure:: Figure 2023-09-26 153300-Graphite 381.png
+.. image:: Figure2023-09-26153237-Graphite_381.png
 Graph produced using Grapite 384_1
 
 
-.. figure:: Figure2023-09-26 153218-Zirc_2.png
+.. image:: Figure2023-09-26153218-Zirc_2.png
 Graph produced using the Zorcaloy-2 data
-
-Graph Produced using the Zorcaly-2 data
-
-.. image::Figure2023-09-26153204-Zirc_2
 .. image:: Figure2023-09-26153204-Zirc_2.png
+Graph Produced using the Zorcaly-2 data
