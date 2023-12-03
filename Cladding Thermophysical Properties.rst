@@ -45,3 +45,4 @@ Graph produced using the Zorcaloy-2 data
 Graph Produced using the Zorcaly-2 data
 
 .. image::Figure2023-09-26153204-Zirc_2
+.. image:: Figure2023-09-26153204-Zirc_2.png
