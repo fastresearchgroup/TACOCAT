@@ -34,7 +34,7 @@ This is due to the Thermal Conductivities being averaged.
 It is assumed that if they are not averaged, a bigger difference would be seen when the graphs were compared.
 .. image:: Figure 2023-09-26 153300-Graphite 381.png 
 Graph produced using Graphite 384_1 data
-.. image:: Figure 2023-09-26 153300-Graphite 381.png
+.. image::Figure 2023-09-26 153300-Graphite 381.png
 Graph produced using Grapite 384_1
 
 
