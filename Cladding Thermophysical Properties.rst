@@ -35,11 +35,13 @@ It is assumed that if they are not averaged, a bigger difference would be seen w
 
 .. image:: Figure2023-09-26153300-Graphite_381.png
 Graph produced using Graphite 384_1 data
+
 .. image:: Figure2023-09-26153237-Graphite_381.png
 Graph produced using Grapite 384_1
 
 
 .. image:: Figure2023-09-26153218-Zirc_2.png
 Graph produced using the Zorcaloy-2 data
+
 .. image:: Figure2023-09-26153204-Zirc_2.png
 Graph Produced using the Zorcaly-2 data
