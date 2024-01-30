@@ -13,7 +13,7 @@ from LoadedTACO.src.Fuel_Props import Fuel_props
 from LoadedTACO.src.Geometry_Value import Core_Geometry
 from LoadedTACO.src.Coolant_Value import Coolant
 from LoadedTACO.src.Flux_Profiles import Fluxes
-
+from LoadedTACO.src.NusseltNumber import Nusselt
 #Assumptions
 #1. The core thermal production is assumed to set after heat deposition
 #(i.e. gamma isn't relevant)
@@ -37,10 +37,11 @@ HotF = TCinput.HotF
 Qth = TCinput.Qth
 Tbulkin = TCinput.Tbulkin #Bulk Temperature of coolant at the Inlet - C
 Uinlet = TCinput.Uinlet #average inlet velocity in a subchannel - m/s
-
+Nusselt_Type=TCinput.Nusselt
 #Coolant Parameters
 Cp = Coolant[Coolant_Type]["Cp"]
 rho = Coolant[Coolant_Type]["rho"]
+Nu=Nusselt[Nusselt_Type]["NuCorrelation"]
 
 #Geometry Parameters
 z = Geometry.z
@@ -70,8 +71,9 @@ qppco = qlin/(np.pi*Geometry.FoCD) # Average heat flux at rod/coolant interface 
 
 # Coolant Calculations
 mdot = Uinlet*Coolant[Coolant_Type]["rho"]*Core_Geometry[Geometry_Type]["CoolantFlowArea"] # Mass flow rate for the fluid - kg/s
-Pe = (Uinlet*Core_Geometry[Geometry_Type]["InnerHydraulicDiameter"]/Coolant[Coolant_Type]["nu"])*Pr # Peclet Number for Fluid
-Nu = Nu.Nu(Geometry.PtoD,Pe)
+Re = (Uinlet*Core_Geometry[Geometry_Type]["InnerHydraulicDiameter"]/Coolant[Coolant_Type]["nu"])
+Pe = Re*Pr # Peclet Number for Fluid
+Nu = Nusselt[Nu_correlation]["NuCorrelation"]
 h = Nu*Coolant[Coolant_Type]["k"]/Core_Geometry[Geometry_Type]["InnerHydraulicDiameter"] #Heat Transfer Coefficient for Rod Bundles - W/m^2 - C
 
 #Core Temperature Calculations

@@ -19,6 +19,9 @@ Geometry = "Wire_Wrapped_Hexagonal"
 #Provide flux profile. Flux profile includes: Flatline, Linear, Exponential, Chopped_Cosine
 Flux = "Chopped_Cosine"
 
+#Provide desired Nusselt Number Corrilation. Corrilations include:Nus_DB and Nus_Gn
+Nusselt="Nus_DB"
+
 Hc = 0.35 #Active Height of Core is 2m
 Qth = 3*10**6 #Core Thermal Production - W
 #Mdot = #Total mass flow rate for the reactor. This will then be divided for subchannels.
