@@ -63,6 +63,6 @@ Clad_Props = {
 "Stain_Steel_304L": Stain_Steel_304L,
 "Stain_Steel_304": Stain_Steel_304,
 "Zirc_2": Zirc_2,
-"Kanth_AMPT": Kanth_AMPT
+"Kanth_AMPT": Kanth_AMPT,
 
 }
