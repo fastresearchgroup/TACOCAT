@@ -21,4 +21,5 @@ LoadedTACO/src/__init__.py
 src.egg-info/PKG-INFO
 src.egg-info/SOURCES.txt
 src.egg-info/dependency_links.txt
+src.egg-info/requires.txt
 src.egg-info/top_level.txt
