@@ -14,7 +14,7 @@ from LoadedTACO.src.Geometry_Value import Core_Geometry
 from LoadedTACO.src.Coolant_Value import Coolant
 from LoadedTACO.src.Flux_Profiles import Fluxes
 from LoadedTACO.src.NusseltNumber import Nusselt
-#Assumptions
+ #Assumptions
 #1. The core thermal production is assumed to set after heat deposition
 #(i.e. gamma isn't relevant)
 
