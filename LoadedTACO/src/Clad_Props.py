@@ -55,9 +55,14 @@ Graphite_384_2={
     "Tmelt_K":3873.15, #Melting Point-K
     }
 
-Fuel_propscd={
-    "Kanth_AMPT": Kanth_AMPT,
-    "Zirc_2": Zirc_2,
-    "Stain_Steel_304": Stain_Steel_304,
-    "Zirc_2_Nickel_Free": Zirc_2_Nickel_Free,
-    }
+Clad_Props = {
+"Graphite_384_1": Graphite_384_1,
+"Graphite_384_2": Graphite_384_2,
+"Zirc_2_Nickel_Free": Zirc_2_Nickel_Free,
+"Stain_Steel_316": Stain_Steel_316,
+"Stain_Steel_304L": Stain_Steel_304L,
+"Stain_Steel_304": Stain_Steel_304,
+"Zirc_2": Zirc_2,
+"Kanth_AMPT": Kanth_AMPT,
+
+}
