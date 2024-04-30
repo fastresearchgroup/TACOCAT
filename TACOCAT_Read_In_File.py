@@ -24,7 +24,7 @@ Flux = "Chopped_Cosine"
 #Provide Clad Properties. Cladding includes:
 Clad_Props = "Graphite_384_2" #Cladding Properties for Graphite
 
-#Provide desired Nusselt Number Corrilation. Corrilations include:Nus_DB and Nus_Gn
+#Provide desired Nusselt Number Corrilation. Corrilations include: DittusBoelter, Gnilenski, Nak_Wire_Wrapped
 Nusselt="DittusBoelter"
 
 Hc = 0.35 #Active Height of Core is 2m

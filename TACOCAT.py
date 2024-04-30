@@ -14,6 +14,7 @@ from LoadedTACO.src.Fuel_Props import Fuel_props
 from LoadedTACO.src.Geometry_Value import Core_Geometry
 from LoadedTACO.src.Coolant_Value import Coolant
 from LoadedTACO.src.Flux_Profiles import Fluxes
+from LoadedTACO.src.NusseltNumber import Nusselt
  #Assumptions
 #1. The core thermal production is assumed to set after heat deposition
 #(i.e. gamma isn't relevant)
@@ -43,7 +44,6 @@ Nusselt_Type=TCinput.Nusselt
 #Coolant Parameters
 Cp = Coolant[Coolant_Type]["Cp"]
 rho = Coolant[Coolant_Type]["rho"]
-Nu=Nusselt[Nusselt_Type]["NuCorrelation"]
 
 #Geometry Parameters
 z = Geometry.z
@@ -60,7 +60,9 @@ kclad = Clad_Props[Cladding]["kclad"] #(Tbulkin + 273.15)
 ## Core Geometry Calculations
 # Geometric Calculations
 CVol = Core_Geometry[Geometry_Type]["FaceArea"]*Hc #Volume of the core - m^3
-
+Dh=Core_Geometry[Geometry_Type]["InnerHydraulicDiameter"]
+L = Geometry.z
+PtoD = Geometry.PtoD
 #----------------------------------------------------------------------------------#
 ## Core Parameter Calculations 
 
@@ -83,7 +85,14 @@ Pravg = (Pr + Prmax)/2 # Average Prandtl Number in a inner channel
 Peavg = (Pe + Pemax)/2 # Average Peclect number in a inner channel
 Re1 = Peavg/Pravg # Average Reynolds number in a inner channel
 fsm = 0.316*Re1**(-0.25)
-Nu=Nusselt.Nu_DB(Re,Pr,0.4)
+
+# Nusselt number calculation 
+Nu_func=Nusselt[Nusselt_Type]
+args = {
+	"DittusBoelter":(Re,Pr,0.4),
+    "Gnilenski":(fsm,Re,Pr,Dh,L,Pr),
+}
+Nu = Nu_func(*args[Nusselt_Type])
 
 h = Nu*Coolant[Coolant_Type]["k"]/Core_Geometry[Geometry_Type]["InnerHydraulicDiameter"] #Heat Transfer Coefficient for Rod Bundles - W/m^2 - C
 
@@ -181,26 +190,29 @@ if data_logic == 0:
 h = 10
 w = 8
 
-lw = 2.5
-fs = 14
+lw = 2
+fs = 24
 
 k = 1
 plt.figure(k, figsize=(h,w))
+plt.rcParams['font.family'] = 'Times New Roman' # sets the font family
 plt.plot(Geometry.z,Tbulk,'r--',linewidth = lw,label=r'$T_{bulk}$')
 plt.plot(Geometry.z,TbulkHotF,'k--',linewidth = lw, label=r'$T_{bulk-HF}$')
 plt.plot(Geometry.z,Tcl, 'g-',linewidth = lw, label=r'$T_{cl}$')
 plt.plot(Geometry.z,TclHotF, 'c-',linewidth = lw, label=r'$T_{cl-HF}$')
 plt.axhline(y=Coolant[Coolant_Type]["Tboil"], xmin = 0, xmax = 1, color = 'r',linewidth = lw, label='Coolant Boiling Temp')
 plt.axhline(y=Coolant[Coolant_Type]["TmeltCoolant"], xmin = 0, xmax = 1, color = 'b',linewidth = lw, label='Coolant Melting Temp')
-plt.legend(loc='center left')
+plt.legend(loc='best', fontsize = fs)
 plt.xlabel('Axial Height - m',fontsize = fs)
 plt.ylabel('Temperature - C',fontsize = fs)
+plt.xticks(fontsize = fs)
+plt.yticks(fontsize = fs)
 plt.grid()
 fig = TCinput.Reactor_Title + '_Axial_Temperatures'
 if print_logic == 0:
-    plt.savefig(fig + '.png', dpi = 300, format = "png",bbox_inches="tight")
-    plt.savefig(fig + '.eps', dpi = 300, format = "eps",bbox_inches="tight")
-    plt.savefig(fig + '.svg', dpi = 300, format = "svg",bbox_inches="tight")
+    plt.savefig(fig + '.tiff', dpi = 300, format = "tiff",bbox_inches="tight")
+    plt.savefig(fig + '.tiff', dpi = 300, format = "tiff",bbox_inches="tight")
+    plt.savefig(fig + '.tiff', dpi = 300, format = "tiff",bbox_inches="tight")
 k = k + 1
 
 plt.figure(k, figsize=(h,w))
