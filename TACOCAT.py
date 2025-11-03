@@ -3,17 +3,18 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from LoadedTACO.src.Clad_Props import Clad_Props
 import LoadedTACO.src.HexDhCal as Geom
-import LoadedTACO.src.HegNu as Nu
+#import LoadedTACO.src.HegNu as Nu
 import LoadedTACO.src.TempBulkCal as TempBulk
 import TACOCAT_Read_In_File as TCinput
 import LoadedTACO.src.Geometry_Value as Geometry
+from LoadedTACO.src.NusseltNumber import Nusselt
 from scipy.integrate import trapz
 from scipy.integrate import quad
 from LoadedTACO.src.Fuel_Props import Fuel_props
 from LoadedTACO.src.Geometry_Value import Core_Geometry
 from LoadedTACO.src.Coolant_Value import Coolant
 from LoadedTACO.src.Flux_Profiles import Fluxes
-from LoadedTACO.src.NusseltNumber import Nusselt
+from LoadedTACO.src.FrictionFactor import Friction_Factor
  #Assumptions
 #1. The core thermal production is assumed to set after heat deposition
 #(i.e. gamma isn't relevant)
@@ -39,11 +40,12 @@ Tbulkin = TCinput.Tbulkin #Bulk Temperature of coolant at the Inlet - C
 Uinlet = TCinput.Uinlet #average inlet velocity in a subchannel - m/s
 Cladding = TCinput.Clad_Props
 Nusselt_Type=TCinput.Nusselt
+Friction_Factor_Type=TCinput.Friction
+roughness=TCinput.roughness
 
 #Coolant Parameters
 Cp = Coolant[Coolant_Type]["Cp"]
 rho = Coolant[Coolant_Type]["rho"]
-Nu=Nusselt[Nusselt_Type]["NuCorrelation"]
 
 #Geometry Parameters
 z = Geometry.z
@@ -60,6 +62,9 @@ kclad = Clad_Props[Cladding]["kclad"] #(Tbulkin + 273.15)
 ## Core Geometry Calculations
 # Geometric Calculations
 CVol = Core_Geometry[Geometry_Type]["FaceArea"]*Hc #Volume of the core - m^3
+Dh=Core_Geometry[Geometry_Type]["InnerHydraulicDiameter"]
+L = Geometry.z
+PtoD = Geometry.PtoD
 
 #----------------------------------------------------------------------------------#
 ## Core Parameter Calculations 
@@ -74,8 +79,32 @@ qppco = qlin/(np.pi*Geometry.FoCD) # Average heat flux at rod/coolant interface 
 mdot = Uinlet*Coolant[Coolant_Type]["rho"]*Core_Geometry[Geometry_Type]["CoolantFlowArea"] # Mass flow rate for the fluid - kg/s
 Re = (Uinlet*Core_Geometry[Geometry_Type]["InnerHydraulicDiameter"]/Coolant[Coolant_Type]["nu"])
 Pe = Re*Pr # Peclet Number for Fluid
-Nu = Nusselt[Nu_correlation]["NuCorrelation"]
+Prmax = Coolant[Coolant_Type]["Cpmax"]*Coolant[Coolant_Type]["numax"]*Coolant[Coolant_Type]["rhomax"]/Coolant[Coolant_Type]["kmax"]#Prandtl Number Calculation
+Uoutlet = mdot/(Coolant[Coolant_Type]["rhomax"]*Core_Geometry[Geometry_Type]["CoolantFlowArea"]) # Outlet Velocity in a inner channel
+Pemax = Prmax*Uoutlet*Geometry.FoCD/Coolant[Coolant_Type]["numax"] # Max Peclet number in a inner channel
+Pravg = (Pr + Prmax)/2 # Average Prandtl Number in a inner channel
+Peavg = (Pe + Pemax)/2 # Average Peclect number in a inner channel
+Re1 = Peavg/Pravg # Average Reynolds number in a inner channel
+#fsm = 0.316*Re1**(-0.25)
+
+Friction_Fact=Friction_Factor[Friction_Factor_Type]
+
+args_ff= { 
+	"Blasius": (Re,Geometry_Type),
+	"laminar": (Re),
+	"Haaland": (Re, roughness)
+}
+Fr_Fact=Friction_Fact(*args_ff[Friction_Factor_Type])
+
+Nu_func=Nusselt[Nusselt_Type]
+args_Nu = {
+	"DittusBoelter":(Re,Pr,0.4),
+    "Gnilenski":(Fr_Fact,Re,Pr,Dh,L,Pr),
+}
+Nu = Nu_func(*args_Nu[Nusselt_Type])
+
 h = Nu*Coolant[Coolant_Type]["k"]/Core_Geometry[Geometry_Type]["InnerHydraulicDiameter"] #Heat Transfer Coefficient for Rod Bundles - W/m^2 - C
+
 
 #Core Temperature Calculations
 #Call axial bulk temperature distribution calculation
@@ -111,27 +140,17 @@ for i in range(0,Geometry.steps):
     # Centerline Temperature of Fuel in Hottest Channel - C
 	TclHotF[i] = TbulkHotF[i] + ((FluxPro[i]*qlinHotF)/(2*np.pi))*((1/(h*(Geometry.FoCD/2))) + (1/(2*Fuel_props[Fuel_Type]["kfuel"])) + (1/kclad)*np.log(Geometry.FoCD/Geometry.FoD))
 
-
 Tavg = (Tbulk[0] + Tbulk[Geometry.steps-1])/2
 THotFavg = (TbulkHotF[0] + TbulkHotF[Geometry.steps-1])/2
-
-Prmax = Coolant[Coolant_Type]["Cpmax"]*Coolant[Coolant_Type]["numax"]*Coolant[Coolant_Type]["rhomax"]/Coolant[Coolant_Type]["kmax"]#Prandtl Number Calculation
-
 #Max and Averaged quantities with calculated outlet temperature
-Pravg = (Pr + Prmax)/2 # Average Prandtl Number in a inner channel
 rhoavg = (Coolant[Coolant_Type]["rho"] + Coolant[Coolant_Type]["rhomax"])/2 # Average density number in a inner channel
-Uoutlet = mdot/(Coolant[Coolant_Type]["rhomax"]*Core_Geometry[Geometry_Type]["CoolantFlowArea"]) # Outlet Velocity in a inner channel
 Uavg = (Uinlet + Uoutlet)/2 # Average velocity in a inner channel
-Pemax = Prmax*Uoutlet*Geometry.FoCD/Coolant[Coolant_Type]["numax"] # Max Peclet number in a inner channel
-Peavg = (Pe + Pemax)/2 # Average Peclect number in a inner channel
-Re1 = Peavg/Pravg # Average Reynolds number in a inner channel
 
 if Geometry_Type == "Wire_Wraped_Hexagonal":
 	M = ((1.034/(Geometry.PtoD**0.124))+(29.7*(Geometry.PtoD**6.94)*Re1**0.086)/(Geom.LeadW(FoCD,WoD)/Geometry.FoCD)**2.239)**0.885 #modifier
 else:
 	M = 1
-fsm = 0.316*Re1**(-0.25)
-dP = M*fsm*(Hc/Core_Geometry[Geometry_Type]["InnerHydraulicDiameter"])*0.5*rhoavg*Uavg**2
+dP = M*Fr_Fact*(Hc/Core_Geometry[Geometry_Type]["InnerHydraulicDiameter"])*0.5*rhoavg*Uavg**2
 
 #Heat Load Calculation
 QPri = Uavg*rhoavg*Core_Geometry[Geometry_Type]["CoolantFlowArea"]*((Coolant[Coolant_Type]["Cp"] + Coolant[Coolant_Type]["Cpmax"])/2)*(Tbulk[Geometry.steps-1]-Tbulk[0])
@@ -153,8 +172,8 @@ print('Outlet Bulk Temperature:',Tbulk[Geometry.steps-1],'C')
 print('Average Bulk Temperature:',Tavg,'C')
 print('Outlet Bulk Temperature - Hot Channel',TbulkHotF[Geometry.steps-1],'C')
 print('Average Coolant Temperature - Hot Channel:',THotFavg,'C')
-print('Highest Centerline Temperature:',Tcl[Geometry.steps-1],'C')
-print('Highest Centerline Temperature - Hottest Channel:',TclHotF[Geometry.steps-1],'C')
+print('Highest Centerline Temperature:',max(Tcl),'C')
+print('Highest Centerline Temperature - Hottest Channel:',max(TclHotF),'C')
 print('Pressure Drop - Bundle:',dP,'Pa')
 print(' Cladding Thermal Conductivity:', kclad, 'W/m-K')
 print('--------------------------------------------------------')
